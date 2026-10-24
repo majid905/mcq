@@ -51,6 +51,7 @@ Access JWT claims: `sub` (user id), `dev` (device row id), `prem` (bool), `exp`.
 | 425 | EXAM_NOT_STARTED | Start before start_at |
 | 426 | UPGRADE_REQUIRED | App below min version |
 | 429 | RATE_LIMITED | `Retry-After` header |
+| 500 | INTERNAL_ERROR | Unhandled server error (details never leak; see logs by `X-Request-Id`) |
 | 503 | MAINTENANCE | Maintenance mode |
 
 ## 5. Rate limits (Redis, per user/IP)
