@@ -39,6 +39,7 @@ Scale targets: 5 lakh+ MCQs, 50,000 users at launch (design headroom 5 lakh user
 | Visual reference for the look | `design/ui-reference.html` (open in a browser) |
 | Build order and phase prompts | `docs/07-IMPLEMENTATION-PLAN.md` + `prompts/` |
 | Security, testing, deploy | `docs/08-QUALITY-SECURITY-DEPLOY.md` |
+| Dev A → Dev B handoff (what is ready, ports, mock rules) | `docs/10-HANDOFF-A-TO-B.md` |
 
 When a requirement ID (e.g. `FR-EXAM-07`) is referenced in a task, implement exactly that requirement and mention the ID in the commit message.
 
