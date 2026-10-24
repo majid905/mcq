@@ -6,7 +6,7 @@ Status date: 2026-10-24. Dev A has finished the A-00 skeleton and the whole A-01
 
 ## 1. Where the code is
 
-Dev A's work sits in four stacked PRs. Until they are merged into `main`, everything is on one branch:
+Dev A's work sits in seven stacked PRs. Until they are merged into `main`, everything is on one branch:
 
 ```bash
 git clone https://github.com/majid905/mcq.git && cd mcq
