@@ -1,0 +1,26 @@
+{
+  "name": "@mcq/database",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Schema, reset and seed scripts. Owner: Dev A.",
+  "type": "module",
+  "scripts": {
+    "reset": "tsx reset.ts",
+    "seed": "tsx seed/cli.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@node-rs/argon2": "^2.2.2",
+    "mysql2": "^3.24.6"
+  },
+  "devDependencies": {
+    "@mcq/config": "workspace:*",
+    "@types/node": "^22.0.0",
+    "eslint": "^10.13.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.0",
+    "vitest": "^5.0.5"
+  }
+}

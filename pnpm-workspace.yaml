@@ -1,5 +1,7 @@
 packages:
   - apps/*
   - packages/*
+  - database
 allowBuilds:
   '@scarf/scarf': false
+  esbuild: false

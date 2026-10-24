@@ -17,3 +17,4 @@ packages/api-contract/openapi.yaml
 .github/pull_request_template.md
 design/tokens.json
 packages/api-contract/shuffle-vectors.json
+database/README.md

@@ -17,7 +17,9 @@
     "mock:dynamic": "pnpm --filter @mcq/api-contract run mock:dynamic",
     "contract:gen": "node scripts/contract-gen.mjs",
     "tokens:gen": "node scripts/not-implemented.mjs tokens:gen",
-    "db:reset": "node scripts/not-implemented.mjs db:reset",
+    "db:reset": "pnpm --filter @mcq/database run reset",
+    "infra:up": "docker compose up -d --wait",
+    "infra:down": "docker compose down",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
