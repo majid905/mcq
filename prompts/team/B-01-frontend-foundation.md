@@ -11,7 +11,7 @@ PR 1 `b/design-tokens`:
 - Contrast test (every text/background pair ≥ 4.5:1).
 
 PR 2 `b/web-admin-scaffold`:
-- `apps/web` and `apps/admin`: Next.js 15 App Router, TypeScript strict, Tailwind v4 with tokens, shadcn/ui, next-intl (bn default, en) with `messages/bn.json` / `en.json`, next/font Hind Siliguri + Inter, theme toggle, TanStack Query provider, API base from `NEXT_PUBLIC_API_BASE` (default mock `http://localhost:4010/v1`) using `packages/api-client-ts` (if Dev A's contract-tooling PR is not merged yet, stub the import and wire it when it lands).
+- `apps/web` and `apps/admin`: Next.js 15 App Router, TypeScript strict, Tailwind v4 with tokens, shadcn/ui, next-intl (bn default, en) with `messages/bn.json` / `en.json`, next/font Hind Siliguri + Inter, theme toggle, TanStack Query provider, API base from `NEXT_PUBLIC_API_BASE` (default mock `http://localhost:4010/v1`) using `packages/api-client-ts`. Dev A's contract-tooling PR is ready (see `docs/10-HANDOFF-A-TO-B.md`): wire `@mcq/api-client-ts` and `pnpm mock` now, no stub. Run web on port 3001 and admin on 3002; the API owns 3000.
 - Playwright set up in both apps with one smoke test.
 
 PR 3 `b/ui-kit`:

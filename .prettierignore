@@ -19,3 +19,4 @@ design/tokens.json
 packages/api-contract/shuffle-vectors.json
 database/README.md
 apps/api/prisma/schema.prisma
+docs/10-HANDOFF-A-TO-B.md
