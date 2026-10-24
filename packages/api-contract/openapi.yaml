@@ -30,6 +30,7 @@ tags:
   - name: Billing
   - name: Notifications
   - name: Admin
+  - name: System
 
 security:
   - bearerAuth: []
@@ -296,6 +297,32 @@ paths:
                 type: object
                 properties:
                   data: { $ref: '#/components/schemas/HomeFeed' }
+
+  # ------------------------------------------------------------------ System
+  /health:
+    get:
+      tags: [System]
+      security: []
+      summary: Liveness and dependency check (MySQL, Redis). 503 when a dependency is down.
+      responses:
+        '200':
+          description: All dependencies up
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/HealthStatus' }
+        '503':
+          description: A dependency is down (same body shape, status degraded)
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/HealthStatus' }
 
   # ------------------------------------------------------------------ Taxonomy
   /taxonomy:
@@ -1827,6 +1854,23 @@ components:
       properties:
         next_cursor: { type: [string, 'null'] }
         has_more: { type: boolean }
+
+    HealthStatus:
+      type: object
+      required: [status, checks, server_time]
+      properties:
+        status: { type: string, enum: [ok, degraded] }
+        checks:
+          type: object
+          required: [database, redis]
+          properties:
+            database: { type: string, enum: [up, down] }
+            redis: { type: string, enum: [up, down] }
+        server_time: { type: string, format: date-time }
+      example:
+        status: ok
+        checks: { database: up, redis: up }
+        server_time: '2026-10-24T05:30:00.000Z'
 
     DeviceInfo:
       type: object

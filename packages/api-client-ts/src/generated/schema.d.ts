@@ -575,6 +575,55 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Liveness and dependency check (MySQL, Redis). 503 when a dependency is down. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description All dependencies up */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data: components["schemas"]["HealthStatus"];
+                        };
+                    };
+                };
+                /** @description A dependency is down (same body shape, status degraded) */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data: components["schemas"]["HealthStatus"];
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/taxonomy": {
         parameters: {
             query?: never;
@@ -3456,6 +3505,28 @@ export interface components {
         CursorMeta: {
             next_cursor?: string | null;
             has_more?: boolean;
+        };
+        /**
+         * @example {
+         *       "status": "ok",
+         *       "checks": {
+         *         "database": "up",
+         *         "redis": "up"
+         *       },
+         *       "server_time": "2026-10-24T05:30:00.000Z"
+         *     }
+         */
+        HealthStatus: {
+            /** @enum {string} */
+            status: "ok" | "degraded";
+            checks: {
+                /** @enum {string} */
+                database: "up" | "down";
+                /** @enum {string} */
+                redis: "up" | "down";
+            };
+            /** Format: date-time */
+            server_time: string;
         };
         DeviceInfo: {
             device_id: string;
