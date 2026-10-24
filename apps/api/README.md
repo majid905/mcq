@@ -32,3 +32,12 @@ expectContract(await request(app.getHttpServer()).get('/v1/health'));
 ```
 
 Add one `expectContract` call per endpoint you build. A response that is not in the contract (path, method, status or body shape) fails the test.
+
+## Auth (FR-AUTH-01..03, 05..07)
+
+- **Bearer only.** The API never sets cookies. The Next.js BFF stores `access_token` / `refresh_token` in httpOnly cookies and adds CSRF itself (docs/04-API.md section 2).
+- **Everything is protected** by the global `JwtAuthGuard` unless the handler has `@Public()`. Use `@CurrentUser()` for `{ userId, deviceRowId, premium }`. The guard also applies the default 120 requests / user / minute limit.
+- **OTP:** Redis, HMAC-hashed, 5 min TTL, 5 verify attempts, 60 s resend cooldown, 3 per phone and 10 per IP per hour. With `SMS_DRIVER=console` (dev) the code is always `123456`; production refuses that driver at startup. `SMS_DRIVER=http` posts to `SMS_HTTP_URL` (adapt `sms/http-sms.provider.ts` to the chosen gateway).
+- **Sessions:** access JWT 15 min; refresh token opaque, 30 days, stored as sha256 and rotated on every use. Reusing a rotated or revoked token revokes the whole family and returns `SESSION_REVOKED`.
+- **Devices:** one active mobile and one active web device per account. A new login signs out the old one of the same kind (its access token is cut off within one Redis lookup via `dev:revoked:<id>`). The self-reset service (2 per 30 days) is in `DevicesService.selfReset`; its route `POST /me/devices/reset` ships with the me/settings/home PR.
+- **Lockout:** 5 wrong passwords lock the account for 15 minutes (`ACCOUNT_LOCKED`, `details.until`). Unknown phone and wrong password answer identically.

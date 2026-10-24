@@ -35,6 +35,8 @@ jobs:
       MYSQL_ROOT_PASSWORD: change-me-root
       DATABASE_URL: mysql://mcq:change-me@127.0.0.1:3306/mcq
       REDIS_URL: redis://127.0.0.1:6379
+      JWT_ACCESS_SECRET: ci-only-access-secret-0123456789
+      SMS_DRIVER: console
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4

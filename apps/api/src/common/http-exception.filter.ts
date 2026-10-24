@@ -78,6 +78,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
         ...(details ? { details } : {}),
       },
     };
+    if (code === 'RATE_LIMITED' && typeof details?.retry_after_sec === 'number') {
+      res.setHeader('Retry-After', String(details.retry_after_sec));
+    }
     res.status(status).json(body);
   }
 }

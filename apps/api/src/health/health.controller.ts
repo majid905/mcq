@@ -1,5 +1,6 @@
 import { Controller, Get, Res } from '@nestjs/common';
 import type { Response } from 'express';
+import { Public } from '../auth/public.decorator';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 
@@ -19,6 +20,7 @@ export class HealthController {
   ) {}
 
   /** GET /v1/health: 200 when MySQL and Redis answer, 503 (same body shape) otherwise. */
+  @Public()
   @Get()
   async check(@Res({ passthrough: true }) res: Response): Promise<HealthStatus> {
     const [database, redis] = await Promise.all([
