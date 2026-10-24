@@ -39,5 +39,12 @@ Add one `expectContract` call per endpoint you build. A response that is not in 
 - **Everything is protected** by the global `JwtAuthGuard` unless the handler has `@Public()`. Use `@CurrentUser()` for `{ userId, deviceRowId, premium }`. The guard also applies the default 120 requests / user / minute limit.
 - **OTP:** Redis, HMAC-hashed, 5 min TTL, 5 verify attempts, 60 s resend cooldown, 3 per phone and 10 per IP per hour. With `SMS_DRIVER=console` (dev) the code is always `123456`; production refuses that driver at startup. `SMS_DRIVER=http` posts to `SMS_HTTP_URL` (adapt `sms/http-sms.provider.ts` to the chosen gateway).
 - **Sessions:** access JWT 15 min; refresh token opaque, 30 days, stored as sha256 and rotated on every use. Reusing a rotated or revoked token revokes the whole family and returns `SESSION_REVOKED`.
-- **Devices:** one active mobile and one active web device per account. A new login signs out the old one of the same kind (its access token is cut off within one Redis lookup via `dev:revoked:<id>`). The self-reset service (2 per 30 days) is in `DevicesService.selfReset`; its route `POST /me/devices/reset` ships with the me/settings/home PR.
+- **Devices:** one active mobile and one active web device per account. A new login signs out the old one of the same kind (its access token is cut off within one Redis lookup via `dev:revoked:<id>`). `POST /me/devices/reset` signs out the other devices, 2 per 30 days, then 429.
 - **Lockout:** 5 wrong passwords lock the account for 15 minutes (`ACCOUNT_LOCKED`, `details.until`). Unknown phone and wrong password answer identically.
+
+## Me, settings, home, gate (FR-AUTH-08..10, FR-HOME-01..03)
+
+- `GET/PATCH/DELETE /me`, `PUT /me/push-token`, `POST /me/devices/reset`. `DELETE /me` closes the account and revokes all sessions now; the 30-day anonymisation job comes with the scheduler work.
+- `GET /settings/public` reads `app_settings` (Redis cache, 60 s; call `SettingsService.invalidate()` after admin edits).
+- `GET /home` returns running exams, the next exam, banners, continue-practice and today's stats, filtered by the user's target exams. Exam status on cards is derived from the clock (`exams/exam-card.ts`), so it is right before the scheduler flips the DB status.
+- `AppGateGuard` (runs before auth): maintenance mode returns `503 MAINTENANCE`; `X-Platform: android|ios` with an `X-App-Version` below `min_supported_version` returns `426 UPGRADE_REQUIRED`. Web and header-less requests are not version-gated. Exempt a route with `@SkipGate()` (health, public settings).

@@ -8,6 +8,7 @@ import { SettingsService } from '../settings/settings.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { DevicesService } from './devices.service';
+import { AppGateGuard } from '../gate/app-gate.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { OtpService } from './otp.service';
 import { PasswordService } from './password.service';
@@ -45,6 +46,8 @@ import { TokenService } from './token.service';
             })
           : new ConsoleSmsProvider(),
     },
+    // Guard order matters: maintenance/version gate first, then authentication.
+    { provide: APP_GUARD, useClass: AppGateGuard },
     // Every route is protected unless it is marked @Public().
     { provide: APP_GUARD, useClass: JwtAuthGuard },
   ],

@@ -82,7 +82,15 @@ pnpm db:reset      # schema + seed (2,000 Bangla MCQs, 5 exams, 64 districts)
 pnpm --filter @mcq/api dev     # http://localhost:3000/v1, Swagger UI at http://localhost:3000/docs
 ```
 
-Only `GET /v1/health` exists on the real API today. Auth is Dev A's next task (`prompts/10-api-auth.md`, weeks 2-3), then exams. Dev A will tell you in the daily message when an endpoint is live; until then stay on the mock. The seed has one admin (`admin@example.com` / `change-me-admin`, dev only) and no student users.
+**Live on the real API (branches `a/auth-otp` and `a/me-settings-home`, as soon as they are merged):** `GET /health`, all of `/auth/*` (OTP request/verify, register, login, refresh, logout, password reset), `GET/PATCH/DELETE /me`, `PUT /me/push-token`, `POST /me/devices/reset`, `GET /settings/public`, `GET /home`. Everything else (exams, practice, search, billing, admin) is still mock-only; Dev A tells you in the daily message when the next group is live.
+
+Real-API notes for the web BFF:
+- **Dev OTP is always `123456`** (console SMS driver); no SMS is sent. Any valid Bangladeshi number works (`01[3-9]XXXXXXXX`).
+- The API is bearer-only and never sets cookies. Your BFF keeps `access_token` (15 min) and `refresh_token` (30 days) in httpOnly cookies, adds CSRF, and calls `/auth/refresh` when it gets 401. **Refresh tokens rotate on every use and reuse revokes the session**, so the BFF must serialise refreshes per session (one in-flight refresh, other requests wait for it) and always store the new refresh token.
+- Send `Accept-Language: bn|en`, `X-Platform: web` and a stable `X-Device-Id`-style `device.device_id` in login/register bodies (one active browser per account: a new browser login signs the old one out with `SESSION_REVOKED`).
+- Limits to design the UI around: OTP resend after 60 s (`resend_after_sec`), 3 OTPs per phone per hour, 5 wrong passwords lock login for 15 min (`ACCOUNT_LOCKED`, `details.until`), `429` carries a `Retry-After` header.
+- `503 MAINTENANCE` and `426 UPGRADE_REQUIRED` can come from any endpoint; `GET /settings/public` and `GET /health` are always open.
+- The seed has one admin (`admin@example.com` / `change-me-admin`, dev only) and no student users: register through the API.
 
 ## 7. Files you share with Dev A
 
@@ -114,5 +122,5 @@ Do not edit `openapi.yaml` (except `examples`). Open a GitHub issue with the `co
 
 | When | Dev A delivers | You can then |
 | --- | --- | --- |
-| Weeks 2-3 | Auth (OTP, register, login, refresh), `/me`, `/settings/public`, `/home` | Switch login, onboarding, home from mock to real; Checkpoint 1 |
+| Done (needs merge) | Auth (OTP, register, login, refresh), `/me`, `/settings/public`, `/home` | Switch login, onboarding, home from mock to real; Checkpoint 1 |
 | Weeks 4-6 | Exams: list, detail, start, sync, submit, scoring, leaderboard, results | Exam room and results on real data; Checkpoint 2 |

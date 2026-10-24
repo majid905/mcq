@@ -1,0 +1,161 @@
+import { Injectable } from '@nestjs/common';
+import type { exams, users } from '@prisma/client';
+import { effectiveStatus, toExamCard, type ExamCardDto } from '../exams/exam-card';
+import { dhakaDay } from '../me/me.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { SettingsService } from '../settings/settings.service';
+
+export interface HomeFeedDto {
+  server_time: string;
+  banners: { id: string; image_url: string; deep_link: string | null; title: string }[];
+  running_exams: ExamCardDto[];
+  next_exam: ExamCardDto | null;
+  continue_practice: { attempt_id: string; title: string; answered: number; total: number } | null;
+  today: { answered: number; accuracy_pct: number; streak: number; goal: number };
+}
+
+const toNumberIds = (v: unknown): number[] =>
+  Array.isArray(v) ? v.map(Number).filter((n) => Number.isInteger(n) && n > 0) : [];
+
+/** FR-HOME-01..03: one call for the home screen, filtered by the user's target exams. */
+@Injectable()
+export class HomeService {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly settings: SettingsService,
+  ) {}
+
+  async feed(user: users): Promise<HomeFeedDto> {
+    const now = new Date();
+    const targets = toNumberIds(user.target_node_ids);
+    const categoryFilter = targets.length > 0 ? { category_id: { in: targets } } : {};
+    const live = { status: { in: ['scheduled', 'running'] as ('scheduled' | 'running')[] } };
+
+    const [runningRows, nextRows, banners, daily, streak, practice, goal] = await Promise.all([
+      this.prisma.exams.findMany({
+        where: { ...live, ...categoryFilter, start_at: { lte: now }, end_at: { gt: now } },
+        orderBy: { start_at: 'asc' },
+        take: 5,
+      }),
+      this.prisma.exams.findMany({
+        where: { ...live, ...categoryFilter, start_at: { gt: now } },
+        orderBy: { start_at: 'asc' },
+        take: 1,
+      }),
+      this.banners(now, targets),
+      this.prisma.user_daily_stats.findUnique({
+        where: { user_id_day: { user_id: user.id, day: new Date(`${dhakaDay(now)}T00:00:00Z`) } },
+      }),
+      this.prisma.user_streaks.findUnique({ where: { user_id: user.id } }),
+      this.prisma.attempts.findFirst({
+        where: {
+          user_id: user.id,
+          kind: { in: ['quick_practice', 'custom'] },
+          status: 'in_progress',
+        },
+        orderBy: { started_at: 'desc' },
+      }),
+      this.settings.number('daily_goal', 10),
+    ]);
+
+    const examRows = [...runningRows, ...nextRows];
+    const cards = await this.cards(user, examRows, now);
+
+    const answered = daily?.answered ?? 0;
+    const yesterday = dhakaDay(new Date(now.getTime() - 24 * 3600_000));
+    const lastDay = streak?.last_day?.toISOString().slice(0, 10);
+    const streakNow = streak && lastDay && lastDay >= yesterday ? streak.current_streak : 0;
+
+    const answers = practice?.answers;
+    return {
+      server_time: now.toISOString(),
+      banners,
+      running_exams: runningRows.flatMap((e) => cards.get(e.id) ?? []),
+      next_exam: nextRows[0] ? (cards.get(nextRows[0].id) ?? null) : null,
+      continue_practice: practice
+        ? {
+            attempt_id: String(practice.id),
+            title: user.locale === 'en' ? 'Continue practice' : 'অনুশীলন চালিয়ে যান',
+            answered: answers && typeof answers === 'object' ? Object.keys(answers).length : 0,
+            total: practice.total_questions,
+          }
+        : null,
+      today: {
+        answered,
+        accuracy_pct: answered > 0 ? Math.round(((daily?.correct ?? 0) / answered) * 1000) / 10 : 0,
+        streak: streakNow,
+        goal,
+      },
+    };
+  }
+
+  private async banners(now: Date, targets: number[]): Promise<HomeFeedDto['banners']> {
+    const rows = await this.prisma.banners.findMany({
+      where: {
+        is_active: true,
+        AND: [
+          { OR: [{ starts_at: null }, { starts_at: { lte: now } }] },
+          { OR: [{ ends_at: null }, { ends_at: { gt: now } }] },
+        ],
+      },
+      orderBy: { sort_order: 'asc' },
+    });
+    return rows
+      .filter((b) => {
+        const cats = toNumberIds(b.category_ids);
+        return cats.length === 0 || targets.length === 0 || cats.some((c) => targets.includes(c));
+      })
+      .map((b) => ({
+        id: String(b.id),
+        image_url: b.image_url,
+        deep_link: b.deep_link,
+        title: b.title,
+      }));
+  }
+
+  /** Builds cards in three batched queries (categories, attempts, reminders), not per exam. */
+  private async cards(user: users, rows: exams[], now: Date): Promise<Map<bigint, ExamCardDto>> {
+    const out = new Map<bigint, ExamCardDto>();
+    if (rows.length === 0) return out;
+    const ids = rows.map((e) => e.id);
+
+    const [categories, attempts, reminders] = await Promise.all([
+      this.prisma.taxonomy_nodes.findMany({
+        where: { id: { in: [...new Set(rows.map((e) => e.category_id))] } },
+        select: { id: true, name_bn: true, name_en: true },
+      }),
+      this.prisma.attempts.findMany({
+        where: { user_id: user.id, exam_id: { in: ids } },
+        orderBy: { started_at: 'desc' },
+      }),
+      this.prisma.exam_reminders.findMany({ where: { user_id: user.id, exam_id: { in: ids } } }),
+    ]);
+    const categoryName = new Map(
+      categories.map((c) => [c.id, user.locale === 'en' ? c.name_en : c.name_bn]),
+    );
+    const latest = new Map<bigint, (typeof attempts)[number]>();
+    for (const a of attempts)
+      if (a.exam_id !== null && !latest.has(a.exam_id)) latest.set(a.exam_id, a);
+    const reminded = new Set(reminders.map((r) => r.exam_id));
+
+    for (const e of rows) {
+      if (!effectiveStatus(e, now)) continue;
+      const a = latest.get(e.id);
+      const card = toExamCard(e, {
+        locale: user.locale,
+        categoryName: categoryName.get(e.category_id) ?? '',
+        myAttempt: a
+          ? {
+              attempt_id: String(a.id),
+              status: a.status,
+              score: a.score === null ? null : Number(a.score),
+            }
+          : null,
+        hasReminder: reminded.has(e.id),
+        now,
+      });
+      if (card) out.set(e.id, card);
+    }
+    return out;
+  }
+}

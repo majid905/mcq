@@ -27,7 +27,7 @@ How to run tracks in parallel with Claude Code: open **three terminals / three C
 **Exit:** `pnpm dev` + `pnpm mock` run; web and app show the gallery in light/dark, bn/en.
 
 ## Phase 1 — Auth, onboarding, home (prompts `10-api-auth.md`, `11-web-auth-home.md`, `12-mobile-auth-home.md`)
-- [ ] A: auth module (OTP via Redis + SMS provider interface with console driver in dev), register, login, refresh rotation, device binding, me, settings/public, home feed.
+- [x] A: auth module (OTP via Redis + SMS provider interface with console driver in dev), register, login, refresh rotation, device binding, me, settings/public, home feed.
 - [ ] W: login, register, OTP, profile setup, onboarding goals/district, home, app shell, BFF cookie auth.
 - [ ] M: splash, welcome, login, register, OTP (SMS autofill), onboarding, home, bottom nav, force-update & maintenance screens, secure token storage + refresh interceptor.
 - [ ] Checkpoint 1: web + app logged in against real API; e2e "register → home".
