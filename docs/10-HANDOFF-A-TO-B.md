@@ -10,7 +10,7 @@ Dev A's work sits in four stacked PRs. Until they are merged into `main`, everyt
 
 ```bash
 git clone https://github.com/majid905/mcq.git && cd mcq
-git checkout a/handoff-dev-b      # contains all four PRs below plus this file
+git checkout a/me-settings-home   # newest branch: contains every PR below plus this file
 ```
 
 | Order | Branch | Adds |
@@ -19,10 +19,13 @@ git checkout a/handoff-dev-b      # contains all four PRs below plus this file
 | 1 | `a/contract-tooling` | `pnpm mock`, `@mcq/api-client-ts`, Bangla `examples`, shuffle + vectors |
 | 2 | `a/infra-db` | `docker-compose.yml`, `pnpm db:reset`, seed data |
 | 3 | `a/api-scaffold` | NestJS app, `GET /v1/health`, Swagger UI, contract tests, full CI |
+| 4 | `a/handoff-dev-b` | this doc |
+| 5 | `a/auth-otp` | OTP, register, login, refresh, logout, password reset, device binding |
+| 6 | `a/me-settings-home` | `/me`, device reset, push token, `/settings/public`, `/home`, maintenance + version gate |
 
 **Once Dev A tells you they are merged:** `git checkout main && git pull --rebase origin main`, then branch from `main` as usual (`b/design-tokens`, ...). Do not branch from `a/*` after that.
 
-Until then, branch your `b/*` work from `a/handoff-dev-b`. When the A PRs merge, run `git rebase --onto origin/main a/handoff-dev-b b/<your-branch>`.
+Until then, branch your `b/*` work from `a/me-settings-home`. When the A PRs merge, run `git rebase --onto origin/main a/me-settings-home b/<your-branch>`.
 
 ## 2. One-time setup
 
