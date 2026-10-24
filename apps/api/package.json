@@ -1,0 +1,6 @@
+{
+  "name": "@mcq/api",
+  "version": "0.0.0",
+  "private": true,
+  "description": "NestJS API (shell; scaffolded in a/api-scaffold)."
+}

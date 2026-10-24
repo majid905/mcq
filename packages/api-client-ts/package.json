@@ -1,0 +1,6 @@
+{
+  "name": "@mcq/api-client-ts",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Generated TypeScript API client. Never edit by hand; run `pnpm contract:gen`."
+}

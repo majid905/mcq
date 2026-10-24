@@ -1,1 +1,43 @@
 CLAUDE.local.md
+
+# node
+node_modules/
+.pnpm-store/
+npm-debug.log*
+pnpm-debug.log*
+
+# build output
+dist/
+build/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+
+# env (only .env.example is committed)
+.env
+.env.*
+!.env.example
+
+# test
+coverage/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+**/android/.gradle/
+**/ios/Pods/
+
+# os / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json

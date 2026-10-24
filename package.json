@@ -1,0 +1,28 @@
+{
+  "name": "mcq-platform",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@11.24.0",
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "scripts": {
+    "dev": "node scripts/not-implemented.mjs dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "e2e": "node scripts/not-implemented.mjs e2e",
+    "mock": "node scripts/not-implemented.mjs mock",
+    "contract:gen": "node scripts/not-implemented.mjs contract:gen",
+    "tokens:gen": "node scripts/not-implemented.mjs tokens:gen",
+    "db:reset": "node scripts/not-implemented.mjs db:reset",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "^3.9.10",
+    "turbo": "^2.11.10",
+    "typescript": "^5.9.0"
+  }
+}
