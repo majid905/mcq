@@ -1,0 +1,23 @@
+# Each PR needs review from the owner of the files it touches.
+# Default: either developer.
+*                               @majid905 @Mozlish
+
+# Dev A — Majid: backend, data, contract, DevOps
+/apps/api/                      @majid905
+/database/                      @majid905
+/packages/api-contract/         @majid905
+/packages/api-client-ts/        @majid905
+/docker-compose.yml             @majid905
+/deploy/                        @majid905
+/load/                          @majid905
+/.github/workflows/             @majid905
+
+# Dev B — Mozlish: frontend and design system
+/apps/web/                      @Mozlish
+/apps/admin/                    @Mozlish
+/packages/ui/                   @Mozlish
+/packages/design-tokens/        @Mozlish
+/design/                        @Mozlish
+
+# Out of scope until the website launches
+/apps/mobile/                   @majid905 @Mozlish

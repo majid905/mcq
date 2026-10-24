@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UI Reference — MCQ Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Values mirror design/tokens.json. Visual reference only — production code must use generated tokens. */
+:root{
+  --bg:#F7F8F6;--surface:#FFFFFF;--surfaceMuted:#F0F2EF;--border:#DDE3DE;--borderStrong:#C3CCC5;
+  --text:#14201B;--textMuted:#55635C;--textSubtle:#7C8A83;
+  --primary:#0F766E;--primarySoft:#E3F3F1;--onPrimary:#fff;
+  --accent:#E39B14;--accentSoft:#FDF2DC;--live:#E0344F;--liveSoft:#FDE7EA;
+  --success:#15803D;--successSoft:#E3F5E9;--danger:#C62828;--dangerSoft:#FCE8E8;
+  --page:#E9ECE8;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0D1412;--surface:#141D1A;--surfaceMuted:#1A2521;--border:#26332E;--borderStrong:#38473F;
+  --text:#E8EEEA;--textMuted:#A3B1AA;--textSubtle:#7A8981;
+  --primary:#2DBDAE;--primarySoft:#12302C;--onPrimary:#04201C;
+  --accent:#F2B53D;--accentSoft:#33270E;--live:#FF5A73;--liveSoft:#3A1820;
+  --success:#3FCB74;--successSoft:#13301F;--danger:#F2706B;--dangerSoft:#3A1A19;--page:#060A09;}}
+:root[data-theme="dark"]{
+  --bg:#0D1412;--surface:#141D1A;--surfaceMuted:#1A2521;--border:#26332E;--borderStrong:#38473F;
+  --text:#E8EEEA;--textMuted:#A3B1AA;--textSubtle:#7A8981;
+  --primary:#2DBDAE;--primarySoft:#12302C;--onPrimary:#04201C;
+  --accent:#F2B53D;--accentSoft:#33270E;--live:#FF5A73;--liveSoft:#3A1820;
+  --success:#3FCB74;--successSoft:#13301F;--danger:#F2706B;--dangerSoft:#3A1A19;--page:#060A09;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--page);color:var(--text);font-family:'Inter','Hind Siliguri',system-ui,sans-serif;padding:32px 16px 64px}
+header.top{max-width:1280px;margin:0 auto 28px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+header.top h1{font-size:24px;font-weight:700}
+header.top p{color:var(--textMuted);font-size:14px;margin-top:4px;max-width:620px;line-height:1.5}
+.toggle{border:1px solid var(--borderStrong);background:var(--surface);color:var(--text);border-radius:999px;padding:8px 16px;font:inherit;font-size:14px;cursor:pointer}
+.grid{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:28px;justify-items:center}
+.label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--textMuted);margin-bottom:10px;text-align:center}
+.phone{width:320px;height:660px;background:var(--bg);border-radius:36px;border:8px solid #111;overflow:hidden;display:flex;flex-direction:column;position:relative;box-shadow:0 12px 32px rgba(0,0,0,.18)}
+.status{height:26px;display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:11px;color:var(--textMuted)}
+.scroll{flex:1;overflow:hidden;padding:4px 16px 16px;display:flex;flex-direction:column;gap:12px}
+.bn{font-family:'Hind Siliguri','Inter',sans-serif}
+.row{display:flex;align-items:center;gap:8px}
+.between{justify-content:space-between}
+.muted{color:var(--textMuted)} .sub{color:var(--textSubtle)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px}
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:500}
+.chip.accent{background:var(--accentSoft);color:var(--accent)}
+.chip.live{background:var(--liveSoft);color:var(--live)}
+.chip.soft{background:var(--surfaceMuted);color:var(--textMuted)}
+.chip.primary{background:var(--primarySoft);color:var(--primary)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--live);display:inline-block}
+.btn{display:flex;align-items:center;justify-content:center;height:46px;border-radius:12px;font-weight:600;font-size:15px;border:1.5px solid transparent;width:100%}
+.btn.primary{background:var(--primary);color:var(--onPrimary)}
+.btn.outline{border-color:var(--borderStrong);color:var(--text);background:transparent}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--primarySoft);color:var(--primary);display:grid;place-items:center;font-weight:700}
+.icon{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--border);color:var(--textMuted)}
+.live-card{border-left:4px solid var(--live)}
+.meta{font-size:12px;color:var(--textMuted)}
+.bar{height:6px;border-radius:99px;background:var(--surfaceMuted);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--primary);border-radius:99px}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.quick .card{display:flex;flex-direction:column;gap:8px;padding:12px}
+.qi{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--primarySoft);color:var(--primary)}
+.nav{height:64px;border-top:1px solid var(--border);background:var(--surface);display:flex;justify-content:space-around;align-items:center;font-size:11px;color:var(--textSubtle)}
+.nav div{display:flex;flex-direction:column;align-items:center;gap:3px}
+.nav .on{color:var(--primary);font-weight:600}
+.timer{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px 0}
+.timer .t{font-variant-numeric:tabular-nums;font-size:20px;font-weight:600;color:var(--accent)}
+.timer .bar{margin-top:8px;border-radius:0;height:3px}
+.timer .bar>i{background:var(--accent);border-radius:0}
+.q{font-size:16px;font-weight:500;line-height:1.7}
+.opt{display:flex;gap:12px;align-items:center;min-height:52px;border:1.5px solid var(--border);border-radius:12px;padding:10px 12px;background:var(--surface);font-size:15px;line-height:1.5}
+.opt b{width:30px;height:30px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--surfaceMuted);color:var(--textMuted);font-weight:600;font-size:14px}
+.opt.sel{border-color:var(--primary);background:var(--primarySoft)} .opt.sel b{background:var(--primary);color:var(--onPrimary)}
+.opt.ok{border-color:var(--success);background:var(--successSoft)} .opt.ok b{background:var(--success);color:#fff}
+.opt.no{border-color:var(--danger);background:var(--dangerSoft)} .opt.no b{background:var(--danger);color:#fff}
+.foot{display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--border);background:var(--surface)}
+.foot .btn{height:44px;font-size:14px}
+.ring{width:150px;height:150px;border-radius:50%;margin:4px auto 0;display:grid;place-items:center;background:conic-gradient(var(--primary) 0 78%,var(--surfaceMuted) 78% 100%)}
+.ring>div{width:124px;height:124px;border-radius:50%;background:var(--bg);display:grid;place-items:center;text-align:center}
+.score{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px;text-align:center}
+.stat strong{display:block;font-size:20px;font-variant-numeric:tabular-nums}
+.rank{background:var(--accentSoft);border-radius:16px;padding:12px 14px;display:flex;gap:12px;align-items:center}
+.rank .tro{width:40px;height:40px;border-radius:12px;background:var(--accent);color:#1F1503;display:grid;place-items:center;font-size:20px}
+.sect{display:grid;grid-template-columns:1fr 70px 40px;gap:8px;align-items:center;font-size:13px}
+.expl{border-radius:12px;background:var(--surfaceMuted);padding:12px;font-size:14px;line-height:1.7}
+.grid-nav{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
+.grid-nav span{aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-size:11px;border:1.5px solid var(--borderStrong);color:var(--textMuted)}
+.grid-nav .a{background:var(--primary);border-color:var(--primary);color:var(--onPrimary)}
+.grid-nav .m{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 2px var(--accentSoft)}
+.grid-nav .c{border-width:2.5px;border-color:var(--text);color:var(--text);font-weight:700}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:24px 24px 0 0;padding:10px 16px 16px;border-top:1px solid var(--border);box-shadow:0 -12px 32px rgba(0,0,0,.15)}
+.handle{width:36px;height:4px;border-radius:9px;background:var(--borderStrong);margin:0 auto 12px}
+.scrim{position:absolute;inset:0;background:rgba(20,32,27,.4)}
+.legend{display:flex;gap:12px;font-size:11px;color:var(--textMuted);margin:10px 0}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+section.palette{max-width:1280px;margin:40px auto 0}
+.sw{display:flex;flex-wrap:wrap;gap:10px}
+.sw div{width:120px;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:var(--surface);font-size:12px}
+.sw div i{display:block;height:48px}
+.sw div span{display:block;padding:6px 8px;color:var(--textMuted)}
+</style>
+</head>
+<body class="bn">
+<header class="top">
+  <div>
+    <h1>UI Reference — "Calm focus"</h1>
+    <p>Visual target for Flutter and web. Same tokens, same components on both. Bangla first, one primary action per screen, status never shown by colour alone.</p>
+  </div>
+  <button class="toggle" onclick="var r=document.documentElement;r.dataset.theme=r.dataset.theme==='dark'?'light':'dark'">লাইট / ডার্ক</button>
+</header>
+
+<div class="grid">
+  <!-- 1. Home -->
+  <div>
+    <div class="label">C1 · Home</div>
+    <div class="phone">
+      <div class="status"><span>৯:৪১</span><span>4G ▮▮▮</span></div>
+      <div class="scroll">
+        <div class="row between">
+          <div class="row"><div class="avatar">র</div><div><div class="meta">শুভ সন্ধ্যা</div><div style="font-weight:600">রাফি আহমেদ</div></div></div>
+          <div class="row"><div class="icon">⌕</div><div class="icon">🔔</div></div>
+        </div>
+        <div class="row"><span class="chip accent">🔥 ১২ দিনের স্ট্রিক</span><span class="chip primary">প্রিমিয়াম</span></div>
+        <div class="card live-card">
+          <div class="row between"><span class="chip live"><span class="dot"></span> এখন চলছে</span><span class="meta">বাকি ৩৮ মিনিট</span></div>
+          <div style="font-weight:600;margin:8px 0 4px">৪৭তম বিসিএস প্রিলি মডেল টেস্ট — ১২</div>
+          <div class="meta">২০০ প্রশ্ন · ২০০ নম্বর · ২ ঘণ্টা · ৮,৫৪০ জন</div>
+          <div class="btn primary" style="margin-top:12px">অংশ নিন</div>
+        </div>
+        <div class="card">
+          <div class="row between"><span class="meta">পরবর্তী লাইভ পরীক্ষা</span><span class="chip soft">ব্যাংক</span></div>
+          <div style="font-weight:600;margin:6px 0 2px">সোনালী ব্যাংক এসও মডেল টেস্ট</div>
+          <div class="meta">আগামীকাল রাত ৯:০০ · ১০০ প্রশ্ন</div>
+          <div class="row" style="margin-top:10px"><div class="btn outline" style="height:40px;font-size:14px">রিমাইন্ডার</div><div class="btn outline" style="height:40px;font-size:14px">বিস্তারিত</div></div>
+        </div>
+        <div class="card">
+          <div class="row between"><span style="font-weight:600">আজকের লক্ষ্য</span><span class="meta">৮/১০ প্রশ্ন</span></div>
+          <div class="bar" style="margin:10px 0 6px"><i style="width:80%"></i></div>
+          <div class="meta">নির্ভুলতা ৭৬% · আর ২টি প্রশ্নে স্ট্রিক বাঁচবে</div>
+        </div>
+        <div class="quick">
+          <div class="card"><div class="qi">✎</div><b style="font-size:14px">প্র্যাকটিস</b></div>
+          <div class="card"><div class="qi">▤</div><b style="font-size:14px">প্রশ্ন ব্যাংক</b></div>
+        </div>
+      </div>
+      <div class="nav"><div class="on">⌂<span>হোম</span></div><div>◷<span>পরীক্ষা</span></div><div>✎<span>প্র্যাকটিস</span></div><div>▥<span>অ্যানালিটিক্স</span></div><div>☺<span>প্রোফাইল</span></div></div>
+    </div>
+  </div>
+
+  <!-- 2. Exam room -->
+  <div>
+    <div class="label">D4 · Exam room</div>
+    <div class="phone">
+      <div class="status"><span>৯:৪৩</span><span>4G ▮▮▮</span></div>
+      <div class="timer">
+        <div class="row between">
+          <div><div class="meta">বাকি সময়</div><div class="t">০৪:৫২</div></div>
+          <div class="row"><span class="chip soft">উত্তর ১৪২/২০০</span><div class="icon">▦</div></div>
+        </div>
+        <div class="bar"><i style="width:96%"></i></div>
+      </div>
+      <div class="scroll" style="padding-top:14px">
+        <div class="row between"><span class="chip primary">প্রশ্ন ১৪৩/২০০</span><span class="meta">বাংলাদেশ বিষয়াবলি · ⚑ ✩</span></div>
+        <div class="q">বাংলাদেশের সংবিধানের কোন অনুচ্ছেদে "রাষ্ট্রধর্ম" সম্পর্কে বলা হয়েছে?</div>
+        <div class="opt"><b>ক</b>অনুচ্ছেদ ২</div>
+        <div class="opt sel"><b>খ</b>অনুচ্ছেদ ২ক</div>
+        <div class="opt"><b>গ</b>অনুচ্ছেদ ৩</div>
+        <div class="opt"><b>ঘ</b>অনুচ্ছেদ ৪ক</div>
+        <div class="meta" style="text-align:center;margin-top:auto">✓ উত্তর ফোনে সংরক্ষিত · শেষ সিঙ্ক ১২ সেকেন্ড আগে</div>
+      </div>
+      <div class="foot"><div class="btn outline">‹ আগের</div><div class="btn outline">⚑ রিভিউ</div><div class="btn primary">পরের ›</div></div>
+    </div>
+  </div>
+
+  <!-- 3. Navigator sheet -->
+  <div>
+    <div class="label">D4 · Navigator sheet</div>
+    <div class="phone">
+      <div class="status"><span>৯:৪৩</span><span>4G ▮▮▮</span></div>
+      <div class="timer"><div class="row between"><div><div class="meta">বাকি সময়</div><div class="t">০৪:৫০</div></div><span class="chip soft">উত্তর ১৪২/২০০</span></div><div class="bar"><i style="width:96%"></i></div></div>
+      <div class="scroll"><div class="q" style="opacity:.4">বাংলাদেশের সংবিধানের কোন অনুচ্ছেদে…</div></div>
+      <div class="scrim"></div>
+      <div class="sheet">
+        <div class="handle"></div>
+        <div class="row between"><b>প্রশ্ন তালিকা</b><span class="meta">বাংলাদেশ বিষয়াবলি</span></div>
+        <div class="legend"><span><i style="background:var(--primary)"></i>উত্তর</span><span><i style="border:1.5px solid var(--borderStrong)"></i>বাকি</span><span><i style="border:1.5px solid var(--accent)"></i>রিভিউ</span></div>
+        <div class="grid-nav">
+          <span class="a">১৩৬</span><span class="a">১৩৭</span><span>১৩৮</span><span class="a">১৩৯</span><span class="m">১৪০</span><span class="a">১৪১</span><span class="a">১৪২</span><span class="c">১৪৩</span>
+          <span>১৪৪</span><span>১৪৫</span><span>১৪৬</span><span>১৪৭</span><span>১৪৮</span><span>১৪৯</span><span>১৫০</span><span>১৫১</span>
+        </div>
+        <div style="margin:14px 0 10px" class="meta">উত্তর ১৪২ · বাকি ৫৮ · রিভিউ ৩</div>
+        <div class="btn primary">জমা দিন</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Result -->
+  <div>
+    <div class="label">E1 · Result</div>
+    <div class="phone">
+      <div class="status"><span>১১:৫০</span><span>4G ▮▮▮</span></div>
+      <div class="scroll">
+        <div class="row between"><b>ফলাফল</b><span class="chip soft">প্রাথমিক</span></div>
+        <div class="ring"><div><div><div class="score">১৫৬.৫</div><div class="meta">২০০ এর মধ্যে</div></div></div></div>
+        <div class="stats">
+          <div class="stat"><strong style="color:var(--success)">১৬৮</strong><span class="meta">✓ সঠিক</span></div>
+          <div class="stat"><strong style="color:var(--danger)">২৩</strong><span class="meta">✕ ভুল</span></div>
+          <div class="stat"><strong>৯</strong><span class="meta">– বাদ</span></div>
+        </div>
+        <div class="rank"><div class="tro">🏆</div><div><b>মেধাক্রম ১২৪ / ৮,৫৪০</b><div class="meta">জেলায় ৬ষ্ঠ · আপনি ৯৮.৫% এর চেয়ে এগিয়ে</div></div></div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px">
+          <b style="font-size:14px">বিষয়ভিত্তিক</b>
+          <div class="sect"><span>বাংলা</span><div class="bar"><i style="width:86%"></i></div><span class="meta">৩০/৩৫</span></div>
+          <div class="sect"><span>ইংরেজি</span><div class="bar"><i style="width:71%"></i></div><span class="meta">২৫/৩৫</span></div>
+          <div class="sect"><span>গণিত</span><div class="bar"><i style="width:60%;background:var(--accent)"></i></div><span class="meta">১৫/২৫</span></div>
+        </div>
+      </div>
+      <div class="foot"><div class="btn outline">মেধাতালিকা</div><div class="btn primary">সমাধান দেখুন</div></div>
+    </div>
+  </div>
+
+  <!-- 5. Quick practice feedback -->
+  <div>
+    <div class="label">F3 · Quick practice feedback</div>
+    <div class="phone">
+      <div class="status"><span>৮:১০</span><span>4G ▮▮▮</span></div>
+      <div class="scroll">
+        <div class="row between"><span class="meta">✕ বন্ধ</span><span class="chip soft">৭/২০ · নির্ভুলতা ৭১%</span></div>
+        <div class="bar"><i style="width:35%"></i></div>
+        <div class="q">'অগ্নিবীণা' কাব্যগ্রন্থের রচয়িতা কে?</div>
+        <div class="opt ok"><b>✓</b>কাজী নজরুল ইসলাম</div>
+        <div class="opt no"><b>✕</b>রবীন্দ্রনাথ ঠাকুর</div>
+        <div class="opt"><b>গ</b>জীবনানন্দ দাশ</div>
+        <div class="opt"><b>ঘ</b>জসীম উদ্‌দীন</div>
+        <div class="expl"><b>ব্যাখ্যা:</b> 'অগ্নিবীণা' (১৯২২) কাজী নজরুল ইসলামের প্রথম কাব্যগ্রন্থ।</div>
+      </div>
+      <div class="foot"><div class="btn primary">পরের প্রশ্ন</div></div>
+    </div>
+  </div>
+</div>
+
+<section class="palette">
+  <div class="label" style="text-align:left">Colour roles</div>
+  <div class="sw">
+    <div><i style="background:var(--primary)"></i><span>primary</span></div>
+    <div><i style="background:var(--primarySoft)"></i><span>primarySoft</span></div>
+    <div><i style="background:var(--accent)"></i><span>accent</span></div>
+    <div><i style="background:var(--live)"></i><span>live</span></div>
+    <div><i style="background:var(--success)"></i><span>success</span></div>
+    <div><i style="background:var(--danger)"></i><span>danger</span></div>
+    <div><i style="background:var(--bg)"></i><span>bg</span></div>
+    <div><i style="background:var(--surfaceMuted)"></i><span>surfaceMuted</span></div>
+  </div>
+</section>
+</body>
+</html>

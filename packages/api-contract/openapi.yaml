@@ -1,0 +1,2292 @@
+openapi: 3.1.0
+info:
+  title: MCQ Exam Platform API
+  version: 1.0.0
+  description: |
+    Single source of truth for the API used by the Flutter app, the Next.js web app
+    and the Next.js admin panel. Every response is wrapped in an envelope
+    `{ data, meta }`; errors are `{ error: { code, message, details } }`.
+    IDs are strings. Times are ISO-8601 UTC. Student endpoints use Bearer JWT
+    (mobile) or httpOnly cookie (web). Admin endpoints live under /v1/admin.
+servers:
+  - url: https://api.example.com/v1
+    description: production
+  - url: http://localhost:3000/v1
+    description: local API
+  - url: http://localhost:4010/v1
+    description: Prism mock (pnpm mock)
+
+tags:
+  - name: Auth
+  - name: Me
+  - name: Settings
+  - name: Taxonomy
+  - name: Questions
+  - name: Search
+  - name: Exams
+  - name: Attempts
+  - name: Practice
+  - name: Analytics
+  - name: Billing
+  - name: Notifications
+  - name: Admin
+
+security:
+  - bearerAuth: []
+
+paths:
+  # ------------------------------------------------------------------ Auth
+  /auth/otp/request:
+    post:
+      tags: [Auth]
+      summary: Send OTP to phone (register or reset)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, purpose]
+              properties:
+                phone: { $ref: '#/components/schemas/Phone' }
+                purpose: { type: string, enum: [register, reset_password] }
+      responses:
+        '200':
+          description: OTP sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      resend_after_sec: { type: integer, example: 60 }
+                      expires_in_sec: { type: integer, example: 300 }
+        '409': { $ref: '#/components/responses/Error' }
+        '429': { $ref: '#/components/responses/Error' }
+
+  /auth/otp/verify:
+    post:
+      tags: [Auth]
+      summary: Verify OTP, returns a short-lived verification token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, code, purpose]
+              properties:
+                phone: { $ref: '#/components/schemas/Phone' }
+                code: { type: string, pattern: '^[0-9]{6}$' }
+                purpose: { type: string, enum: [register, reset_password] }
+      responses:
+        '200':
+          description: Verified
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      verification_token: { type: string }
+        '400': { $ref: '#/components/responses/Error' }
+
+  /auth/register:
+    post:
+      tags: [Auth]
+      security: []
+      summary: Complete registration after OTP verification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [verification_token, name, password, device]
+              properties:
+                verification_token: { type: string }
+                name: { type: string, minLength: 2, maxLength: 100 }
+                password: { type: string, minLength: 8, maxLength: 64 }
+                device: { $ref: '#/components/schemas/DeviceInfo' }
+      responses:
+        '201': { $ref: '#/components/responses/AuthSession' }
+        '400': { $ref: '#/components/responses/Error' }
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      security: []
+      summary: Login with phone and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, password, device]
+              properties:
+                phone: { $ref: '#/components/schemas/Phone' }
+                password: { type: string }
+                device: { $ref: '#/components/schemas/DeviceInfo' }
+      responses:
+        '200': { $ref: '#/components/responses/AuthSession' }
+        '401': { $ref: '#/components/responses/Error' }
+        '423': { $ref: '#/components/responses/Error' }
+
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      security: []
+      summary: Rotate refresh token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refresh_token]
+              properties:
+                refresh_token: { type: string }
+      responses:
+        '200': { $ref: '#/components/responses/AuthSession' }
+        '401': { $ref: '#/components/responses/Error' }
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Revoke current session
+      responses:
+        '204': { description: Logged out }
+
+  /auth/password/reset:
+    post:
+      tags: [Auth]
+      security: []
+      summary: Set new password after OTP (purpose reset_password)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [verification_token, password]
+              properties:
+                verification_token: { type: string }
+                password: { type: string, minLength: 8, maxLength: 64 }
+      responses:
+        '204': { description: 'Password changed; all sessions revoked' }
+        '400': { $ref: '#/components/responses/Error' }
+
+  # ------------------------------------------------------------------ Me
+  /me:
+    get:
+      tags: [Me]
+      summary: Current user profile with subscription summary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Me' }
+    patch:
+      tags: [Me]
+      summary: Update profile and preferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MeUpdate' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Me' }
+    delete:
+      tags: [Me]
+      summary: Request account deletion (FR-AUTH-10)
+      responses:
+        '202': { description: Deletion scheduled }
+
+  /me/devices/reset:
+    post:
+      tags: [Me]
+      summary: Self device reset (FR-AUTH-07)
+      responses:
+        '204': { description: Other device signed out }
+        '429': { $ref: '#/components/responses/Error' }
+
+  /me/push-token:
+    put:
+      tags: [Notifications]
+      summary: Register FCM token for this device
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token]
+              properties:
+                token: { type: string }
+      responses:
+        '204': { description: Saved }
+
+  /me/attempts:
+    get:
+      tags: [Attempts]
+      summary: Attempt history (cursor)
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+        - name: kind
+          in: query
+          schema: { $ref: '#/components/schemas/AttemptKind' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/AttemptSummary' }
+                  meta: { $ref: '#/components/schemas/CursorMeta' }
+
+  # ------------------------------------------------------------------ Settings
+  /settings/public:
+    get:
+      tags: [Settings]
+      security: []
+      summary: Public app settings (min version, maintenance, free limits)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/PublicSettings' }
+
+  /home:
+    get:
+      tags: [Settings]
+      summary: Home feed in one call (FR-HOME-01..03)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/HomeFeed' }
+
+  # ------------------------------------------------------------------ Taxonomy
+  /taxonomy:
+    get:
+      tags: [Taxonomy]
+      security: []
+      summary: Children of a node (root categories when parent_id omitted)
+      parameters:
+        - name: parent_id
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/TaxonomyNode' }
+
+  /source-exams:
+    get:
+      tags: [Taxonomy]
+      security: []
+      summary: Previous-year source exams (FR-PRAC-04)
+      parameters:
+        - name: category_id
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/SourceExam' }
+
+  # ------------------------------------------------------------------ Questions
+  /questions/{id}:
+    get:
+      tags: [Questions]
+      summary: Single question; answer included only if allowed for this user
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Question' }
+        '404': { $ref: '#/components/responses/Error' }
+
+  /public/questions/{slug}:
+    get:
+      tags: [Questions]
+      security: []
+      summary: Public SEO question page data (FR-WEB-02)
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Question' }
+
+  /questions/{id}/reports:
+    post:
+      tags: [Questions]
+      summary: Report a question (FR-REP-01)
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string, enum: [wrong_answer, typo, wrong_explanation, duplicate, other] }
+                message: { type: string, maxLength: 1000 }
+      responses:
+        '201': { description: Reported }
+        '409': { $ref: '#/components/responses/Error' }
+
+  /bookmarks:
+    get:
+      tags: [Questions]
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Question' }
+                  meta: { $ref: '#/components/schemas/CursorMeta' }
+
+  /bookmarks/{id}:
+    put:
+      tags: [Questions]
+      summary: Bookmark question {id}
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '204': { description: Bookmarked }
+    delete:
+      tags: [Questions]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '204': { description: Removed }
+
+  /wrong-questions:
+    get:
+      tags: [Questions]
+      summary: Revision list of wrongly answered questions (FR-PRAC-05)
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Question' }
+                  meta: { $ref: '#/components/schemas/CursorMeta' }
+
+  # ------------------------------------------------------------------ Search
+  /search/questions:
+    get:
+      tags: [Search]
+      summary: Smart search (FR-SRCH-01)
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema: { type: string, minLength: 2 }
+        - name: category_id
+          in: query
+          schema: { type: string }
+        - name: node_id
+          in: query
+          schema: { type: string }
+        - name: year
+          in: query
+          schema: { type: integer }
+        - name: page
+          in: query
+          schema: { type: integer, minimum: 1, default: 1 }
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/SearchHit' }
+                  meta:
+                    type: object
+                    properties:
+                      total: { type: integer }
+                      page: { type: integer }
+                      took_ms: { type: integer }
+
+  # ------------------------------------------------------------------ Exams
+  /exams:
+    get:
+      tags: [Exams]
+      summary: List exams (FR-EXAM-01)
+      parameters:
+        - name: status
+          in: query
+          required: true
+          schema: { type: string, enum: [upcoming, running, finished] }
+        - name: type
+          in: query
+          schema: { type: string, enum: [live, model, previous_year] }
+        - name: category_id
+          in: query
+          schema: { type: string }
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/ExamCard' }
+                  meta: { $ref: '#/components/schemas/CursorMeta' }
+
+  /exams/{id}:
+    get:
+      tags: [Exams]
+      summary: Exam detail (FR-EXAM-02)
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/ExamDetail' }
+
+  /exams/{id}/reminder:
+    put:
+      tags: [Exams]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '204': { description: Reminder set }
+    delete:
+      tags: [Exams]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '204': { description: Reminder removed }
+
+  /exams/{id}/start:
+    post:
+      tags: [Attempts]
+      summary: Start (or resume) an attempt (FR-EXAM-04, 05, 09)
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mode:
+                  type: string
+                  enum: [ranked, practice]
+                  default: ranked
+                  description: practice = take a finished live exam unranked (FR-EXAM-11)
+      responses:
+        '201':
+          description: Attempt started or resumed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AttemptStart' }
+        '402': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+        '425': { $ref: '#/components/responses/Error' }
+
+  /exams/{id}/paper:
+    get:
+      tags: [Exams]
+      summary: Paper JSON (no answers). Clients normally fetch paper_url from CDN; this is the fallback.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Paper' }
+
+  /exams/{id}/leaderboard:
+    get:
+      tags: [Exams]
+      summary: Top 100 + my row (FR-RES-06)
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - name: scope
+          in: query
+          schema: { type: string, enum: [overall, district], default: overall }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      is_final: { type: boolean }
+                      participants: { type: integer }
+                      top:
+                        type: array
+                        items: { $ref: '#/components/schemas/LeaderboardRow' }
+                      me: { $ref: '#/components/schemas/LeaderboardRow' }
+
+  # ------------------------------------------------------------------ Attempts
+  /attempts/{id}/answers:
+    put:
+      tags: [Attempts]
+      summary: Periodic answer sync (FR-EXAM-07). Full current answer map, idempotent.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AnswerSync' }
+      responses:
+        '200':
+          description: Synced
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      saved_count: { type: integer }
+                      server_time: { type: string, format: date-time }
+        '410': { $ref: '#/components/responses/Error' }
+
+  /attempts/{id}/submit:
+    post:
+      tags: [Attempts]
+      summary: Final submit (FR-EXAM-08). Returns 202 immediately; scoring is async.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AnswerSync' }
+      responses:
+        '202':
+          description: Received
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      status: { type: string, enum: [received] }
+                      result_eta_sec: { type: integer, example: 10 }
+        '410': { $ref: '#/components/responses/Error' }
+
+  /attempts/{id}/result:
+    get:
+      tags: [Attempts]
+      summary: Result; 202 while scoring (poll every 3 s, max 60 s)
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Scored
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AttemptResult' }
+        '202': { description: Still scoring }
+
+  /attempts/{id}/solutions:
+    get:
+      tags: [Attempts]
+      summary: Solution review (FR-RES-05); for live exams only after end_at
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - name: filter
+          in: query
+          schema: { type: string, enum: [all, wrong, skipped, correct], default: all }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/SolutionItem' }
+        '403': { $ref: '#/components/responses/Error' }
+
+  # ------------------------------------------------------------------ Practice
+  /practice/sessions:
+    post:
+      tags: [Practice]
+      summary: Create quick practice or custom exam (FR-PRAC-02, 03, 05)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PracticeCreate' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AttemptStart' }
+        '402': { $ref: '#/components/responses/Error' }
+        '422': { $ref: '#/components/responses/Error' }
+
+  /practice/sessions/{id}/answer:
+    post:
+      tags: [Practice]
+      summary: Answer one question in quick practice; returns correctness + explanation
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [question_id, option]
+              properties:
+                question_id: { type: string }
+                option: { $ref: '#/components/schemas/OptionKey' }
+      responses:
+        '200':
+          description: Checked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      is_correct: { type: boolean }
+                      correct_option: { $ref: '#/components/schemas/OptionKey' }
+                      explanation: { type: [string, 'null'] }
+
+  # ------------------------------------------------------------------ Analytics
+  /analytics/overview:
+    get:
+      tags: [Analytics]
+      summary: Dashboard numbers (FR-ANL-01)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AnalyticsOverview' }
+
+  /analytics/topics:
+    get:
+      tags: [Analytics]
+      summary: Accuracy per subject/topic; weak topics flagged (FR-ANL-02)
+      parameters:
+        - name: parent_id
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/TopicStat' }
+
+  /analytics/progress:
+    get:
+      tags: [Analytics]
+      summary: Score and percentile of last 30 live exams (FR-ANL-03)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        exam_id: { type: string }
+                        title: { type: string }
+                        date: { type: string, format: date-time }
+                        score: { type: number }
+                        total_marks: { type: number }
+                        percentile: { type: number }
+
+  # ------------------------------------------------------------------ Billing
+  /packages:
+    get:
+      tags: [Billing]
+      security: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Package' }
+
+  /coupons/validate:
+    post:
+      tags: [Billing]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code, package_id]
+              properties:
+                code: { type: string }
+                package_id: { type: string }
+      responses:
+        '200':
+          description: Valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      discount_bdt: { type: number }
+                      payable_bdt: { type: number }
+        '422': { $ref: '#/components/responses/Error' }
+
+  /payments/checkout:
+    post:
+      tags: [Billing]
+      summary: Create payment, returns gateway redirect URL (FR-PAY-02)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [package_id, gateway]
+              properties:
+                package_id: { type: string }
+                gateway: { type: string, enum: [bkash, sslcommerz] }
+                coupon_code: { type: string }
+                return_platform: { type: string, enum: [web, android, ios] }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      payment_id: { type: string }
+                      redirect_url: { type: string, format: uri }
+                      payable_bdt: { type: number }
+
+  /payments/{id}:
+    get:
+      tags: [Billing]
+      summary: Payment status (poll after redirect back)
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Payment' }
+
+  /payments/history:
+    get:
+      tags: [Billing]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Payment' }
+
+  /payments/webhooks/{gateway}:
+    post:
+      tags: [Billing]
+      security: []
+      summary: Gateway IPN/callback. Server re-validates with gateway API; idempotent (FR-PAY-06)
+      parameters:
+        - name: gateway
+          in: path
+          required: true
+          schema: { type: string, enum: [bkash, sslcommerz] }
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: Acknowledged }
+
+  # ------------------------------------------------------------------ Notifications
+  /notifications:
+    get:
+      tags: [Notifications]
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Notification' }
+                  meta:
+                    allOf:
+                      - $ref: '#/components/schemas/CursorMeta'
+                      - type: object
+                        properties:
+                          unread_count: { type: integer }
+
+  /notifications/read:
+    post:
+      tags: [Notifications]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items: { type: string }
+                all: { type: boolean }
+      responses:
+        '204': { description: Marked read }
+
+  /notifications/preferences:
+    put:
+      tags: [Notifications]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/NotificationPrefs' }
+      responses:
+        '200':
+          description: Saved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/NotificationPrefs' }
+
+  # ------------------------------------------------------------------ Admin (representative; all under /admin, permission noted)
+  /admin/auth/login:
+    post:
+      tags: [Admin]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string }
+                totp: { type: string, pattern: '^[0-9]{6}$' }
+      responses:
+        '200': { $ref: '#/components/responses/AuthSession' }
+        '401': { $ref: '#/components/responses/Error' }
+
+  /admin/dashboard:
+    get:
+      tags: [Admin]
+      summary: KPIs (FR-ADM-03)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AdminDashboard' }
+
+  /admin/questions:
+    get:
+      tags: [Admin]
+      summary: 'Question grid (perm: questions.read)'
+      parameters:
+        - name: q
+          in: query
+          schema: { type: string }
+        - name: status
+          in: query
+          schema: { $ref: '#/components/schemas/QuestionStatus' }
+        - name: node_id
+          in: query
+          schema: { type: string }
+        - name: source_exam_id
+          in: query
+          schema: { type: string }
+        - name: difficulty
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 5 }
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/AdminQuestion' }
+                  meta: { $ref: '#/components/schemas/CursorMeta' }
+    post:
+      tags: [Admin]
+      summary: 'Create question (perm: questions.write)'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminQuestionInput' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AdminQuestion' }
+                  meta:
+                    type: object
+                    properties:
+                      near_duplicates:
+                        type: array
+                        items: { type: string }
+        '409': { $ref: '#/components/responses/Error' }
+
+  /admin/questions/{id}:
+    get:
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AdminQuestion' }
+    put:
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminQuestionInput' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AdminQuestion' }
+
+  /admin/questions/bulk:
+    post:
+      tags: [Admin]
+      summary: Bulk status / re-tag (FR-ADM-04)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ids, action]
+              properties:
+                ids:
+                  type: array
+                  maxItems: 1000
+                  items: { type: string }
+                action: { type: string, enum: [publish, archive, send_to_review, add_tag, remove_tag] }
+                node_id: { type: string }
+      responses:
+        '200':
+          description: Done
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      affected: { type: integer }
+
+  /admin/uploads:
+    post:
+      tags: [Admin]
+      summary: Signed R2 upload URL for images/import files
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [file_name, content_type, purpose]
+              properties:
+                file_name: { type: string }
+                content_type: { type: string }
+                purpose: { type: string, enum: [question_image, import_file, banner] }
+      responses:
+        '201':
+          description: Signed URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      upload_url: { type: string, format: uri }
+                      public_url: { type: string, format: uri }
+
+  /admin/imports:
+    post:
+      tags: [Admin]
+      summary: Create import job from uploaded file (FR-ADM-07)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [file_url, file_name]
+              properties:
+                file_url: { type: string }
+                file_name: { type: string }
+      responses:
+        '201':
+          description: Created; returns detected columns and first 20 rows
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/ImportJob' }
+
+  /admin/imports/{id}:
+    get:
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Status and counts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/ImportJob' }
+
+  /admin/imports/{id}/validate:
+    post:
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [mapping]
+              properties:
+                mapping:
+                  type: object
+                  additionalProperties: { type: string }
+                  description: field → column name, e.g. {"body":"Question","option_a":"A",...,"correct":"Answer","topic":"Topic"}
+                default_status: { $ref: '#/components/schemas/QuestionStatus' }
+      responses:
+        '202': { description: Validation job queued }
+
+  /admin/imports/{id}/run:
+    post:
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '202': { description: Import job queued }
+
+  /admin/taxonomy:
+    post:
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TaxonomyInput' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/TaxonomyNode' }
+
+  /admin/taxonomy/{id}:
+    put:
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TaxonomyInput' }
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '204': { description: Deleted (only if empty) }
+        '409': { $ref: '#/components/responses/Error' }
+
+  /admin/exams:
+    get:
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/ExamDetail' }
+                  meta: { $ref: '#/components/schemas/CursorMeta' }
+    post:
+      tags: [Admin]
+      summary: Create exam (FR-ADM-10)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminExamInput' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/ExamDetail' }
+
+  /admin/exams/{id}:
+    put:
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminExamInput' }
+      responses:
+        '200': { description: Updated }
+
+  /admin/exams/{id}/questions:
+    put:
+      tags: [Admin]
+      summary: Set paper manually (ordered ids)
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [question_ids]
+              properties:
+                question_ids:
+                  type: array
+                  items: { type: string }
+      responses:
+        '200': { description: Saved }
+
+  /admin/exams/{id}/generate:
+    post:
+      tags: [Admin]
+      summary: Auto-generate paper from blueprint; returns proposed question ids
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Proposed paper
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      question_ids:
+                        type: array
+                        items: { type: string }
+                      shortfalls:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            node_id: { type: string }
+                            needed: { type: integer }
+                            available: { type: integer }
+
+  /admin/exams/{id}/publish:
+    post:
+      tags: [Admin]
+      summary: 'Validate and schedule (perm: exams.publish)'
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200': { description: Scheduled }
+        '422': { $ref: '#/components/responses/Error' }
+
+  /admin/exams/{id}/monitor:
+    get:
+      tags: [Admin]
+      summary: Live monitor numbers (FR-ADM-11)
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      joined: { type: integer }
+                      active_now: { type: integer }
+                      submitted: { type: integer }
+                      scored: { type: integer }
+                      queue_backlog: { type: integer }
+                      error_rate_pct: { type: number }
+
+  /admin/users:
+    get:
+      tags: [Admin]
+      parameters:
+        - name: q
+          in: query
+          schema: { type: string }
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/AdminUser' }
+                  meta: { $ref: '#/components/schemas/CursorMeta' }
+
+  /admin/users/{id}/actions:
+    post:
+      tags: [Admin]
+      summary: reset_device | ban | unban | grant_subscription (FR-ADM-12)
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, reason]
+              properties:
+                action: { type: string, enum: [reset_device, ban, unban, grant_subscription] }
+                reason: { type: string }
+                package_id: { type: string }
+                days: { type: integer }
+      responses:
+        '200': { description: Done }
+
+  /admin/payments:
+    get:
+      tags: [Admin]
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string }
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Payment' }
+                  meta: { $ref: '#/components/schemas/CursorMeta' }
+
+  /admin/reports:
+    get:
+      tags: [Admin]
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, enum: [open, accepted, rejected], default: open }
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: string }
+                        question: { $ref: '#/components/schemas/AdminQuestion' }
+                        reason: { type: string }
+                        message: { type: [string, 'null'] }
+                        reporter_name: { type: string }
+                        created_at: { type: string, format: date-time }
+                  meta: { $ref: '#/components/schemas/CursorMeta' }
+
+  /admin/reports/{id}/resolve:
+    post:
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [accepted, rejected] }
+                note: { type: string }
+      responses:
+        '200': { description: Resolved; reporter notified if accepted }
+
+  /admin/notifications/broadcast:
+    post:
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, body]
+              properties:
+                title: { type: string, maxLength: 200 }
+                body: { type: string, maxLength: 1000 }
+                deep_link: { type: string }
+                category_ids:
+                  type: array
+                  items: { type: string }
+                segment: { type: string, enum: [all, premium, free, inactive_7d] }
+      responses:
+        '202': { description: Queued }
+
+  /admin/settings:
+    get:
+      tags: [Admin]
+      responses:
+        '200':
+          description: All settings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    additionalProperties: true
+    patch:
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200': { description: Saved }
+# Packages, coupons, banners, admins and roles CRUD follow the same REST pattern:
+# /admin/packages, /admin/coupons, /admin/banners, /admin/admins, /admin/roles
+# (GET list, POST create, PUT /{id}, DELETE /{id}). Add them to this file in Phase 4
+# before implementing.
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, pattern: '^[0-9]+$' }
+    Cursor:
+      name: cursor
+      in: query
+      schema: { type: string }
+    Limit:
+      name: limit
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+    AuthSession:
+      description: Tokens + user
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data: { $ref: '#/components/schemas/AuthSession' }
+
+  schemas:
+    Phone:
+      type: string
+      pattern: '^01[3-9][0-9]{8}$'
+      example: '01712345678'
+    OptionKey:
+      type: string
+      enum: [a, b, c, d, e]
+    QuestionStatus:
+      type: string
+      enum: [draft, in_review, published, archived]
+    AttemptKind:
+      type: string
+      enum: [live, live_practice, model, previous_year, custom, quick_practice]
+    Locale:
+      type: string
+      enum: [bn, en]
+
+    ErrorEnvelope:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: { type: string, example: EXAM_NOT_STARTED }
+            message: { type: string }
+            details: { type: object, additionalProperties: true }
+    CursorMeta:
+      type: object
+      properties:
+        next_cursor: { type: [string, 'null'] }
+        has_more: { type: boolean }
+
+    DeviceInfo:
+      type: object
+      required: [device_id, platform]
+      properties:
+        device_id: { type: string, maxLength: 128 }
+        platform: { type: string, enum: [android, ios, web] }
+        model: { type: string }
+        app_version: { type: string }
+
+    AuthSession:
+      type: object
+      properties:
+        access_token: { type: string }
+        access_expires_in: { type: integer, example: 900 }
+        refresh_token: { type: string, description: Mobile only; web gets httpOnly cookie }
+        user: { $ref: '#/components/schemas/Me' }
+
+    SubscriptionSummary:
+      type: object
+      properties:
+        is_premium: { type: boolean }
+        source: { type: [string, 'null'], enum: [payment, trial, manual, null] }
+        ends_at: { type: [string, 'null'], format: date-time }
+        category_ids:
+          type: [array, 'null']
+          items: { type: string }
+        trial_available: { type: boolean }
+
+    Me:
+      type: object
+      properties:
+        id: { type: string }
+        phone: { $ref: '#/components/schemas/Phone' }
+        name: { type: string }
+        avatar_url: { type: [string, 'null'] }
+        district_id: { type: [integer, 'null'] }
+        target_node_ids:
+          type: array
+          items: { type: string }
+        locale: { $ref: '#/components/schemas/Locale' }
+        theme: { type: string, enum: [system, light, dark] }
+        onboarding_done: { type: boolean }
+        subscription: { $ref: '#/components/schemas/SubscriptionSummary' }
+        quotas:
+          type: object
+          properties:
+            practice_left_today: { type: [integer, 'null'] }
+            live_exams_left_month: { type: [integer, 'null'] }
+            search_answers_left_today: { type: [integer, 'null'] }
+
+    MeUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        avatar_url: { type: string }
+        district_id: { type: integer, minimum: 1, maximum: 64 }
+        target_node_ids:
+          type: array
+          items: { type: string }
+        locale: { $ref: '#/components/schemas/Locale' }
+        theme: { type: string, enum: [system, light, dark] }
+
+    PublicSettings:
+      type: object
+      properties:
+        server_time: { type: string, format: date-time }
+        min_supported_version:
+          type: object
+          properties:
+            android: { type: string }
+            ios: { type: string }
+        maintenance:
+          type: object
+          properties:
+            enabled: { type: boolean }
+            message_bn: { type: string }
+            message_en: { type: string }
+        free_live_exams_per_month: { type: integer }
+        free_practice_per_day: { type: integer }
+        trial_days: { type: integer }
+        support_phone: { type: string }
+
+    Banner:
+      type: object
+      properties:
+        id: { type: string }
+        image_url: { type: string }
+        deep_link: { type: [string, 'null'] }
+        title: { type: string }
+
+    HomeFeed:
+      type: object
+      properties:
+        server_time: { type: string, format: date-time }
+        banners:
+          type: array
+          items: { $ref: '#/components/schemas/Banner' }
+        running_exams:
+          type: array
+          items: { $ref: '#/components/schemas/ExamCard' }
+        next_exam: { oneOf: [ { $ref: '#/components/schemas/ExamCard' }, { type: 'null' } ] }
+        continue_practice:
+          oneOf:
+            - type: 'null'
+            - type: object
+              properties:
+                attempt_id: { type: string }
+                title: { type: string }
+                answered: { type: integer }
+                total: { type: integer }
+        today:
+          type: object
+          properties:
+            answered: { type: integer }
+            accuracy_pct: { type: number }
+            streak: { type: integer }
+            goal: { type: integer, example: 10 }
+
+    TaxonomyNode:
+      type: object
+      properties:
+        id: { type: string }
+        parent_id: { type: [string, 'null'] }
+        type: { type: string, enum: [category, subject, chapter, topic] }
+        name_bn: { type: string }
+        name_en: { type: string }
+        slug: { type: string }
+        icon: { type: [string, 'null'] }
+        question_count: { type: integer }
+        has_children: { type: boolean }
+        progress:
+          type: [object, 'null']
+          description: Only for logged-in users
+          properties:
+            attempted: { type: integer }
+            accuracy_pct: { type: number }
+
+    TaxonomyInput:
+      type: object
+      required: [type, name_bn, name_en]
+      properties:
+        parent_id: { type: [string, 'null'] }
+        type: { type: string, enum: [category, subject, chapter, topic] }
+        name_bn: { type: string }
+        name_en: { type: string }
+        slug: { type: string }
+        sort_order: { type: integer }
+        icon: { type: string }
+        is_active: { type: boolean }
+
+    SourceExam:
+      type: object
+      properties:
+        id: { type: string }
+        name_bn: { type: string }
+        name_en: { type: string }
+        slug: { type: string }
+        year: { type: integer }
+        question_count: { type: integer }
+        paper_exam_id: { type: [string, 'null'], description: exams.id of type previous_year to practise }
+
+    Option:
+      type: object
+      required: [key, html]
+      properties:
+        key: { $ref: '#/components/schemas/OptionKey' }
+        html: { type: string }
+
+    Question:
+      type: object
+      properties:
+        id: { type: string }
+        body: { type: string, description: Sanitized HTML; may contain KaTeX spans and img tags }
+        options:
+          type: array
+          minItems: 4
+          maxItems: 5
+          items: { $ref: '#/components/schemas/Option' }
+        correct_option: { oneOf: [ { $ref: '#/components/schemas/OptionKey' }, { type: 'null' } ], description: null when locked }
+        explanation: { type: [string, 'null'] }
+        answer_locked: { type: boolean, description: true when premium/quota hides the answer }
+        difficulty: { type: integer }
+        source_label: { type: [string, 'null'], example: '৪৫তম বিসিএস' }
+        topic: { $ref: '#/components/schemas/TaxonomyNode' }
+        is_bookmarked: { type: boolean }
+        stats:
+          type: object
+          properties:
+            correct_pct: { type: [number, 'null'] }
+
+    SearchHit:
+      type: object
+      properties:
+        question: { $ref: '#/components/schemas/Question' }
+        highlight: { type: string, description: body with <mark> around matches }
+
+    ExamCard:
+      type: object
+      properties:
+        id: { type: string }
+        type: { type: string, enum: [live, model, previous_year] }
+        title: { type: string }
+        category: { type: string }
+        start_at: { type: [string, 'null'], format: date-time }
+        end_at: { type: [string, 'null'], format: date-time }
+        duration_sec: { type: integer }
+        question_count: { type: integer }
+        total_marks: { type: number }
+        participant_count: { type: integer }
+        is_premium: { type: boolean }
+        status: { type: string, enum: [upcoming, open_soon, running, finished, merit_published] }
+        my_attempt:
+          oneOf:
+            - type: 'null'
+            - type: object
+              properties:
+                attempt_id: { type: string }
+                status: { type: string, enum: [in_progress, submitted, scored, expired] }
+                score: { type: [number, 'null'] }
+        has_reminder: { type: boolean }
+
+    ExamDetail:
+      allOf:
+        - $ref: '#/components/schemas/ExamCard'
+        - type: object
+          properties:
+            description: { type: [string, 'null'] }
+            mark_per_question: { type: number }
+            negative_mark: { type: number }
+            pass_marks: { type: [number, 'null'] }
+            result_publish_at: { type: [string, 'null'], format: date-time }
+            syllabus:
+              type: array
+              items:
+                type: object
+                properties:
+                  node_id: { type: string }
+                  label: { type: string }
+                  questions: { type: integer }
+                  marks: { type: number }
+            rules:
+              type: array
+              items: { type: string }
+            locked_reason: { type: [string, 'null'], enum: [premium_required, quota_exhausted, null] }
+
+    AttemptStart:
+      type: object
+      properties:
+        attempt_id: { type: string }
+        kind: { $ref: '#/components/schemas/AttemptKind' }
+        server_time: { type: string, format: date-time }
+        started_at: { type: string, format: date-time }
+        ends_at: { type: string, format: date-time, description: Absolute deadline (server time) }
+        paper_url: { type: [string, 'null'], description: CDN URL of Paper JSON (live/model exams) }
+        paper: { oneOf: [ { $ref: '#/components/schemas/Paper' }, { type: 'null' } ], description: Inline for practice/custom }
+        shuffle_seed: { type: [integer, 'null'] }
+        shuffle_questions: { type: boolean }
+        shuffle_options: { type: boolean }
+        saved_answers:
+          type: object
+          additionalProperties: { $ref: '#/components/schemas/OptionKey' }
+          description: When resuming
+
+    Paper:
+      type: object
+      properties:
+        exam_id: { type: [string, 'null'] }
+        version: { type: integer }
+        mark_per_question: { type: number }
+        negative_mark: { type: number }
+        sections:
+          type: array
+          items:
+            type: object
+            properties:
+              node_id: { type: string }
+              label: { type: string }
+              question_ids:
+                type: array
+                items: { type: string }
+        questions:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string }
+              body: { type: string }
+              options:
+                type: array
+                items: { $ref: '#/components/schemas/Option' }
+
+    AnswerSync:
+      type: object
+      required: [answers]
+      properties:
+        answers:
+          type: object
+          description: question_id → option key, full current map
+          additionalProperties: { $ref: '#/components/schemas/OptionKey' }
+        marked_for_review:
+          type: array
+          items: { type: string }
+        focus_loss_count: { type: integer, minimum: 0 }
+        client_time: { type: string, format: date-time }
+
+    AttemptSummary:
+      type: object
+      properties:
+        attempt_id: { type: string }
+        kind: { $ref: '#/components/schemas/AttemptKind' }
+        title: { type: string }
+        started_at: { type: string, format: date-time }
+        status: { type: string }
+        score: { type: [number, 'null'] }
+        total_marks: { type: [number, 'null'] }
+        rank_overall: { type: [integer, 'null'] }
+
+    AttemptResult:
+      type: object
+      properties:
+        attempt_id: { type: string }
+        exam_id: { type: [string, 'null'] }
+        title: { type: string }
+        total_questions: { type: integer }
+        correct: { type: integer }
+        wrong: { type: integer }
+        skipped: { type: integer }
+        score: { type: number }
+        total_marks: { type: number }
+        negative_marks: { type: number }
+        accuracy_pct: { type: number }
+        time_taken_sec: { type: integer }
+        passed: { type: [boolean, 'null'] }
+        rank:
+          type: [object, 'null']
+          properties:
+            overall: { type: integer }
+            district: { type: [integer, 'null'] }
+            percentile: { type: number }
+            participants: { type: integer }
+            is_final: { type: boolean }
+        sections:
+          type: array
+          items:
+            type: object
+            properties:
+              node_id: { type: string }
+              label: { type: string }
+              correct: { type: integer }
+              wrong: { type: integer }
+              skipped: { type: integer }
+              score: { type: number }
+        solutions_available: { type: boolean }
+        solutions_available_at: { type: [string, 'null'], format: date-time }
+
+    SolutionItem:
+      type: object
+      properties:
+        position: { type: integer }
+        question: { $ref: '#/components/schemas/Question' }
+        my_answer: { oneOf: [ { $ref: '#/components/schemas/OptionKey' }, { type: 'null' } ] }
+        result: { type: string, enum: [correct, wrong, skipped] }
+
+    LeaderboardRow:
+      type: object
+      properties:
+        rank: { type: integer }
+        user_id: { type: string }
+        name: { type: string }
+        avatar_url: { type: [string, 'null'] }
+        district: { type: [string, 'null'] }
+        score: { type: number }
+        time_taken_sec: { type: integer }
+
+    PracticeCreate:
+      type: object
+      required: [mode]
+      properties:
+        mode: { type: string, enum: [quick, custom, bookmarks, wrong] }
+        node_ids:
+          type: array
+          items: { type: string }
+        question_count: { type: integer, minimum: 5, maximum: 200, default: 20 }
+        duration_sec: { type: [integer, 'null'], description: null = untimed }
+        difficulty: { type: string, enum: [easy, mixed, hard], default: mixed }
+        exclude_seen: { type: boolean, default: false }
+
+    AnalyticsOverview:
+      type: object
+      properties:
+        answered_total: { type: integer }
+        accuracy_pct: { type: number }
+        exams_taken: { type: integer }
+        avg_percentile: { type: [number, 'null'] }
+        current_streak: { type: integer }
+        best_streak: { type: integer }
+        last_7_days:
+          type: array
+          items:
+            type: object
+            properties:
+              day: { type: string, format: date }
+              answered: { type: integer }
+              correct: { type: integer }
+
+    TopicStat:
+      type: object
+      properties:
+        node: { $ref: '#/components/schemas/TaxonomyNode' }
+        attempted: { type: integer }
+        correct: { type: integer }
+        accuracy_pct: { type: number }
+        is_weak: { type: boolean }
+
+    Package:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        description: { type: [string, 'null'] }
+        features:
+          type: array
+          items: { type: string }
+        duration_days: { type: integer }
+        price_bdt: { type: number }
+        compare_at_bdt: { type: [number, 'null'] }
+        is_featured: { type: boolean }
+        category_ids:
+          type: [array, 'null']
+          items: { type: string }
+
+    Payment:
+      type: object
+      properties:
+        id: { type: string }
+        package_name: { type: string }
+        amount_bdt: { type: number }
+        discount_bdt: { type: number }
+        gateway: { type: string }
+        status: { type: string, enum: [initiated, pending, paid, failed, cancelled, refunded] }
+        gateway_tran_id: { type: [string, 'null'] }
+        created_at: { type: string, format: date-time }
+        paid_at: { type: [string, 'null'], format: date-time }
+
+    Notification:
+      type: object
+      properties:
+        id: { type: string }
+        type: { type: string }
+        title: { type: string }
+        body: { type: string }
+        deep_link: { type: [string, 'null'] }
+        read: { type: boolean }
+        created_at: { type: string, format: date-time }
+
+    NotificationPrefs:
+      type: object
+      properties:
+        exam_reminder: { type: boolean }
+        result: { type: boolean }
+        subscription: { type: boolean }
+        promotional: { type: boolean }
+
+    AdminDashboard:
+      type: object
+      properties:
+        signups_today: { type: integer }
+        dau: { type: integer }
+        mau: { type: integer }
+        revenue_today_bdt: { type: number }
+        revenue_month_bdt: { type: number }
+        active_subscriptions: { type: integer }
+        questions_published: { type: integer }
+        open_reports: { type: integer }
+        upcoming_exams:
+          type: array
+          items: { $ref: '#/components/schemas/ExamCard' }
+        queues:
+          type: object
+          additionalProperties: { type: integer }
+
+    AdminQuestion:
+      type: object
+      properties:
+        id: { type: string }
+        body: { type: string }
+        options:
+          type: array
+          items: { $ref: '#/components/schemas/Option' }
+        correct_option: { $ref: '#/components/schemas/OptionKey' }
+        explanation: { type: [string, 'null'] }
+        difficulty: { type: integer }
+        status: { $ref: '#/components/schemas/QuestionStatus' }
+        primary_node_id: { type: string }
+        node_ids:
+          type: array
+          items: { type: string }
+        source_exam_id: { type: [string, 'null'] }
+        source_year: { type: [integer, 'null'] }
+        is_premium: { type: boolean }
+        times_answered: { type: integer }
+        correct_pct: { type: [number, 'null'] }
+        created_by: { type: [string, 'null'] }
+        updated_at: { type: string, format: date-time }
+
+    AdminQuestionInput:
+      type: object
+      required: [body, options, correct_option, primary_node_id]
+      properties:
+        body: { type: string }
+        options:
+          type: array
+          minItems: 4
+          maxItems: 5
+          items: { $ref: '#/components/schemas/Option' }
+        correct_option: { $ref: '#/components/schemas/OptionKey' }
+        explanation: { type: string }
+        difficulty: { type: integer, minimum: 1, maximum: 5, default: 3 }
+        status: { $ref: '#/components/schemas/QuestionStatus' }
+        primary_node_id: { type: string }
+        node_ids:
+          type: array
+          items: { type: string }
+        source_exam_id: { type: string }
+        source_year: { type: integer }
+        is_premium: { type: boolean }
+
+    AdminExamInput:
+      type: object
+      required: [type, category_id, title_bn, title_en, duration_sec, question_count, mark_per_question, negative_mark]
+      properties:
+        type: { type: string, enum: [live, model, previous_year] }
+        category_id: { type: string }
+        title_bn: { type: string }
+        title_en: { type: string }
+        description: { type: string }
+        start_at: { type: [string, 'null'], format: date-time }
+        end_at: { type: [string, 'null'], format: date-time }
+        duration_sec: { type: integer }
+        question_count: { type: integer }
+        mark_per_question: { type: number }
+        negative_mark: { type: number }
+        pass_marks: { type: number }
+        is_premium: { type: boolean }
+        shuffle_questions: { type: boolean }
+        shuffle_options: { type: boolean }
+        result_publish_at: { type: string, format: date-time }
+        source_exam_id: { type: string }
+        blueprint:
+          type: object
+          properties:
+            rules:
+              type: array
+              items:
+                type: object
+                properties:
+                  node_id: { type: string }
+                  count: { type: integer }
+                  difficulty_mix:
+                    type: object
+                    properties:
+                      easy: { type: integer }
+                      medium: { type: integer }
+                      hard: { type: integer }
+            exclude_used_in_last_exams: { type: integer, default: 10 }
+
+    AdminUser:
+      type: object
+      properties:
+        id: { type: string }
+        phone: { type: string }
+        name: { type: string }
+        district: { type: [string, 'null'] }
+        status: { type: string, enum: [active, banned, deleted] }
+        subscription: { $ref: '#/components/schemas/SubscriptionSummary' }
+        devices:
+          type: array
+          items:
+            type: object
+            properties:
+              platform: { type: string }
+              model: { type: [string, 'null'] }
+              last_seen_at: { type: [string, 'null'], format: date-time }
+              is_active: { type: boolean }
+        attempts_count: { type: integer }
+        created_at: { type: string, format: date-time }
+
+    ImportJob:
+      type: object
+      properties:
+        id: { type: string }
+        file_name: { type: string }
+        status: { type: string, enum: [uploaded, validating, validated, importing, done, failed] }
+        columns:
+          type: array
+          items: { type: string }
+        preview_rows:
+          type: array
+          items: { type: object, additionalProperties: true }
+        total_rows: { type: integer }
+        valid_rows: { type: integer }
+        imported_rows: { type: integer }
+        duplicate_rows: { type: integer }
+        failed_rows: { type: integer }
+        row_errors:
+          type: array
+          items:
+            type: object
+            properties:
+              row: { type: integer }
+              field: { type: string }
+              message: { type: string }
+        error_file_url: { type: [string, 'null'] }
