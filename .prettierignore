@@ -18,3 +18,4 @@ packages/api-contract/openapi.yaml
 design/tokens.json
 packages/api-contract/shuffle-vectors.json
 database/README.md
+apps/api/prisma/schema.prisma

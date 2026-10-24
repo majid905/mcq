@@ -12,6 +12,7 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
+    "test:contract": "turbo run test:contract",
     "e2e": "node scripts/not-implemented.mjs e2e",
     "mock": "pnpm --filter @mcq/api-contract run mock",
     "mock:dynamic": "pnpm --filter @mcq/api-contract run mock:dynamic",

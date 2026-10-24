@@ -13,6 +13,9 @@
       "dependsOn": ["^build"],
       "outputs": []
     },
+    "test:contract": {
+      "cache": false
+    },
     "dev": {
       "cache": false,
       "persistent": true

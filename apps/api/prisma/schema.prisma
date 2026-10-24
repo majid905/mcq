@@ -1,0 +1,700 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model admins {
+  id            Int           @id @default(autoincrement()) @db.UnsignedInt
+  email         String        @unique(map: "uq_admin_email") @db.VarChar(190)
+  name          String        @db.VarChar(100)
+  password_hash String        @db.VarChar(255)
+  totp_secret   String?       @db.VarChar(64)
+  role_id       Int           @db.UnsignedSmallInt
+  is_active     Boolean       @default(true)
+  last_login_at DateTime?
+  created_at    DateTime      @default(now())
+  roles         roles         @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_admin_role")
+  import_jobs   import_jobs[]
+
+  @@index([role_id], map: "fk_admin_role")
+}
+
+model app_settings {
+  key        String   @id @db.VarChar(80)
+  value      Json
+  is_public  Boolean  @default(false)
+  updated_by Int?     @db.UnsignedInt
+  updated_at DateTime @default(now())
+}
+
+/// This table is a partition table and requires additional setup for migrations. Visit https://pris.ly/d/partition-tables for more info.
+model attempts {
+  id               BigInt                    @default(autoincrement()) @db.UnsignedBigInt
+  user_id          BigInt                    @db.UnsignedBigInt
+  exam_id          BigInt?                   @db.UnsignedBigInt
+  kind             attempts_kind
+  question_ids     Json?
+  answers          Json?
+  status           attempts_status           @default(in_progress)
+  started_at       DateTime
+  submitted_at     DateTime?
+  time_taken_sec   Int?                      @db.UnsignedInt
+  total_questions  Int                       @db.UnsignedSmallInt
+  correct_count    Int?                      @db.UnsignedSmallInt
+  wrong_count      Int?                      @db.UnsignedSmallInt
+  skipped_count    Int?                      @db.UnsignedSmallInt
+  score            Decimal?                  @db.Decimal(7, 2)
+  section_scores   Json?
+  rank_overall     Int?                      @db.UnsignedInt
+  rank_district    Int?                      @db.UnsignedInt
+  percentile       Decimal?                  @db.Decimal(5, 2)
+  district_id      Int?                      @db.UnsignedSmallInt
+  focus_loss_count Int                       @default(0) @db.UnsignedSmallInt
+  client_platform  attempts_client_platform?
+  shuffle_seed     Int?                      @db.UnsignedInt
+  created_at       DateTime                  @default(now())
+  updated_at       DateTime                  @default(now())
+
+  @@id([id, started_at])
+  @@index([exam_id, status, score], map: "ix_att_exam_score")
+  @@index([exam_id, user_id], map: "ix_att_exam_user")
+  @@index([user_id, started_at], map: "ix_att_user")
+}
+
+model audit_logs {
+  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  admin_id    Int?     @db.UnsignedInt
+  action      String   @db.VarChar(80)
+  entity_type String   @db.VarChar(50)
+  entity_id   String   @db.VarChar(40)
+  before_data Json?
+  after_data  Json?
+  ip          String?  @db.VarChar(45)
+  created_at  DateTime @default(now())
+
+  @@index([admin_id, created_at], map: "ix_audit_admin")
+  @@index([entity_type, entity_id, created_at], map: "ix_audit_entity")
+}
+
+model banners {
+  id           Int       @id @default(autoincrement()) @db.UnsignedInt
+  title        String    @db.VarChar(150)
+  image_url    String    @db.VarChar(500)
+  deep_link    String?   @db.VarChar(300)
+  category_ids Json?
+  starts_at    DateTime?
+  ends_at      DateTime?
+  sort_order   Int       @default(0)
+  is_active    Boolean   @default(true)
+}
+
+model bookmarks {
+  user_id     BigInt    @db.UnsignedBigInt
+  question_id BigInt    @db.UnsignedBigInt
+  created_at  DateTime  @default(now())
+  questions   questions @relation(fields: [question_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_bm_q")
+  users       users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_bm_user")
+
+  @@id([user_id, question_id])
+  @@index([question_id], map: "fk_bm_q")
+  @@index([user_id, created_at], map: "ix_bm_user_time")
+}
+
+model coupon_redemptions {
+  coupon_id  Int      @db.UnsignedInt
+  user_id    BigInt   @db.UnsignedBigInt
+  payment_id BigInt   @db.UnsignedBigInt
+  created_at DateTime @default(now())
+  coupons    coupons  @relation(fields: [coupon_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cr_coupon")
+  payments   payments @relation(fields: [payment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cr_pay")
+
+  @@id([coupon_id, payment_id])
+  @@index([payment_id], map: "fk_cr_pay")
+  @@index([coupon_id, user_id], map: "ix_cr_user")
+}
+
+model coupons {
+  id                 Int                  @id @default(autoincrement()) @db.UnsignedInt
+  code               String               @unique(map: "uq_coupon_code") @db.VarChar(40)
+  type               coupons_type
+  value              Decimal              @db.Decimal(10, 2)
+  max_discount_bdt   Decimal?             @db.Decimal(10, 2)
+  package_ids        Json?
+  usage_limit        Int?                 @db.UnsignedInt
+  per_user_limit     Int                  @default(1) @db.UnsignedSmallInt
+  used_count         Int                  @default(0) @db.UnsignedInt
+  starts_at          DateTime?
+  ends_at            DateTime?
+  is_active          Boolean              @default(true)
+  created_at         DateTime             @default(now())
+  coupon_redemptions coupon_redemptions[]
+  payments           payments[]
+}
+
+model districts {
+  id       Int    @id @db.UnsignedSmallInt
+  name_bn  String @db.VarChar(50)
+  name_en  String @db.VarChar(50)
+  division String @db.VarChar(30)
+}
+
+model exam_questions {
+  exam_id         BigInt    @db.UnsignedBigInt
+  question_id     BigInt    @db.UnsignedBigInt
+  position        Int       @db.UnsignedSmallInt
+  section_node_id Int?      @db.UnsignedInt
+  exams           exams     @relation(fields: [exam_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_eq_exam")
+  questions       questions @relation(fields: [question_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_eq_q")
+
+  @@id([exam_id, question_id])
+  @@unique([exam_id, position], map: "uq_eq_pos")
+  @@index([question_id], map: "ix_eq_question")
+}
+
+model exam_reminders {
+  user_id    BigInt   @db.UnsignedBigInt
+  exam_id    BigInt   @db.UnsignedBigInt
+  created_at DateTime @default(now())
+  exams      exams    @relation(fields: [exam_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rem_exam")
+  users      users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rem_user")
+
+  @@id([exam_id, user_id])
+  @@index([user_id], map: "ix_rem_user")
+}
+
+model exams {
+  id                BigInt           @id @default(autoincrement()) @db.UnsignedBigInt
+  type              exams_type       @default(live)
+  category_id       Int              @db.UnsignedInt
+  title_bn          String           @db.VarChar(255)
+  title_en          String           @db.VarChar(255)
+  slug              String           @unique(map: "uq_exam_slug") @db.VarChar(255)
+  description       String?          @db.Text
+  syllabus          Json?
+  blueprint         Json?
+  source_exam_id    Int?             @db.UnsignedInt
+  start_at          DateTime?
+  end_at            DateTime?
+  duration_sec      Int              @db.UnsignedInt
+  question_count    Int              @db.UnsignedSmallInt
+  mark_per_question Decimal          @default(1.00) @db.Decimal(4, 2)
+  negative_mark     Decimal          @default(0.50) @db.Decimal(4, 2)
+  total_marks       Decimal          @db.Decimal(6, 2)
+  pass_marks        Decimal?         @db.Decimal(6, 2)
+  is_premium        Boolean          @default(true)
+  shuffle_questions Boolean          @default(true)
+  shuffle_options   Boolean          @default(true)
+  result_publish_at DateTime?
+  status            exams_status     @default(draft)
+  paper_version     Int              @default(1) @db.UnsignedInt
+  paper_url         String?          @db.VarChar(500)
+  participant_count Int              @default(0) @db.UnsignedInt
+  created_by        Int?             @db.UnsignedInt
+  created_at        DateTime         @default(now())
+  updated_at        DateTime         @default(now())
+  exam_questions    exam_questions[]
+  exam_reminders    exam_reminders[]
+  taxonomy_nodes    taxonomy_nodes   @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_exam_cat")
+  source_exams      source_exams?    @relation(fields: [source_exam_id], references: [id], onUpdate: NoAction, map: "fk_exam_source")
+
+  @@index([source_exam_id], map: "fk_exam_source")
+  @@index([category_id, type, status, start_at], map: "ix_exam_list")
+  @@index([status, start_at], map: "ix_exam_start")
+}
+
+model import_jobs {
+  id             BigInt                     @id @default(autoincrement()) @db.UnsignedBigInt
+  admin_id       Int                        @db.UnsignedInt
+  file_url       String                     @db.VarChar(500)
+  file_name      String                     @db.VarChar(255)
+  mapping        Json?
+  default_status import_jobs_default_status @default(in_review)
+  status         import_jobs_status         @default(uploaded)
+  total_rows     Int                        @default(0) @db.UnsignedInt
+  imported_rows  Int                        @default(0) @db.UnsignedInt
+  duplicate_rows Int                        @default(0) @db.UnsignedInt
+  failed_rows    Int                        @default(0) @db.UnsignedInt
+  error_file_url String?                    @db.VarChar(500)
+  created_at     DateTime                   @default(now())
+  finished_at    DateTime?
+  admins         admins                     @relation(fields: [admin_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_import_admin")
+
+  @@index([admin_id, created_at], map: "ix_import_admin")
+}
+
+model notifications {
+  id         BigInt             @id @default(autoincrement()) @db.UnsignedBigInt
+  user_id    BigInt?            @db.UnsignedBigInt
+  type       notifications_type
+  title      String             @db.VarChar(200)
+  body       String             @db.VarChar(1000)
+  deep_link  String?            @db.VarChar(300)
+  read_at    DateTime?
+  created_at DateTime           @default(now())
+
+  @@index([user_id, created_at], map: "ix_noti_user")
+}
+
+model packages {
+  id             Int             @id @default(autoincrement()) @db.UnsignedInt
+  name_bn        String          @db.VarChar(150)
+  name_en        String          @db.VarChar(150)
+  description    String?         @db.Text
+  features       Json?
+  category_ids   Json?
+  duration_days  Int             @db.UnsignedSmallInt
+  price_bdt      Decimal         @db.Decimal(10, 2)
+  compare_at_bdt Decimal?        @db.Decimal(10, 2)
+  is_active      Boolean         @default(true)
+  is_featured    Boolean         @default(false)
+  sort_order     Int             @default(0)
+  created_at     DateTime        @default(now())
+  payments       payments[]
+  subscriptions  subscriptions[]
+}
+
+model payments {
+  id                 BigInt               @id @default(autoincrement()) @db.UnsignedBigInt
+  user_id            BigInt               @db.UnsignedBigInt
+  package_id         Int                  @db.UnsignedInt
+  coupon_id          Int?                 @db.UnsignedInt
+  amount_bdt         Decimal              @db.Decimal(10, 2)
+  discount_bdt       Decimal              @default(0.00) @db.Decimal(10, 2)
+  gateway            payments_gateway
+  merchant_tran_id   String               @unique(map: "uq_pay_merchant") @db.Char(26)
+  gateway_tran_id    String?              @db.VarChar(100)
+  status             payments_status      @default(initiated)
+  gateway_payload    Json?
+  paid_at            DateTime?
+  created_at         DateTime             @default(now())
+  updated_at         DateTime             @default(now())
+  coupon_redemptions coupon_redemptions[]
+  coupons            coupons?             @relation(fields: [coupon_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pay_coupon")
+  packages           packages             @relation(fields: [package_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pay_pkg")
+  users              users                @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pay_user")
+  subscriptions      subscriptions?
+
+  @@unique([gateway, gateway_tran_id], map: "uq_pay_gateway")
+  @@index([coupon_id], map: "fk_pay_coupon")
+  @@index([package_id], map: "fk_pay_pkg")
+  @@index([status, created_at], map: "ix_pay_status")
+  @@index([user_id, created_at], map: "ix_pay_user")
+}
+
+model question_reports {
+  id              BigInt                  @id @default(autoincrement()) @db.UnsignedBigInt
+  question_id     BigInt                  @db.UnsignedBigInt
+  user_id         BigInt                  @db.UnsignedBigInt
+  reason          question_reports_reason
+  message         String?                 @db.VarChar(1000)
+  status          question_reports_status @default(open)
+  resolved_by     Int?                    @db.UnsignedInt
+  resolution_note String?                 @db.VarChar(1000)
+  created_at      DateTime                @default(now())
+  resolved_at     DateTime?
+  questions       questions               @relation(fields: [question_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rep_q")
+  users           users                   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rep_user")
+
+  @@unique([question_id, user_id, reason], map: "uq_report_once")
+  @@index([user_id], map: "fk_rep_user")
+  @@index([status, created_at], map: "ix_report_status")
+}
+
+model question_tags {
+  question_id    BigInt         @db.UnsignedBigInt
+  node_id        Int            @db.UnsignedInt
+  taxonomy_nodes taxonomy_nodes @relation(fields: [node_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_qt_node")
+  questions      questions      @relation(fields: [question_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_qt_q")
+
+  @@id([question_id, node_id])
+  @@index([node_id, question_id], map: "ix_qt_node")
+}
+
+model questions {
+  id               BigInt             @id @default(autoincrement()) @db.UnsignedBigInt
+  body             String             @db.MediumText
+  body_text        String             @db.Text
+  options          Json
+  correct_option   String             @db.Char(1)
+  explanation      String?            @db.MediumText
+  difficulty       Int                @default(3) @db.UnsignedTinyInt
+  status           questions_status   @default(draft)
+  source_exam_id   Int?               @db.UnsignedInt
+  source_year      Int?               @db.UnsignedSmallInt
+  primary_node_id  Int                @db.UnsignedInt
+  slug             String?            @unique(map: "uq_q_slug") @db.VarChar(200)
+  content_hash     String             @unique(map: "uq_q_hash") @db.Char(64)
+  is_premium       Boolean            @default(false)
+  times_answered   Int                @default(0) @db.UnsignedInt
+  times_correct    Int                @default(0) @db.UnsignedInt
+  created_by       Int?               @db.UnsignedInt
+  reviewed_by      Int?               @db.UnsignedInt
+  published_at     DateTime?
+  created_at       DateTime           @default(now())
+  updated_at       DateTime           @default(now())
+  bookmarks        bookmarks[]
+  exam_questions   exam_questions[]
+  question_reports question_reports[]
+  question_tags    question_tags[]
+  taxonomy_nodes   taxonomy_nodes     @relation(fields: [primary_node_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_q_node")
+  source_exams     source_exams?      @relation(fields: [source_exam_id], references: [id], onUpdate: NoAction, map: "fk_q_source")
+
+  @@index([primary_node_id], map: "fk_q_node")
+  @@index([source_exam_id], map: "ix_q_source")
+  @@index([status, primary_node_id, id], map: "ix_q_status_node")
+  @@index([updated_at], map: "ix_q_updated")
+  @@index([source_year], map: "ix_q_year")
+}
+
+model refresh_tokens {
+  id            BigInt       @id @default(autoincrement()) @db.UnsignedBigInt
+  user_id       BigInt       @db.UnsignedBigInt
+  device_row_id BigInt       @db.UnsignedBigInt
+  family_id     String       @db.Char(36)
+  token_hash    String       @unique(map: "uq_rt_hash") @db.Char(64)
+  expires_at    DateTime
+  revoked_at    DateTime?
+  replaced_by   BigInt?      @db.UnsignedBigInt
+  created_at    DateTime     @default(now())
+  user_devices  user_devices @relation(fields: [device_row_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rt_device")
+  users         users        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rt_user")
+
+  @@index([device_row_id], map: "fk_rt_device")
+  @@index([family_id], map: "ix_rt_family")
+  @@index([user_id], map: "ix_rt_user")
+}
+
+model roles {
+  id          Int      @id @default(autoincrement()) @db.UnsignedSmallInt
+  name        String   @unique(map: "uq_role_name") @db.VarChar(50)
+  permissions Json
+  admins      admins[]
+}
+
+model search_outbox {
+  id           BigInt               @id @default(autoincrement()) @db.UnsignedBigInt
+  question_id  BigInt               @db.UnsignedBigInt
+  action       search_outbox_action
+  created_at   DateTime             @default(now())
+  processed_at DateTime?
+
+  @@index([processed_at, id], map: "ix_outbox_pending")
+}
+
+model source_exams {
+  id             Int            @id @default(autoincrement()) @db.UnsignedInt
+  category_id    Int            @db.UnsignedInt
+  name_bn        String         @db.VarChar(200)
+  name_en        String         @db.VarChar(200)
+  slug           String         @unique(map: "uq_source_slug") @db.VarChar(200)
+  year           Int            @db.UnsignedSmallInt
+  held_on        DateTime?      @db.Date
+  exams          exams[]
+  questions      questions[]
+  taxonomy_nodes taxonomy_nodes @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_source_cat")
+
+  @@index([category_id, year], map: "ix_source_cat_year")
+}
+
+model subscriptions {
+  id           BigInt               @id @default(autoincrement()) @db.UnsignedBigInt
+  user_id      BigInt               @db.UnsignedBigInt
+  package_id   Int?                 @db.UnsignedInt
+  payment_id   BigInt?              @unique(map: "uq_sub_payment") @db.UnsignedBigInt
+  source       subscriptions_source
+  category_ids Json?
+  starts_at    DateTime
+  ends_at      DateTime
+  granted_by   Int?                 @db.UnsignedInt
+  note         String?              @db.VarChar(255)
+  created_at   DateTime             @default(now())
+  payments     payments?            @relation(fields: [payment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sub_pay")
+  packages     packages?            @relation(fields: [package_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sub_pkg")
+  users        users                @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sub_user")
+
+  @@index([package_id], map: "fk_sub_pkg")
+  @@index([user_id, ends_at], map: "ix_sub_user_end")
+}
+
+model taxonomy_nodes {
+  id                   Int                 @id @default(autoincrement()) @db.UnsignedInt
+  parent_id            Int?                @db.UnsignedInt
+  type                 taxonomy_nodes_type
+  name_bn              String              @db.VarChar(150)
+  name_en              String              @db.VarChar(150)
+  slug                 String              @db.VarChar(160)
+  path                 String              @db.VarChar(255)
+  depth                Int                 @db.UnsignedTinyInt
+  sort_order           Int                 @default(0)
+  icon                 String?             @db.VarChar(50)
+  question_count       Int                 @default(0) @db.UnsignedInt
+  is_active            Boolean             @default(true)
+  created_at           DateTime            @default(now())
+  updated_at           DateTime            @default(now())
+  exams                exams[]
+  question_tags        question_tags[]
+  questions            questions[]
+  source_exams         source_exams[]
+  taxonomy_nodes       taxonomy_nodes?     @relation("taxonomy_nodesTotaxonomy_nodes", fields: [parent_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "fk_tax_parent")
+  other_taxonomy_nodes taxonomy_nodes[]    @relation("taxonomy_nodesTotaxonomy_nodes")
+
+  @@unique([parent_id, slug], map: "uq_tax_slug")
+  @@index([parent_id, sort_order], map: "ix_tax_parent")
+  @@index([path], map: "ix_tax_path")
+}
+
+model user_daily_stats {
+  user_id  BigInt   @db.UnsignedBigInt
+  day      DateTime @db.Date
+  answered Int      @default(0) @db.UnsignedInt
+  correct  Int      @default(0) @db.UnsignedInt
+  exams    Int      @default(0) @db.UnsignedSmallInt
+  points   Int      @default(0) @db.UnsignedInt
+
+  @@id([user_id, day])
+}
+
+model user_devices {
+  id             BigInt                @id @default(autoincrement()) @db.UnsignedBigInt
+  user_id        BigInt                @db.UnsignedBigInt
+  device_id      String                @db.VarChar(128)
+  kind           user_devices_kind
+  platform       user_devices_platform
+  model          String?               @db.VarChar(100)
+  app_version    String?               @db.VarChar(20)
+  push_token     String?               @db.VarChar(255)
+  is_active      Boolean               @default(true)
+  last_seen_at   DateTime?
+  created_at     DateTime              @default(now())
+  refresh_tokens refresh_tokens[]
+  users          users                 @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_device_user")
+
+  @@unique([user_id, device_id], map: "uq_device")
+  @@index([user_id, kind, is_active], map: "ix_device_active")
+}
+
+model user_notification_prefs {
+  user_id       BigInt  @id @db.UnsignedBigInt
+  exam_reminder Boolean @default(true)
+  result        Boolean @default(true)
+  subscription  Boolean @default(true)
+  promotional   Boolean @default(true)
+  users         users   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_np_user")
+}
+
+model user_streaks {
+  user_id        BigInt    @id @db.UnsignedBigInt
+  current_streak Int       @default(0) @db.UnsignedSmallInt
+  best_streak    Int       @default(0) @db.UnsignedSmallInt
+  last_day       DateTime? @db.Date
+  users          users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_streak_user")
+}
+
+model user_topic_stats {
+  user_id   BigInt    @db.UnsignedBigInt
+  node_id   Int       @db.UnsignedInt
+  attempted Int       @default(0) @db.UnsignedInt
+  correct   Int       @default(0) @db.UnsignedInt
+  last_at   DateTime?
+
+  @@id([user_id, node_id])
+  @@index([user_id, attempted, correct], map: "ix_uts_weak")
+}
+
+model user_wrong_questions {
+  user_id        BigInt   @db.UnsignedBigInt
+  question_id    BigInt   @db.UnsignedBigInt
+  wrong_times    Int      @default(1) @db.UnsignedSmallInt
+  correct_streak Int      @default(0) @db.UnsignedTinyInt
+  last_wrong_at  DateTime
+
+  @@id([user_id, question_id])
+  @@index([user_id, last_wrong_at], map: "ix_uwq_user_time")
+}
+
+model users {
+  id                      BigInt                   @id @default(autoincrement()) @db.UnsignedBigInt
+  phone                   String                   @unique(map: "uq_users_phone") @db.VarChar(14)
+  phone_verified_at       DateTime?
+  name                    String                   @db.VarChar(100)
+  password_hash           String?                  @db.VarChar(255)
+  google_sub              String?                  @unique(map: "uq_users_google") @db.VarChar(64)
+  avatar_url              String?                  @db.VarChar(500)
+  district_id             Int?                     @db.UnsignedSmallInt
+  target_node_ids         Json?
+  locale                  users_locale             @default(bn)
+  theme                   users_theme              @default(system)
+  status                  users_status             @default(active)
+  trial_used              Boolean                  @default(false)
+  device_resets_30d       Int                      @default(0) @db.UnsignedTinyInt
+  failed_logins           Int                      @default(0) @db.UnsignedTinyInt
+  locked_until            DateTime?
+  last_active_at          DateTime?
+  created_at              DateTime                 @default(now())
+  updated_at              DateTime                 @default(now())
+  deleted_at              DateTime?
+  bookmarks               bookmarks[]
+  exam_reminders          exam_reminders[]
+  payments                payments[]
+  question_reports        question_reports[]
+  refresh_tokens          refresh_tokens[]
+  subscriptions           subscriptions[]
+  user_devices            user_devices[]
+  user_notification_prefs user_notification_prefs?
+  user_streaks            user_streaks?
+
+  @@index([created_at], map: "ix_users_created")
+  @@index([district_id], map: "ix_users_district")
+}
+
+enum exams_type {
+  live
+  model
+  previous_year
+}
+
+enum coupons_type {
+  percent
+  fixed
+}
+
+enum notifications_type {
+  exam_reminder
+  result
+  subscription
+  report
+  broadcast
+  system
+}
+
+enum search_outbox_action {
+  upsert
+  delete
+}
+
+enum taxonomy_nodes_type {
+  category
+  subject
+  chapter
+  topic
+}
+
+enum attempts_kind {
+  live
+  live_practice
+  model
+  previous_year
+  custom
+  quick_practice
+}
+
+enum question_reports_reason {
+  wrong_answer
+  typo
+  wrong_explanation
+  duplicate
+  other
+}
+
+enum user_devices_kind {
+  mobile
+  web
+}
+
+enum subscriptions_source {
+  payment
+  trial
+  manual
+}
+
+enum user_devices_platform {
+  android
+  ios
+  web
+}
+
+enum import_jobs_default_status {
+  draft
+  in_review
+  published
+}
+
+enum question_reports_status {
+  open
+  accepted
+  rejected
+}
+
+enum attempts_status {
+  in_progress
+  submitted
+  scored
+  expired
+}
+
+enum import_jobs_status {
+  uploaded
+  validating
+  validated
+  importing
+  done
+  failed
+}
+
+enum payments_gateway {
+  bkash
+  sslcommerz
+  manual
+}
+
+enum questions_status {
+  draft
+  in_review
+  published
+  archived
+}
+
+enum payments_status {
+  initiated
+  pending
+  paid
+  failed
+  cancelled
+  refunded
+}
+
+enum users_locale {
+  bn
+  en
+}
+
+enum users_theme {
+  system
+  light
+  dark
+}
+
+enum users_status {
+  active
+  banned
+  deleted
+}
+
+enum attempts_client_platform {
+  android
+  ios
+  web
+}
+
+enum exams_status {
+  draft
+  scheduled
+  running
+  ended
+  merit_published
+  cancelled
+}
