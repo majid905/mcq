@@ -2,5 +2,13 @@
   "name": "@mcq/api-contract",
   "version": "0.0.0",
   "private": true,
-  "description": "OpenAPI contract. `openapi.yaml` is the single source of truth; only Dev A changes it."
+  "description": "OpenAPI contract. openapi.yaml is the single source of truth; only Dev A changes it.",
+  "scripts": {
+    "mock": "node scripts/mock.mjs",
+    "mock:dynamic": "node scripts/mock.mjs --dynamic",
+    "vectors:gen": "node scripts/gen-shuffle-vectors.mjs"
+  },
+  "devDependencies": {
+    "@stoplight/prism-cli": "^5.16.0"
+  }
 }
