@@ -3,7 +3,8 @@
     "appName": "MCQ",
     "tagline": "Prepare for BCS, bank, primary and admission exams",
     "retry": "Try again",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "close": "Close"
   },
   "theme": {
     "system": "Theme: system",
@@ -298,6 +299,182 @@
       "terms": "Terms",
       "refund": "Refund policy"
     }
+  },
+  "exams": {
+    "title": "Exams",
+    "detailTitle": "Exam details",
+    "tabs": {
+      "upcoming": "Upcoming",
+      "running": "Live",
+      "finished": "Finished"
+    },
+    "categories": "Categories",
+    "allCategories": "All",
+    "empty": {
+      "upcoming": "No upcoming exams",
+      "running": "No exam is live right now",
+      "finished": "No finished exams"
+    },
+    "emptyBody": "Try another category or tab.",
+    "loadMore": "Load more",
+    "myScore": "Your score {score}/{total}",
+    "takeAsPractice": "Take as practice",
+    "viewResult": "View result",
+    "resume": "Continue the exam",
+    "start": "Start the exam",
+    "reminderOn": "Reminder is on",
+    "setReminder": "Set a reminder",
+    "finished": "Finished",
+    "minutes": "{m} min",
+    "stat": {
+      "time": "Time",
+      "questions": "Questions",
+      "marks": "Marks",
+      "negative": "Negative"
+    },
+    "lockedPremium": "This exam is for premium members",
+    "lockedQuota": "You have used this month's free live exams. Go premium to continue.",
+    "seePlans": "See packages",
+    "syllabus": "Syllabus",
+    "subject": "Subject",
+    "rules": "Rules",
+    "participants": "{count} took part",
+    "leaderboard": "Leaderboard"
+  },
+  "instructions": {
+    "title": "Exam instructions",
+    "practiceMode": "Practice — not ranked",
+    "rankedMode": "Live exam",
+    "checklist": "Before you start",
+    "checks": {
+      "internet": "Make sure your internet works when you start",
+      "autosave": "Every answer is saved on this device at once and synced regularly",
+      "autosubmit": "Your answers are submitted automatically when time is up",
+      "focus": "Switching tabs or apps is recorded; copying and screenshots are not allowed"
+    },
+    "labels": "Option labels",
+    "back": "Go back",
+    "ready": "I am ready"
+  },
+  "room": {
+    "title": "Exam in progress",
+    "questionN": "Question {n}/{total}",
+    "mark": "Mark for review",
+    "unmark": "Remove review mark",
+    "legend": {
+      "answered": "Answered",
+      "unanswered": "Not answered",
+      "marked": "Review"
+    },
+    "navCell": "Question {number}, {status}",
+    "navCurrent": "current question",
+    "questionList": "Question list",
+    "countsLine": "Answered {answered} · Left {unanswered} · Review {marked}",
+    "submit": "Submit",
+    "timeLeft": "Time left",
+    "answeredChip": "Answered {answered}/{total}",
+    "leave": "Leave the exam",
+    "openNavigator": "Open question list",
+    "offline": "Offline — answers are saved on this device and will sync when you are back",
+    "focusWarning": "Leaving the exam tab has been recorded.",
+    "modeLabel": "Question layout",
+    "modeOne": "One by one",
+    "modeOmr": "All at once",
+    "labelsLabel": "Option labels",
+    "sections": "Sections",
+    "sectionN": "Section {n}",
+    "savedLocally": "✓ Answers saved on this device",
+    "syncedAgo": "✓ Answers saved · last sync {sec} s ago",
+    "prev": "Previous",
+    "review": "Review",
+    "next": "Next",
+    "submitTitle": "Submit your answers?",
+    "submitBody": "Answered {answered}, left {unanswered}, marked for review {marked}. You cannot change them after submitting.",
+    "goBack": "Go back",
+    "leaveTitle": "Leave the exam?",
+    "leaveBody": "The timer keeps running. Your answers are saved; come back before time is up to continue.",
+    "stay": "Stay",
+    "timeUp": "Time is up — submitting…",
+    "submitting": "Submitting…",
+    "submittingBody": "Please keep this page open."
+  },
+  "submitted": {
+    "title": "Your answers are submitted",
+    "meritAt": "Rankings will be published {time}",
+    "scoring": "Preparing your result, please wait…",
+    "ready": "Your result is ready!",
+    "checkAgain": "Check again",
+    "home": "Go to Home"
+  },
+  "result": {
+    "title": "Result",
+    "scoring": "Preparing your result…",
+    "provisional": "Provisional",
+    "passed": "Passed",
+    "failed": "Below pass marks",
+    "outOf": "/{total}",
+    "scoreLabel": "Score {score} out of {total}",
+    "accuracyTime": "Accuracy {pct}% · Time {time}",
+    "correct": "Correct",
+    "wrong": "Wrong",
+    "skipped": "Skipped",
+    "negative": "Negative",
+    "rank": "Rank {rank} of {participants}",
+    "districtRank": "District rank {rank}",
+    "ahead": "Ahead of {pct}%",
+    "bySubject": "By subject",
+    "subject": "Subject",
+    "correctShare": "Correct share",
+    "score": "Score",
+    "solutions": "See solutions",
+    "solutionsLater": "Solutions open after the exam ends.",
+    "leaderboard": "Leaderboard"
+  },
+  "solutions": {
+    "title": "Solutions",
+    "questionN": "Question {n}",
+    "bookmark": "Bookmark",
+    "unbookmark": "Remove bookmark",
+    "yourAnswer": "Your answer: {label}",
+    "notAnswered": "You did not answer this question",
+    "explanation": "Explanation",
+    "correct": "Correct answer",
+    "wrong": "Your answer is wrong",
+    "missed": "Correct answer, you did not choose it",
+    "filter": "Filter",
+    "filters": {
+      "all": "All",
+      "wrong": "Wrong",
+      "skipped": "Skipped",
+      "correct": "Correct"
+    },
+    "empty": {
+      "all": "No questions",
+      "wrong": "No wrong answers — great!",
+      "skipped": "Nothing skipped",
+      "correct": "No correct answers"
+    }
+  },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "you": "you",
+    "scope": "Scope",
+    "overall": "Nationwide",
+    "district": "District",
+    "participants": "{count} candidates",
+    "provisional": "provisional list",
+    "empty": "Nobody on the list yet",
+    "podium": "Top three"
+  },
+  "history": {
+    "title": "My exams",
+    "filter": "Type",
+    "all": "All",
+    "live": "Live",
+    "practice": "Practice",
+    "empty": "You have not taken an exam yet",
+    "browse": "Browse exams",
+    "loadMore": "Load more"
   },
   "gallery": {
     "title": "Component gallery",

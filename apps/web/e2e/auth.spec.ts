@@ -1,4 +1,8 @@
 import { type Page, expect, test } from '@playwright/test';
+import { MOCK_API } from './helpers';
+
+// Mock-only: fixed phone numbers and mock data.
+test.skip(!MOCK_API, 'runs against the Prism mock');
 
 // Runs against the Prism mock: any phone/password works and the OTP is always 123456.
 const PHONE = '01712345678';

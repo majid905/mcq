@@ -3,6 +3,10 @@ import { defineConfig, devices } from '@playwright/test';
 // Web owns :3001 (docs/10-HANDOFF-A-TO-B.md). E2E_PORT overrides it when 3001 is busy locally.
 const port = Number(process.env.E2E_PORT ?? 3001);
 const baseURL = `http://localhost:${port}`;
+// Default: Prism mock. E2E_API_BASE=http://localhost:3000/v1 runs the suite against the real API
+// (specs that need real data, like the exam flow, only run then).
+const MOCK = 'http://localhost:4010/v1';
+const apiBase = process.env.E2E_API_BASE ?? MOCK;
 
 export default defineConfig({
   testDir: './e2e',
@@ -15,18 +19,22 @@ export default defineConfig({
   use: { baseURL, trace: 'on-first-retry', navigationTimeout: 30_000 },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: [
-    {
-      command: 'pnpm --dir ../.. mock',
-      url: 'http://localhost:4010/v1/settings/public',
-      reuseExistingServer: true,
-      timeout: 120_000,
-    },
+    ...(apiBase === MOCK
+      ? [
+          {
+            command: 'pnpm --dir ../.. mock',
+            url: `${MOCK}/settings/public`,
+            reuseExistingServer: true,
+            timeout: 120_000,
+          },
+        ]
+      : []),
     {
       command: `pnpm exec next dev --port ${port}`,
       url: baseURL,
       reuseExistingServer: !process.env.CI,
       timeout: 180_000,
-      env: { NEXT_PUBLIC_API_BASE: 'http://localhost:4010/v1' },
+      env: { NEXT_PUBLIC_API_BASE: apiBase, API_BASE_URL: apiBase },
     },
   ],
 });

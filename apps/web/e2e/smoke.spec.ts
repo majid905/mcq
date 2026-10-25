@@ -1,4 +1,8 @@
 import { expect, test } from '@playwright/test';
+import { MOCK_API } from './helpers';
+
+// Mock-only: fixed phone numbers and mock data.
+test.skip(!MOCK_API, 'runs against the Prism mock');
 
 test('landing renders in Bangla, switches theme and language', async ({ page }) => {
   await page.goto('/');

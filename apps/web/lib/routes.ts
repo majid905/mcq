@@ -13,6 +13,9 @@ export const PROTECTED_PREFIXES = [
   '/bookmarks',
   '/bank',
   '/onboarding',
+  '/room',
+  '/results',
+  '/history',
 ] as const;
 
 /** Only for guests; signed-in users go to /home. */
