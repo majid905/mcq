@@ -1,0 +1,22 @@
+@import 'tailwindcss';
+@import '@mcq/design-tokens/tokens.css';
+@import '@mcq/design-tokens/theme.css';
+
+/* Shared components live in packages/ui; Tailwind must scan them. */
+@source '../../../packages/ui/src';
+
+/* next/font self-hosts the families and exposes them as --font-inter / --font-hind. */
+:root {
+  --mcq-font-sans: var(--font-inter), var(--font-hind), 'Noto Sans Bengali', system-ui, sans-serif;
+  --mcq-font-bangla: var(--font-hind);
+}
+
+@layer base {
+  body {
+    @apply bg-bg font-sans text-body text-text antialiased;
+  }
+  :focus-visible {
+    outline: var(--mcq-border-strong) solid var(--mcq-color-focus-ring);
+    outline-offset: 2px;
+  }
+}
