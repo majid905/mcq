@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import type { exams, users } from '@prisma/client';
-import { effectiveStatus, toExamCard, type ExamCardDto } from '../exams/exam-card';
+import type { users } from '@prisma/client';
+import type { ExamCardDto } from '../exams/exam-card';
+import { ExamCardsService } from '../exams/exam-cards.service';
 import { dhakaDay } from '../me/me.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { SettingsService } from '../settings/settings.service';
@@ -23,6 +24,7 @@ export class HomeService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly settings: SettingsService,
+    private readonly examCards: ExamCardsService,
   ) {}
 
   async feed(user: users): Promise<HomeFeedDto> {
@@ -59,7 +61,7 @@ export class HomeService {
     ]);
 
     const examRows = [...runningRows, ...nextRows];
-    const cards = await this.cards(user, examRows, now);
+    const cards = await this.examCards.build(user, examRows, now);
 
     const answered = daily?.answered ?? 0;
     const yesterday = dhakaDay(new Date(now.getTime() - 24 * 3600_000));
@@ -111,51 +113,5 @@ export class HomeService {
         deep_link: b.deep_link,
         title: b.title,
       }));
-  }
-
-  /** Builds cards in three batched queries (categories, attempts, reminders), not per exam. */
-  private async cards(user: users, rows: exams[], now: Date): Promise<Map<bigint, ExamCardDto>> {
-    const out = new Map<bigint, ExamCardDto>();
-    if (rows.length === 0) return out;
-    const ids = rows.map((e) => e.id);
-
-    const [categories, attempts, reminders] = await Promise.all([
-      this.prisma.taxonomy_nodes.findMany({
-        where: { id: { in: [...new Set(rows.map((e) => e.category_id))] } },
-        select: { id: true, name_bn: true, name_en: true },
-      }),
-      this.prisma.attempts.findMany({
-        where: { user_id: user.id, exam_id: { in: ids } },
-        orderBy: { started_at: 'desc' },
-      }),
-      this.prisma.exam_reminders.findMany({ where: { user_id: user.id, exam_id: { in: ids } } }),
-    ]);
-    const categoryName = new Map(
-      categories.map((c) => [c.id, user.locale === 'en' ? c.name_en : c.name_bn]),
-    );
-    const latest = new Map<bigint, (typeof attempts)[number]>();
-    for (const a of attempts)
-      if (a.exam_id !== null && !latest.has(a.exam_id)) latest.set(a.exam_id, a);
-    const reminded = new Set(reminders.map((r) => r.exam_id));
-
-    for (const e of rows) {
-      if (!effectiveStatus(e, now)) continue;
-      const a = latest.get(e.id);
-      const card = toExamCard(e, {
-        locale: user.locale,
-        categoryName: categoryName.get(e.category_id) ?? '',
-        myAttempt: a
-          ? {
-              attempt_id: String(a.id),
-              status: a.status,
-              score: a.score === null ? null : Number(a.score),
-            }
-          : null,
-        hasReminder: reminded.has(e.id),
-        now,
-      });
-      if (card) out.set(e.id, card);
-    }
-    return out;
   }
 }
