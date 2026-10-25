@@ -21,6 +21,7 @@ import { useApi } from '@/components/providers';
 import { expectOk } from '@/lib/api';
 import { type SolutionFilter, type SolutionItem, examKeys, useSolutions } from '@/lib/exam/queries';
 import { useErrorText } from '@/lib/hooks';
+import { renderRichHtml } from '@/lib/rich-html';
 
 const FILTERS: SolutionFilter[] = ['all', 'wrong', 'skipped', 'correct'];
 
@@ -75,7 +76,7 @@ function SolutionCard({
         interactive={false}
         numberLabel={t('questionN', { n: formatInteger(item.position ?? 0, locale) })}
         topic={q.topic ? (locale === 'bn' ? q.topic.name_bn : q.topic.name_en) : undefined}
-        bodyHtml={q.body ?? ''}
+        bodyHtml={renderRichHtml(q.body)}
         actions={
           <button
             type="button"
@@ -115,7 +116,7 @@ function SolutionCard({
                 {open && (
                   <div
                     className="mcq-html mt-2 rounded-md bg-surface-muted p-3 text-body-sm leading-relaxed text-text"
-                    dangerouslySetInnerHTML={{ __html: q.explanation }}
+                    dangerouslySetInnerHTML={{ __html: renderRichHtml(q.explanation) }}
                   />
                 )}
               </div>
@@ -140,7 +141,10 @@ function SolutionCard({
                       : undefined
               }
             >
-              <span className="mcq-html" dangerouslySetInnerHTML={{ __html: o.html }} />
+              <span
+                className="mcq-html"
+                dangerouslySetInnerHTML={{ __html: renderRichHtml(o.html) }}
+              />
             </OptionTile>
           );
         })}

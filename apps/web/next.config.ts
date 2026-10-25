@@ -19,6 +19,8 @@ const config: NextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@mcq/api-client-ts', '@mcq/ui'],
   env: { NEXT_PUBLIC_APP_VERSION: version },
+  // jsdom (DOMPurify on the server) reads files next to its own sources; bundling breaks that.
+  serverExternalPackages: ['isomorphic-dompurify', 'jsdom'],
   ...(standalone && {
     output: 'standalone' as const,
     // Monorepo root, so the workspace packages above are traced into the bundle.

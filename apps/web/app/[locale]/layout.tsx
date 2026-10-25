@@ -7,6 +7,7 @@ import type { ReactNode } from 'react';
 import { Providers } from '@/components/providers';
 import { routing } from '@/i18n/routing';
 import { hindSiliguri, inter } from '../fonts';
+import 'katex/dist/katex.min.css';
 import '../globals.css';
 
 export function generateStaticParams() {

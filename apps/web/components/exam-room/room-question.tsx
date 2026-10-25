@@ -5,6 +5,7 @@ import { Flag } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useStore } from 'zustand';
 import type { RoomStore } from '@/lib/exam/room-store';
+import { renderRichHtml } from '@/lib/rich-html';
 
 /** One question with its options, bound to the room store. */
 export function RoomQuestion({
@@ -39,7 +40,7 @@ export function RoomQuestion({
         total: formatInteger(total, locale),
       })}
       topic={section || undefined}
-      bodyHtml={q.body}
+      bodyHtml={renderRichHtml(q.body)}
       actions={
         <button
           type="button"
@@ -73,7 +74,7 @@ export function RoomQuestion({
             go(index);
           }}
         >
-          <span className="mcq-html" dangerouslySetInnerHTML={{ __html: o.html }} />
+          <span className="mcq-html" dangerouslySetInnerHTML={{ __html: renderRichHtml(o.html) }} />
         </OptionTile>
       ))}
     </QuestionCard>
