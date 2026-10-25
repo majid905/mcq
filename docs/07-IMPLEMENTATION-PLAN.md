@@ -33,7 +33,7 @@ How to run tracks in parallel with Claude Code: open **three terminals / three C
 - [ ] Checkpoint 1: web + app logged in against real API; e2e "register → home".
 
 ## Phase 2 — Exams, exam room, results (prompts `20-api-exams.md`, `21-web-exams.md`, `22-mobile-exams.md`)
-- [ ] A: exams list/detail/reminders, paper build + CDN upload job, start/resume, answer sync to Redis, submit queue, scoring worker, leaderboard sorted sets, merit publish job, auto-submit job, result & solutions endpoints.
+- [x] A: exams list/detail/reminders, paper build + CDN upload job, start/resume, answer sync to Redis, submit queue, scoring worker, leaderboard sorted sets, merit publish job, auto-submit job, result & solutions endpoints. Done except R2/CDN upload (NoopObjectStorage, paper is inlined in start) and the "result ready" push (needs the notifications module, Phase 3).
 - [ ] W: exam list, detail, instructions, exam room (both modes, autosave IndexedDB, keyboard shortcuts), submitted, result, solutions, leaderboard, history.
 - [ ] M: same screens; exam room with Hive persistence, FLAG_SECURE, lifecycle sync, offline banner; widget tests for exam room state machine.
 - [ ] Checkpoint 2: 3 devices (Android, iOS sim, web) take the same live exam; ranks match; kill the app mid-exam and resume with answers intact.
