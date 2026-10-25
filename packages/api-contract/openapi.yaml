@@ -1621,8 +1621,96 @@ paths:
                 password: { type: string }
                 totp: { type: string, pattern: '^[0-9]{6}$' }
       responses:
-        '200': { $ref: '#/components/responses/AuthSession' }
+        '200': { $ref: '#/components/responses/AdminSession' }
+        '401':
+          description: Wrong credentials; details.totp_required is true when only the code is missing
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+        '423': { $ref: '#/components/responses/Error' }
+
+  /admin/auth/refresh:
+    post:
+      tags: [Admin]
+      summary: Rotate the admin refresh token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refresh_token]
+              properties:
+                refresh_token: { type: string }
+      responses:
+        '200': { $ref: '#/components/responses/AdminSession' }
         '401': { $ref: '#/components/responses/Error' }
+
+  /admin/auth/logout:
+    post:
+      tags: [Admin]
+      summary: Revoke the admin refresh token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refresh_token]
+              properties:
+                refresh_token: { type: string }
+      responses:
+        '204': { description: Logged out }
+
+  /admin/me:
+    get:
+      tags: [Admin]
+      summary: The signed-in admin with role and permissions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AdminProfile' }
+
+  /admin/auth/totp/setup:
+    post:
+      tags: [Admin]
+      summary: Start TOTP enrolment (returns a fresh secret, not active until confirmed)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      secret: { type: string, description: Base32 }
+                      otpauth_url: { type: string }
+
+  /admin/auth/totp/enable:
+    post:
+      tags: [Admin]
+      summary: Confirm TOTP enrolment with a code from the authenticator app
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code]
+              properties:
+                code: { type: string, pattern: '^[0-9]{6}$' }
+      responses:
+        '204': { description: TOTP enabled }
+        '400': { $ref: '#/components/responses/Error' }
 
   /admin/dashboard:
     get:
@@ -2633,6 +2721,15 @@ components:
       content:
         application/json:
           schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+    AdminSession:
+      description: Admin tokens + profile
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data: { $ref: '#/components/schemas/AdminSession' }
+
     AuthSession:
       description: Tokens + user
       content:
@@ -2643,6 +2740,26 @@ components:
               data: { $ref: '#/components/schemas/AuthSession' }
 
   schemas:
+    AdminProfile:
+      type: object
+      properties:
+        id: { type: string }
+        email: { type: string, format: email }
+        name: { type: string }
+        role: { type: string }
+        permissions:
+          type: array
+          items: { type: string }
+        totp_enabled: { type: boolean }
+
+    AdminSession:
+      type: object
+      properties:
+        access_token: { type: string }
+        access_expires_in: { type: integer, example: 900 }
+        refresh_token: { type: string }
+        admin: { $ref: '#/components/schemas/AdminProfile' }
+
     Phone:
       type: string
       pattern: '^01[3-9][0-9]{8}$'
