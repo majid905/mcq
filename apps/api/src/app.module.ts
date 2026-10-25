@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AttemptsModule } from './attempts/attempts.module';
 import { AuthModule } from './auth/auth.module';
 import { CoreModule } from './core.module';
 import { ExamsModule } from './exams/exams.module';
@@ -16,6 +17,7 @@ import { SettingsModule } from './settings/settings.module';
     MeModule,
     SettingsModule,
     ExamsModule,
+    AttemptsModule,
     HomeModule,
   ],
 })
