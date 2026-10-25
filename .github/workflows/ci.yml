@@ -72,4 +72,7 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - name: Contract tests (real responses vs openapi.yaml)
-        run: pnpm test:contract -- --reporters=default --reporters=github-actions
+        run: pnpm test:contract -- --reporters=default --json --outputFile=jest-contract.json
+      - name: Annotate failed contract tests
+        if: failure()
+        run: node scripts/ci-annotate-jest.mjs apps/api/jest-contract.json
