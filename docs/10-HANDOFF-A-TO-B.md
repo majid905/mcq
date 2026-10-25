@@ -122,3 +122,16 @@ Do not edit `openapi.yaml` (except `examples`). Open a GitHub issue with the `co
 | --- | --- | --- |
 | Done (on `main`) | Auth (OTP, register, login, refresh), `/me`, `/settings/public`, `/home` | Switch login, onboarding, home from mock to real; Checkpoint 1 |
 | Weeks 4-6 | Exams: list, detail, start, sync, submit, scoring, leaderboard, results | Exam room and results on real data; Checkpoint 2 |
+
+## 12. Your pushes go live (staging)
+
+`main` is deployed automatically after CI passes (`deploy/README.md` has the details):
+
+- https://mcq.ellevix.com is `apps/web`, and `/v1` there is the real API (Swagger at `/docs`).
+- https://mcq-admin.ellevix.com is `apps/admin` (live as soon as Majid adds the Cloudflare DNS record).
+- The builds set `NEXT_PUBLIC_API_BASE=https://mcq.ellevix.com/v1`. Server code in web can use `API_BASE_URL` (set on the server to the local API). Cookies are `Secure` in production, which works because Cloudflare serves HTTPS.
+- `/dev/gallery` is hidden in production builds. Heads-up: building with `NEXT_PUBLIC_SHOW_GALLERY=1` fails (`useSearchParams()` needs a Suspense boundary on `/[locale]/dev/gallery`), so the deploy does not set it. Fix the page if you want the gallery on staging.
+- **CI must be green.** A red CI means nothing deploys, for you or for Majid, so run `pnpm lint && pnpm typecheck && pnpm test` before every push.
+- Deploys use a Linux build with `NEXT_OUTPUT=standalone`. It is opt-in in `next.config.ts`, so a normal local `pnpm build` is unaffected (standalone needs symlinks, which fail on Windows without developer mode). Keep the `standalone` block in both `next.config.ts` files.
+- `pnpm tokens:gen` must run before `next build` (CI and the deploy do it). Anything else a build needs, such as a new env variable, has to be added to `.github/workflows/deploy.yml` (Majid owns it, tell him).
+- The OTP on this server is always `123456` and the data is placeholder content: it is a preview, not production.
