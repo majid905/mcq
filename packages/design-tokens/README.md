@@ -4,7 +4,7 @@
 
 | Output | Used by |
 | --- | --- |
-| `dist/tokens.css` | Web + admin: `--mcq-*` CSS variables. Light by default, dark with `<html data-theme="dark">` or the OS setting (unless `data-theme="light"`). Durations drop to 0 with reduced motion. |
+| `dist/tokens.css` | Web + admin: `--mcq-*` CSS variables. Light by default, dark with `<html data-theme="dark">` or the OS setting (unless `data-theme="light"`). `data-theme` on any element forces that theme for its subtree (give it `bg-bg text-text`). Durations drop to 0 with reduced motion. |
 | `dist/theme.css` | Web + admin: Tailwind v4 `@theme inline`. Tailwind's default palette, font sizes, radii and shadows are reset, so only token utilities exist: `bg-surface`, `text-text-muted`, `border-border`, `text-question`, `rounded-md`, `shadow-sm`, `p-4` (= 16 px, spacing step 4 px), `max-w-reading`. |
 | `apps/mobile/lib/core/theme/tokens.g.dart` | Flutter (committed): `AppColors.light/dark`, `AppSpace`, `AppRadius`, `AppText`, `AppMotion`, `AppTokens` theme extension, `buildTheme(Brightness)`. |
 
