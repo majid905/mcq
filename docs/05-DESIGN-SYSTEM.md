@@ -22,6 +22,7 @@ Tokens: `design/tokens.json` → `pnpm tokens:gen` → CSS variables (web/admin)
 | success / danger | #147C3B / #C62828 | #3FCB74 / #F2706B | Correct / wrong answers, form errors |
 | bg / surface | #F7F8F6 / #FFFFFF | #0D1412 / #141D1A | Page / cards |
 | text / textMuted | #14201B / #55635C | #E8EEEA / #A3B1AA | Body / secondary |
+| chart1 / chart2 | #00897B / #C27A00 | #26A69A / #C2830C | Data series in charts only (two categorical slots, checked for colour-blind separation and 3:1 against the surface). Status colours are never used as series. |
 
 All text pairs meet WCAG AA 4.5:1 (check with the tokens generator's contrast test).
 

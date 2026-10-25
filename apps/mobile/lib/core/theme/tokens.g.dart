@@ -32,6 +32,8 @@ class AppColors {
     required this.info,
     required this.infoSoft,
     required this.focusRing,
+    required this.chart1,
+    required this.chart2,
     required this.overlay,
   });
 
@@ -63,6 +65,8 @@ class AppColors {
   final Color info;
   final Color infoSoft;
   final Color focusRing;
+  final Color chart1;
+  final Color chart2;
   final Color overlay;
 
   static const light = AppColors(
@@ -94,6 +98,8 @@ class AppColors {
     info: Color(0xFF1D4ED8),
     infoSoft: Color(0xFFE5ECFD),
     focusRing: Color(0xFF0F766E),
+    chart1: Color(0xFF00897B),
+    chart2: Color(0xFFC27A00),
     overlay: Color.fromRGBO(20, 32, 27, 0.48),
   );
 
@@ -126,6 +132,8 @@ class AppColors {
     info: Color(0xFF7EA4FF),
     infoSoft: Color(0xFF16233F),
     focusRing: Color(0xFF2DBDAE),
+    chart1: Color(0xFF26A69A),
+    chart2: Color(0xFFC2830C),
     overlay: Color.fromRGBO(0, 0, 0, 0.6),
   );
 
@@ -158,6 +166,8 @@ class AppColors {
     info: Color.lerp(a.info, b.info, t)!,
     infoSoft: Color.lerp(a.infoSoft, b.infoSoft, t)!,
     focusRing: Color.lerp(a.focusRing, b.focusRing, t)!,
+    chart1: Color.lerp(a.chart1, b.chart1, t)!,
+    chart2: Color.lerp(a.chart2, b.chart2, t)!,
     overlay: Color.lerp(a.overlay, b.overlay, t)!,
   );
 }
