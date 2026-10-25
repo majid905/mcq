@@ -6,11 +6,11 @@ Status date: 2026-10-24. Dev A has finished the A-00 skeleton and the whole A-01
 
 ## 1. Where the code is
 
-Dev A's work sits in seven stacked PRs. Until they are merged into `main`, everything is on one branch:
+Dev A's work sits in eight stacked PRs. Until they are merged into `main`, everything is on one branch:
 
 ```bash
 git clone https://github.com/majid905/mcq.git && cd mcq
-git checkout a/me-settings-home   # newest branch: contains every PR below plus this file
+git checkout a/exams-list-detail   # newest branch: contains every PR below plus this file
 ```
 
 | Order | Branch | Adds |
@@ -22,10 +22,11 @@ git checkout a/me-settings-home   # newest branch: contains every PR below plus 
 | 4 | `a/handoff-dev-b` | this doc |
 | 5 | `a/auth-otp` | OTP, register, login, refresh, logout, password reset, device binding |
 | 6 | `a/me-settings-home` | `/me`, device reset, push token, `/settings/public`, `/home`, maintenance + version gate |
+| 7 | `a/exams-list-detail` | `GET /exams`, `GET /exams/{id}`, exam reminders, `GET /exams/{id}/paper`, paper build job |
 
 **Once Dev A tells you they are merged:** `git checkout main && git pull --rebase origin main`, then branch from `main` as usual (`b/design-tokens`, ...). Do not branch from `a/*` after that.
 
-Until then, branch your `b/*` work from `a/me-settings-home`. When the A PRs merge, run `git rebase --onto origin/main a/me-settings-home b/<your-branch>`.
+Until then, branch your `b/*` work from `a/exams-list-detail`. When the A PRs merge, run `git rebase --onto origin/main a/exams-list-detail b/<your-branch>`.
 
 ## 2. One-time setup
 
@@ -85,7 +86,7 @@ pnpm db:reset      # schema + seed (2,000 Bangla MCQs, 5 exams, 64 districts)
 pnpm --filter @mcq/api dev     # http://localhost:3000/v1, Swagger UI at http://localhost:3000/docs
 ```
 
-**Live on the real API (branches `a/auth-otp` and `a/me-settings-home`, as soon as they are merged):** `GET /health`, all of `/auth/*` (OTP request/verify, register, login, refresh, logout, password reset), `GET/PATCH/DELETE /me`, `PUT /me/push-token`, `POST /me/devices/reset`, `GET /settings/public`, `GET /home`. Everything else (exams, practice, search, billing, admin) is still mock-only; Dev A tells you in the daily message when the next group is live.
+**Live on the real API (branches up to `a/exams-list-detail`, as soon as they are merged):** `GET /health`, all of `/auth/*` (OTP request/verify, register, login, refresh, logout, password reset), `GET/PATCH/DELETE /me`, `PUT /me/push-token`, `POST /me/devices/reset`, `GET /settings/public`, `GET /home`, `GET /exams`, `GET /exams/{id}`, `PUT/DELETE /exams/{id}/reminder`, `GET /exams/{id}/paper`. Everything else (start/submit, results, practice, search, billing, admin) is still mock-only; Dev A tells you in the daily message when the next group is live.
 
 Real-API notes for the web BFF:
 - **Dev OTP is always `123456`** (console SMS driver); no SMS is sent. Any valid Bangladeshi number works (`01[3-9]XXXXXXXX`).
