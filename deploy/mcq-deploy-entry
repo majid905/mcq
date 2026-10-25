@@ -1,0 +1,16 @@
+#!/bin/bash
+# Installed as /usr/local/sbin/mcq-deploy-entry (root-owned). It is the forced command of the
+# CI key, so this is all the key can ever do. SSH_ORIGINAL_COMMAND is one of:
+#   "api <sha|origin/main>"   build and restart the API (a bare sha means the same)
+#   "web <sha>" / "admin <sha>"   a gzip tarball of the Next.js standalone bundle follows on stdin
+read -r first second <<<"${SSH_ORIGINAL_COMMAND:-origin/main}"
+case "$first" in
+  web|admin)
+    [[ "$second" =~ ^[0-9a-f]{7,40}$ ]] || { echo "bad revision"; exit 2; }
+    exec sudo -n -u mcq /srv/mcq/app/deploy/release-next.sh "$first" "$second"
+    ;;
+  api) rev="${second:-origin/main}" ;;
+  *) rev="$first" ;;
+esac
+[[ "$rev" =~ ^([0-9a-f]{7,40}|origin/main)$ ]] || { echo "bad revision"; exit 2; }
+exec sudo -n -u mcq /srv/mcq/app/deploy/deploy.sh "$rev"

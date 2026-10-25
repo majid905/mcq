@@ -1,8 +1,12 @@
 name: Deploy
 
-# Every push to main that passes CI is deployed to https://mcq.ellevix.com.
-# Needs repository secrets: DEPLOY_HOST, DEPLOY_USER, DEPLOY_SSH_KEY, DEPLOY_KNOWN_HOSTS
-# (see deploy/README.md). Without them the job fails and nothing is changed on the server.
+# Every push to main that passes CI goes live:
+#   api    -> https://mcq.ellevix.com/v1      (built on the server, apps/api)
+#   web    -> https://mcq.ellevix.com         (built here, shipped as a standalone bundle)
+#   admin  -> https://mcq-admin.ellevix.com   (same)
+# Needs repository secrets DEPLOY_HOST, DEPLOY_USER, DEPLOY_SSH_KEY, DEPLOY_KNOWN_HOSTS
+# (see deploy/README.md). Without them a job fails and nothing is changed on the server.
+# The three jobs are independent: a broken web build does not stop the API from deploying.
 on:
   workflow_run:
     workflows: [CI]
@@ -15,12 +19,12 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  api:
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Deploy over SSH
+      - name: Deploy API over SSH
         env:
           HOST: ${{ secrets.DEPLOY_HOST }}
           USER_NAME: ${{ secrets.DEPLOY_USER }}
@@ -33,6 +37,94 @@ jobs:
           printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
-          # The server forces its own deploy script; the only thing we send is the revision.
+          # The server forces its own entry script; all we send is "api <revision>".
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes -o BatchMode=yes \
-            "$USER_NAME@$HOST" "$SHA"
+            "$USER_NAME@$HOST" "api $SHA"
+
+  web:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm tokens:gen
+      - name: Build (standalone)
+        env:
+          NEXT_OUTPUT: standalone
+          NEXT_PUBLIC_API_BASE: https://mcq.ellevix.com/v1
+          NEXT_PUBLIC_SHOW_GALLERY: '1'
+        run: pnpm --filter @mcq/web build
+      - name: Package
+        run: |
+          set -euo pipefail
+          app=apps/web
+          cp -r $app/.next/static $app/.next/standalone/$app/.next/static
+          if [ -d $app/public ]; then cp -r $app/public $app/.next/standalone/$app/public; fi
+          tar -czf bundle.tgz -C $app/.next/standalone .
+          ls -lh bundle.tgz
+      - name: Ship over SSH
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          USER_NAME: ${{ secrets.DEPLOY_USER }}
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes -o BatchMode=yes \
+            "$USER_NAME@$HOST" "web $(git rev-parse HEAD)" < bundle.tgz
+
+  admin:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm tokens:gen
+      - name: Build (standalone)
+        env:
+          NEXT_OUTPUT: standalone
+          NEXT_PUBLIC_API_BASE: https://mcq.ellevix.com/v1
+          NEXT_PUBLIC_SHOW_GALLERY: '1'
+        run: pnpm --filter @mcq/admin build
+      - name: Package
+        run: |
+          set -euo pipefail
+          app=apps/admin
+          cp -r $app/.next/static $app/.next/standalone/$app/.next/static
+          if [ -d $app/public ]; then cp -r $app/public $app/.next/standalone/$app/public; fi
+          tar -czf bundle.tgz -C $app/.next/standalone .
+          ls -lh bundle.tgz
+      - name: Ship over SSH
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          USER_NAME: ${{ secrets.DEPLOY_USER }}
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes -o BatchMode=yes \
+            "$USER_NAME@$HOST" "admin $(git rev-parse HEAD)" < bundle.tgz

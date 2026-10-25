@@ -1,0 +1,22 @@
+[Unit]
+Description=MCQ platform Next.js admin panel
+After=network-online.target mcq-api.service
+Wants=network-online.target
+
+[Service]
+User=mcq
+Group=mcq
+WorkingDirectory=/srv/mcq/admin/current/apps/admin
+EnvironmentFile=/srv/mcq/admin.env
+Environment=NODE_ENV=production PORT=3052 HOSTNAME=127.0.0.1
+ExecStart=/opt/node22/bin/node server.js
+Restart=always
+RestartSec=3
+MemoryMax=450M
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target
