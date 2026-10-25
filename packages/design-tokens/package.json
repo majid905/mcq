@@ -2,5 +2,32 @@
   "name": "@mcq/design-tokens",
   "version": "0.0.0",
   "private": true,
-  "description": "Design tokens pipeline (tokens.json to CSS variables)."
+  "description": "Design tokens pipeline: design/tokens.json to CSS variables, a Tailwind v4 @theme file and the Flutter theme.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": {
+      "style": "./dist/tokens.css",
+      "default": "./dist/tokens.css"
+    },
+    "./theme.css": {
+      "style": "./dist/theme.css",
+      "default": "./dist/theme.css"
+    }
+  },
+  "scripts": {
+    "gen": "tsx src/cli.ts",
+    "build": "tsx src/cli.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@mcq/config": "workspace:*",
+    "@types/node": "^22.0.0",
+    "eslint": "^10.13.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.0",
+    "vitest": "^5.0.5"
+  }
 }

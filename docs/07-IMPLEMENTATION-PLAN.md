@@ -20,7 +20,7 @@ How to run tracks in parallel with Claude Code: open **three terminals / three C
 - [x] P0-2 `docker-compose.yml`: mysql 8.4, redis 7 (AOF), meilisearch, prism mock on 4010; `.env.example` files.
 - [x] P0-3 Database: apply `database/schema.sql`; seed script (districts, taxonomy, 2,000 sample Bangla MCQs, packages, admin, 5 exams).
 - [ ] P0-4 Contract tooling: `pnpm contract:gen` (openapi-typescript + openapi-fetch; openapi-generator dart-dio), `pnpm mock`, shuffle test vectors.
-- [ ] P0-5 Design tokens: `pnpm tokens:gen` → `packages/design-tokens/dist/tokens.css` (+ Tailwind v4 `@theme`) and `apps/mobile/lib/core/theme/tokens.g.dart` (ThemeExtension + light/dark ThemeData); contrast check test.
+- [x] P0-5 Design tokens: `pnpm tokens:gen` → `packages/design-tokens/dist/tokens.css` (+ Tailwind v4 `@theme`) and `apps/mobile/lib/core/theme/tokens.g.dart` (ThemeExtension + light/dark ThemeData); contrast check test.
 - [ ] P0-6 Scaffold `apps/api` (NestJS: config, Prisma `db pull`, envelope interceptor, error filter, health check, Pino, Swagger UI from openapi.yaml), `apps/web`, `apps/admin` (Next.js + Tailwind + shadcn + next-intl), `apps/mobile` (Flutter: Riverpod, go_router, dio client, l10n bn/en, fonts bundled, theme from tokens).
 - [ ] P0-7 Shared UI kit v1: AppButton, TextField, OptionTile, Card, Chip, Skeleton, EmptyState, ErrorState — in React and Flutter with a gallery page (`/dev/gallery` web, `/dev/gallery` app route in debug).
 - [ ] P0-8 CI: GitHub Actions — lint, typecheck, test, contract drift check, Flutter analyze/test.
