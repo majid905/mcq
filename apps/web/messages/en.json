@@ -1,0 +1,26 @@
+{
+  "common": {
+    "appName": "MCQ",
+    "tagline": "Prepare for BCS, bank, primary and admission exams",
+    "retry": "Try again",
+    "loading": "Loading…"
+  },
+  "theme": {
+    "system": "Theme: system",
+    "light": "Theme: light",
+    "dark": "Theme: dark"
+  },
+  "locale": {
+    "switchTo": "বাংলা",
+    "switchLabel": "Change language"
+  },
+  "home": {
+    "title": "Start preparing today",
+    "subtitle": "Live exams, practice and analytics in one place.",
+    "apiStatus": "Server status",
+    "apiOk": "Connected",
+    "apiDown": "Not connected",
+    "serverTime": "Server time: {time}",
+    "freeLiveExams": "Free live exams per month: {count, number}"
+  }
+}
