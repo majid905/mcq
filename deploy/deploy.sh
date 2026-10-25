@@ -12,9 +12,6 @@ SHA="${1:-origin/main}"
 [[ "$SHA" =~ ^([0-9a-f]{7,40}|origin/main)$ ]] || { echo "bad revision: $SHA"; exit 2; }
 LOCK=/srv/mcq/deploy.lock
 
-# pnpm 11 would otherwise run a FULL workspace install (web, admin...) before "pnpm --filter build".
-export npm_config_verify_deps_before_run=false
-
 # The disk is shared with other sites: never start a deploy that could fill it.
 avail_mb=$(df --output=avail -m / | tail -1 | tr -d ' ')
 if [ "$avail_mb" -lt 500 ]; then
@@ -35,7 +32,9 @@ echo "==> install"
 CI=true nice -n 10 pnpm install --frozen-lockfile --filter "@mcq/api..." --config.confirmModulesPurge=false
 
 echo "==> build"
-nice -n 10 pnpm --filter @mcq/api build
+# Call the binaries directly: `pnpm run` in pnpm 11 first runs a FULL workspace install (web, admin,
+# ...) to verify deps, which does not fit on this shared disk.
+(cd apps/api && nice -n 10 node_modules/.bin/prisma generate && nice -n 10 node_modules/.bin/nest build)
 
 echo "==> restart"
 sudo -n systemctl restart mcq-api mcq-worker mcq-scheduler
