@@ -9,6 +9,7 @@
     "start:worker": "node dist/worker.js",
     "start:scheduler": "node dist/scheduler.js",
     "search:reindex": "node dist/search/reindex.js",
+    "admin:create": "node dist/admin/create-admin.js",
     "dev": "nest start --watch",
     "dev:worker": "nest start --entryFile worker --watch",
     "dev:scheduler": "nest start --entryFile scheduler --watch",

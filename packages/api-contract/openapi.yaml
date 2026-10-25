@@ -2674,6 +2674,7 @@ paths:
                     type: array
                     items: { $ref: '#/components/schemas/AuditLogEntry' }
                   meta: { $ref: '#/components/schemas/CursorMeta' }
+        '403': { $ref: '#/components/responses/Error' }
 
   /admin/users/{id}:
     get:

@@ -5355,6 +5355,7 @@ export interface paths {
                         };
                     };
                 };
+                403: components["responses"]["Error"];
             };
         };
         put?: never;
