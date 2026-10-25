@@ -12,6 +12,7 @@ export const PROTECTED_PREFIXES = [
   '/search',
   '/bookmarks',
   '/bank',
+  '/wrong',
   '/onboarding',
   '/room',
   '/results',

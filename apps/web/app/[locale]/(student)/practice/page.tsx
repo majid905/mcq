@@ -1,12 +1,17 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
-import { ComingSoon } from '@/components/coming-soon';
+import { Suspense } from 'react';
+import { PracticeHub } from '@/components/practice/practice-hub';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('nav');
-  return { title: t('practice') };
+  const t = await getTranslations('practice');
+  return { title: t('title'), robots: { index: false } };
 }
 
-export default function Page() {
-  return <ComingSoon titleKey="practice" />;
+export default async function Page() {
+  return (
+    <Suspense>
+      <PracticeHub />
+    </Suspense>
+  );
 }

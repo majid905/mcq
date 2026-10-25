@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
-import { ComingSoon } from '@/components/coming-soon';
+import { Inbox } from '@/components/notifications/inbox';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('nav');
-  return { title: t('notifications') };
+  return { title: t('notifications'), robots: { index: false } };
 }
 
-export default function Page() {
-  return <ComingSoon titleKey="notifications" />;
+export default async function Page() {
+  return <Inbox />;
 }

@@ -1,10 +1,11 @@
 'use client';
 
 import { Avatar, cn } from '@mcq/ui';
-import { BarChart3, Clock, House, NotebookPen, UserRound } from 'lucide-react';
+import { BarChart3, Bell, Clock, House, NotebookPen, UserRound } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
+import { useUnreadCount } from '@/components/notifications/inbox';
 import { useCategories, useMe } from '@/lib/queries';
 
 /** docs/06 A: হোম · পরীক্ষা · প্র্যাকটিস · অ্যানালিটিক্স · প্রোফাইল. */
@@ -130,4 +131,25 @@ export function OnboardingGuard() {
     if (needsGoals) router.replace('/onboarding/goals');
   }, [needsGoals, router]);
   return null;
+}
+
+/** Bell with an unread dot (docs/06 A). */
+export function BellLink({ label, className }: { label: string; className: string }) {
+  const unread = useUnreadCount();
+  return (
+    <Link
+      href="/notifications"
+      aria-label={unread > 0 ? `${label} (${unread})` : label}
+      className={cn('relative', className)}
+    >
+      <Bell aria-hidden size={20} strokeWidth={1.75} />
+      {unread > 0 && (
+        <span
+          aria-hidden
+          data-testid="unread-dot"
+          className="absolute top-2 right-2 size-2 rounded-pill bg-live ring-2 ring-surface"
+        />
+      )}
+    </Link>
+  );
 }

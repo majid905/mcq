@@ -1,10 +1,10 @@
-import { Bell, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import type { ReactNode } from 'react';
 import { Brand } from '@/components/brand';
 import { HeaderControls } from '@/components/header-controls';
 import { Link } from '@/i18n/navigation';
-import { BottomNav, MeAvatarLink, OnboardingGuard, SidebarNav, TopNav } from './nav';
+import { BellLink, BottomNav, MeAvatarLink, OnboardingGuard, SidebarNav, TopNav } from './nav';
 
 const iconLink =
   'grid size-10 place-items-center rounded-md border border-border bg-surface text-text-muted hover:bg-surface-muted hover:text-text';
@@ -34,9 +34,7 @@ export async function AppShell({ children }: { children: ReactNode }) {
               <Link href="/search" aria-label={t('nav.search')} className={iconLink}>
                 <Search aria-hidden size={20} strokeWidth={1.75} />
               </Link>
-              <Link href="/notifications" aria-label={t('nav.notifications')} className={iconLink}>
-                <Bell aria-hidden size={20} strokeWidth={1.75} />
-              </Link>
+              <BellLink label={t('nav.notifications')} className={iconLink} />
               <div className="hidden sm:block">
                 <HeaderControls compact />
               </div>
