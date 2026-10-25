@@ -1,0 +1,21 @@
+[Unit]
+Description=MCQ platform scheduler
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+User=mcq
+Group=mcq
+WorkingDirectory=/srv/mcq/app/apps/api
+EnvironmentFile=/srv/mcq/.env
+ExecStart=/opt/node22/bin/node dist/scheduler.js
+Restart=always
+RestartSec=3
+MemoryMax=700M
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target

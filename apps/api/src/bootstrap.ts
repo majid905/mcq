@@ -10,6 +10,12 @@ export const API_PREFIX = 'v1';
 /** Shared by main.ts and the contract tests so both run the exact same pipeline. */
 export function configureApp(app: INestApplication): void {
   const config = app.get<AppConfig>(APP_CONFIG);
+  if (config.TRUST_PROXY > 0) {
+    (app.getHttpAdapter().getInstance() as { set(k: string, v: unknown): void }).set(
+      'trust proxy',
+      config.TRUST_PROXY,
+    );
+  }
   app.use(requestContext);
   app.setGlobalPrefix(API_PREFIX);
   app.useGlobalInterceptors(new ResponseEnvelopeInterceptor());

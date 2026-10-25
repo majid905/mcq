@@ -13,6 +13,8 @@ export const envSchema = z.object({
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
   DATABASE_URL: z.string().startsWith('mysql://', 'must be a mysql:// URL'),
   REDIS_URL: z.string().regex(/^rediss?:\/\//, 'must be a redis:// URL'),
+  /** Reverse-proxy hops in front of the API (nginx = 1). Needed so req.ip, and so per-IP limits, are the client's. */
+  TRUST_PROXY: z.coerce.number().int().min(0).max(5).default(0),
   CORS_ORIGINS: csv.default(['http://localhost:3001', 'http://localhost:3002']),
   /** Override when the contract file is not found by walking up to the repo root. */
   OPENAPI_PATH: z.string().optional(),
