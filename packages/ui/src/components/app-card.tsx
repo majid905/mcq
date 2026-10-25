@@ -17,7 +17,7 @@ export function AppCard({ live, interactive, className, ref, ...props }: AppCard
         'rounded-lg border border-border bg-surface p-4 text-text',
         live && 'border-l-4 border-l-live',
         interactive &&
-          'transition-colors duration-[var(--mcq-duration-fast)] hover:border-border-strong hover:bg-surface-muted',
+          'transition-colors duration-(--mcq-duration-fast) hover:border-border-strong hover:bg-surface-muted',
         className,
       )}
       {...props}

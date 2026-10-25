@@ -36,3 +36,14 @@ export {
   type GalleryMessages,
   type ComponentGalleryProps,
 } from './gallery/component-gallery';
+export { OtpInput, type OtpInputProps } from './components/otp-input';
+export {
+  AppCheckbox,
+  AppSwitch,
+  SegmentedControl,
+  type AppCheckboxProps,
+  type AppSwitchProps,
+  type SegmentedControlProps,
+  type SegmentedOption,
+} from './components/form-controls';
+export { Avatar, ProgressBar, type AvatarProps, type ProgressBarProps } from './components/display';

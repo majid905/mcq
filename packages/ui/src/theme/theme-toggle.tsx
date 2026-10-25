@@ -45,7 +45,7 @@ export function ThemeToggle({ labels, className }: ThemeToggleProps) {
       }}
       className={cn(
         'inline-flex size-10 items-center justify-center rounded-md border border-border bg-surface text-text-muted',
-        'transition-colors duration-[var(--mcq-duration-fast)] hover:bg-surface-muted hover:text-text',
+        'transition-colors duration-(--mcq-duration-fast) hover:bg-surface-muted hover:text-text',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
         className,
       )}

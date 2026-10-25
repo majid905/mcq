@@ -1,4 +1,4 @@
-import { type InputHTMLAttributes, type Ref, useId } from 'react';
+import { type InputHTMLAttributes, type ReactNode, type Ref, useId } from 'react';
 import { cn } from '../lib/cn';
 
 export interface AppTextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
@@ -7,6 +7,10 @@ export interface AppTextFieldProps extends Omit<InputHTMLAttributes<HTMLInputEle
   helperText?: string;
   /** Error message; marks the field invalid and is announced to screen readers. */
   error?: string;
+  /** Fixed text or icon inside the field before the value, e.g. "+88". */
+  leading?: ReactNode;
+  /** Control inside the field after the value, e.g. a show/hide password button. */
+  trailing?: ReactNode;
   ref?: Ref<HTMLInputElement>;
 }
 
@@ -17,6 +21,8 @@ export function AppTextField({
   error,
   id,
   className,
+  leading,
+  trailing,
   ref,
   ...props
 }: AppTextFieldProps) {
@@ -30,21 +36,33 @@ export function AppTextField({
       <label htmlFor={inputId} className="text-body-sm font-medium text-text">
         {label}
       </label>
-      <input
-        ref={ref}
-        id={inputId}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={message ? messageId : undefined}
+      <div
         className={cn(
-          'h-13 w-full rounded-md border-[1.5px] border-border-strong bg-surface px-4 text-body text-text',
-          'placeholder:text-text-subtle',
-          'transition-colors duration-[var(--mcq-duration-fast)]',
-          'focus-visible:border-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
-          'disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-text-muted',
-          error && 'border-danger focus-visible:border-danger',
+          'flex h-13 w-full items-center rounded-md border-[1.5px] border-border-strong bg-surface text-body text-text',
+          'transition-colors duration-(--mcq-duration-fast)',
+          'focus-within:border-primary focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus-ring',
+          'has-[input:disabled]:bg-surface-muted has-[input:disabled]:text-text-muted',
+          error && 'border-danger focus-within:border-danger',
         )}
-        {...props}
-      />
+      >
+        {leading && (
+          <span className="flex h-full items-center border-r border-border pl-4 pr-3 text-text-muted">
+            {leading}
+          </span>
+        )}
+        <input
+          ref={ref}
+          id={inputId}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={message ? messageId : undefined}
+          className={cn(
+            'h-full min-w-0 flex-1 rounded-md bg-transparent px-4 outline-none',
+            'placeholder:text-text-subtle disabled:cursor-not-allowed',
+          )}
+          {...props}
+        />
+        {trailing && <span className="flex h-full items-center pr-1.5">{trailing}</span>}
+      </div>
       {message && (
         <p
           id={messageId}

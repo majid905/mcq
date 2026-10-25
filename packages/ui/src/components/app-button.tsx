@@ -8,7 +8,7 @@ export const appButtonVariants = cva(
   [
     'relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-md',
     'border-[1.5px] border-transparent font-semibold',
-    'transition-colors duration-[var(--mcq-duration-fast)] ease-standard',
+    'transition-colors duration-(--mcq-duration-fast) ease-standard',
     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
     'disabled:pointer-events-none disabled:opacity-50 aria-busy:pointer-events-none',
   ],

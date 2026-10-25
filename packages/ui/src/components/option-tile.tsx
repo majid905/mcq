@@ -13,24 +13,24 @@ export const OPTION_LABELS = {
 // Colours come from the generated --mcq-option-<state>-* variables (design/tokens.json "option").
 const STATE_CLASSES: Record<OptionTileState, { tile: string; badge: string }> = {
   idle: {
-    tile: 'bg-[var(--mcq-option-idle-bg)] border-[var(--mcq-option-idle-border)] hover:border-border-strong',
-    badge: 'bg-[var(--mcq-option-idle-badge-bg)] text-[var(--mcq-option-idle-badge-text)]',
+    tile: 'bg-(--mcq-option-idle-bg) border-(--mcq-option-idle-border) hover:border-border-strong',
+    badge: 'bg-(--mcq-option-idle-badge-bg) text-(--mcq-option-idle-badge-text)',
   },
   selected: {
-    tile: 'bg-[var(--mcq-option-selected-bg)] border-[var(--mcq-option-selected-border)]',
-    badge: 'bg-[var(--mcq-option-selected-badge-bg)] text-[var(--mcq-option-selected-badge-text)]',
+    tile: 'bg-(--mcq-option-selected-bg) border-(--mcq-option-selected-border)',
+    badge: 'bg-(--mcq-option-selected-badge-bg) text-(--mcq-option-selected-badge-text)',
   },
   correct: {
-    tile: 'bg-[var(--mcq-option-correct-bg)] border-[var(--mcq-option-correct-border)]',
-    badge: 'bg-[var(--mcq-option-correct-badge-bg)] text-[var(--mcq-option-correct-badge-text)]',
+    tile: 'bg-(--mcq-option-correct-bg) border-(--mcq-option-correct-border)',
+    badge: 'bg-(--mcq-option-correct-badge-bg) text-(--mcq-option-correct-badge-text)',
   },
   wrong: {
-    tile: 'bg-[var(--mcq-option-wrong-bg)] border-[var(--mcq-option-wrong-border)]',
-    badge: 'bg-[var(--mcq-option-wrong-badge-bg)] text-[var(--mcq-option-wrong-badge-text)]',
+    tile: 'bg-(--mcq-option-wrong-bg) border-(--mcq-option-wrong-border)',
+    badge: 'bg-(--mcq-option-wrong-badge-bg) text-(--mcq-option-wrong-badge-text)',
   },
   missed: {
-    tile: 'bg-[var(--mcq-option-missed-bg)] border-[var(--mcq-option-missed-border)]',
-    badge: 'bg-[var(--mcq-option-missed-badge-bg)] text-[var(--mcq-option-missed-badge-text)]',
+    tile: 'bg-(--mcq-option-missed-bg) border-(--mcq-option-missed-border)',
+    badge: 'bg-(--mcq-option-missed-badge-bg) text-(--mcq-option-missed-badge-text)',
   },
 };
 
@@ -70,7 +70,7 @@ export function OptionTile({
         aria-hidden
         className={cn(
           'grid size-8 flex-none place-items-center rounded-pill font-bangla text-body-sm font-semibold',
-          'transition-[background-color,color,transform] duration-[var(--mcq-duration-fast)] ease-emphasized',
+          'transition-[background-color,color,transform] duration-(--mcq-duration-fast) ease-emphasized',
           state === 'selected' &&
             'motion-safe:animate-[mcq-badge-pop_var(--mcq-duration-fast)_var(--mcq-easing-emphasized)]',
           s.badge,
@@ -90,7 +90,7 @@ export function OptionTile({
 
   const classes = cn(
     'flex min-h-14 w-full items-center gap-3 rounded-md border-[1.5px] px-3 py-2.5 text-left',
-    'transition-colors duration-[var(--mcq-duration-fast)] ease-standard',
+    'transition-colors duration-(--mcq-duration-fast) ease-standard',
     s.tile,
     className,
   );

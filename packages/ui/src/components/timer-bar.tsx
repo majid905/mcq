@@ -47,10 +47,7 @@ export function TimerBar({
 
   return (
     <div
-      className={cn(
-        'sticky top-0 z-[var(--mcq-z-sticky)] border-b border-border bg-surface',
-        className,
-      )}
+      className={cn('sticky top-0 z-(--mcq-z-sticky) border-b border-border bg-surface', className)}
     >
       <div className="flex items-center justify-between gap-3 px-4 pt-2.5">
         <div>
