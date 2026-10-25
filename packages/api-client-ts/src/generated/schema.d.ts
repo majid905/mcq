@@ -755,6 +755,39 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": [
+                         *         {
+                         *           "id": "801",
+                         *           "name_bn": "৪৫তম বিসিএস প্রিলিমিনারি",
+                         *           "name_en": "45th BCS Preliminary",
+                         *           "slug": "45th-bcs-preliminary",
+                         *           "year": 2023,
+                         *           "question_count": 200,
+                         *           "paper_exam_id": "5101"
+                         *         },
+                         *         {
+                         *           "id": "802",
+                         *           "name_bn": "৪৪তম বিসিএস প্রিলিমিনারি",
+                         *           "name_en": "44th BCS Preliminary",
+                         *           "slug": "44th-bcs-preliminary",
+                         *           "year": 2022,
+                         *           "question_count": 200,
+                         *           "paper_exam_id": "5102"
+                         *         },
+                         *         {
+                         *           "id": "803",
+                         *           "name_bn": "৪৩তম বিসিএস প্রিলিমিনারি",
+                         *           "name_en": "43rd BCS Preliminary",
+                         *           "slug": "43rd-bcs-preliminary",
+                         *           "year": 2021,
+                         *           "question_count": 200,
+                         *           "paper_exam_id": null
+                         *         }
+                         *       ]
+                         *     }
+                         */
                         "application/json": {
                             data?: components["schemas"]["SourceExam"][];
                         };
@@ -795,6 +828,53 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": {
+                         *         "id": "30001",
+                         *         "body": "<p>বাংলাদেশের সংবিধানের কোন অনুচ্ছেদে \"রাষ্ট্রধর্ম\" সম্পর্কে বলা হয়েছে?</p>",
+                         *         "options": [
+                         *           {
+                         *             "key": "a",
+                         *             "html": "অনুচ্ছেদ ২"
+                         *           },
+                         *           {
+                         *             "key": "b",
+                         *             "html": "অনুচ্ছেদ ২ক"
+                         *           },
+                         *           {
+                         *             "key": "c",
+                         *             "html": "অনুচ্ছেদ ৩"
+                         *           },
+                         *           {
+                         *             "key": "d",
+                         *             "html": "অনুচ্ছেদ ৪ক"
+                         *           }
+                         *         ],
+                         *         "correct_option": "b",
+                         *         "explanation": "<p>সংবিধানের ২ক অনুচ্ছেদে বলা হয়েছে, প্রজাতন্ত্রের রাষ্ট্রধর্ম ইসলাম, তবে অন্যান্য ধর্ম পালনে রাষ্ট্র সমমর্যাদা ও সমঅধিকার নিশ্চিত করবে।</p>",
+                         *         "answer_locked": false,
+                         *         "difficulty": 2,
+                         *         "source_label": "৪৫তম বিসিএস",
+                         *         "topic": {
+                         *           "id": "1203",
+                         *           "parent_id": "120",
+                         *           "type": "topic",
+                         *           "name_bn": "সংবিধান",
+                         *           "name_en": "Constitution",
+                         *           "slug": "constitution",
+                         *           "icon": null,
+                         *           "question_count": 640,
+                         *           "has_children": false,
+                         *           "progress": null
+                         *         },
+                         *         "is_bookmarked": true,
+                         *         "stats": {
+                         *           "correct_pct": 61.5
+                         *         }
+                         *       }
+                         *     }
+                         */
                         "application/json": {
                             data?: components["schemas"]["Question"];
                         };
@@ -836,6 +916,53 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": {
+                         *         "id": "30001",
+                         *         "body": "<p>বাংলাদেশের সংবিধানের কোন অনুচ্ছেদে \"রাষ্ট্রধর্ম\" সম্পর্কে বলা হয়েছে?</p>",
+                         *         "options": [
+                         *           {
+                         *             "key": "a",
+                         *             "html": "অনুচ্ছেদ ২"
+                         *           },
+                         *           {
+                         *             "key": "b",
+                         *             "html": "অনুচ্ছেদ ২ক"
+                         *           },
+                         *           {
+                         *             "key": "c",
+                         *             "html": "অনুচ্ছেদ ৩"
+                         *           },
+                         *           {
+                         *             "key": "d",
+                         *             "html": "অনুচ্ছেদ ৪ক"
+                         *           }
+                         *         ],
+                         *         "correct_option": "b",
+                         *         "explanation": "<p>সংবিধানের ২ক অনুচ্ছেদে বলা হয়েছে, প্রজাতন্ত্রের রাষ্ট্রধর্ম ইসলাম, তবে অন্যান্য ধর্ম পালনে রাষ্ট্র সমমর্যাদা ও সমঅধিকার নিশ্চিত করবে।</p>",
+                         *         "answer_locked": false,
+                         *         "difficulty": 2,
+                         *         "source_label": "৪৫তম বিসিএস",
+                         *         "topic": {
+                         *           "id": "1203",
+                         *           "parent_id": "120",
+                         *           "type": "topic",
+                         *           "name_bn": "সংবিধান",
+                         *           "name_en": "Constitution",
+                         *           "slug": "constitution",
+                         *           "icon": null,
+                         *           "question_count": 640,
+                         *           "has_children": false,
+                         *           "progress": null
+                         *         },
+                         *         "is_bookmarked": true,
+                         *         "stats": {
+                         *           "correct_pct": 61.5
+                         *         }
+                         *       }
+                         *     }
+                         */
                         "application/json": {
                             data?: components["schemas"]["Question"];
                         };
@@ -921,6 +1048,102 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": [
+                         *         {
+                         *           "id": "30001",
+                         *           "body": "<p>বাংলাদেশের সংবিধানের কোন অনুচ্ছেদে \"রাষ্ট্রধর্ম\" সম্পর্কে বলা হয়েছে?</p>",
+                         *           "options": [
+                         *             {
+                         *               "key": "a",
+                         *               "html": "অনুচ্ছেদ ২"
+                         *             },
+                         *             {
+                         *               "key": "b",
+                         *               "html": "অনুচ্ছেদ ২ক"
+                         *             },
+                         *             {
+                         *               "key": "c",
+                         *               "html": "অনুচ্ছেদ ৩"
+                         *             },
+                         *             {
+                         *               "key": "d",
+                         *               "html": "অনুচ্ছেদ ৪ক"
+                         *             }
+                         *           ],
+                         *           "correct_option": "b",
+                         *           "explanation": "<p>সংবিধানের ২ক অনুচ্ছেদে বলা হয়েছে, প্রজাতন্ত্রের রাষ্ট্রধর্ম ইসলাম, তবে অন্যান্য ধর্ম পালনে রাষ্ট্র সমমর্যাদা ও সমঅধিকার নিশ্চিত করবে।</p>",
+                         *           "answer_locked": false,
+                         *           "difficulty": 2,
+                         *           "source_label": "৪৫তম বিসিএস",
+                         *           "topic": {
+                         *             "id": "1203",
+                         *             "parent_id": "120",
+                         *             "type": "topic",
+                         *             "name_bn": "সংবিধান",
+                         *             "name_en": "Constitution",
+                         *             "slug": "constitution",
+                         *             "icon": null,
+                         *             "question_count": 640,
+                         *             "has_children": false,
+                         *             "progress": null
+                         *           },
+                         *           "is_bookmarked": true,
+                         *           "stats": {
+                         *             "correct_pct": 61.5
+                         *           }
+                         *         },
+                         *         {
+                         *           "id": "30002",
+                         *           "body": "<p>যদি <span class=\"math\" data-latex=\"x^2 = 49\">x^2 = 49</span> হয় এবং x ধনাত্মক হয়, তবে x এর মান কত?</p>",
+                         *           "options": [
+                         *             {
+                         *               "key": "a",
+                         *               "html": "৫"
+                         *             },
+                         *             {
+                         *               "key": "b",
+                         *               "html": "৬"
+                         *             },
+                         *             {
+                         *               "key": "c",
+                         *               "html": "৭"
+                         *             },
+                         *             {
+                         *               "key": "d",
+                         *               "html": "৮"
+                         *             }
+                         *           ],
+                         *           "correct_option": "c",
+                         *           "explanation": "<p><span class=\"math\" data-latex=\"x = \\sqrt{49} = 7\">x = √49 = 7</span></p>",
+                         *           "answer_locked": false,
+                         *           "difficulty": 1,
+                         *           "source_label": "সোনালী ব্যাংক এসও ২০২২",
+                         *           "topic": {
+                         *             "id": "1305",
+                         *             "parent_id": "130",
+                         *             "type": "topic",
+                         *             "name_bn": "বীজগণিত",
+                         *             "name_en": "Algebra",
+                         *             "slug": "algebra",
+                         *             "icon": null,
+                         *             "question_count": 820,
+                         *             "has_children": false,
+                         *             "progress": null
+                         *           },
+                         *           "is_bookmarked": false,
+                         *           "stats": {
+                         *             "correct_pct": 78
+                         *           }
+                         *         }
+                         *       ],
+                         *       "meta": {
+                         *         "next_cursor": null,
+                         *         "has_more": false
+                         *       }
+                         *     }
+                         */
                         "application/json": {
                             data?: components["schemas"]["Question"][];
                             meta?: components["schemas"]["CursorMeta"];
@@ -1018,6 +1241,102 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": [
+                         *         {
+                         *           "id": "30002",
+                         *           "body": "<p>যদি <span class=\"math\" data-latex=\"x^2 = 49\">x^2 = 49</span> হয় এবং x ধনাত্মক হয়, তবে x এর মান কত?</p>",
+                         *           "options": [
+                         *             {
+                         *               "key": "a",
+                         *               "html": "৫"
+                         *             },
+                         *             {
+                         *               "key": "b",
+                         *               "html": "৬"
+                         *             },
+                         *             {
+                         *               "key": "c",
+                         *               "html": "৭"
+                         *             },
+                         *             {
+                         *               "key": "d",
+                         *               "html": "৮"
+                         *             }
+                         *           ],
+                         *           "correct_option": "c",
+                         *           "explanation": "<p><span class=\"math\" data-latex=\"x = \\sqrt{49} = 7\">x = √49 = 7</span></p>",
+                         *           "answer_locked": false,
+                         *           "difficulty": 1,
+                         *           "source_label": "সোনালী ব্যাংক এসও ২০২২",
+                         *           "topic": {
+                         *             "id": "1305",
+                         *             "parent_id": "130",
+                         *             "type": "topic",
+                         *             "name_bn": "বীজগণিত",
+                         *             "name_en": "Algebra",
+                         *             "slug": "algebra",
+                         *             "icon": null,
+                         *             "question_count": 820,
+                         *             "has_children": false,
+                         *             "progress": null
+                         *           },
+                         *           "is_bookmarked": false,
+                         *           "stats": {
+                         *             "correct_pct": 78
+                         *           }
+                         *         },
+                         *         {
+                         *           "id": "30003",
+                         *           "body": "<p>\"অপরাজেয় বাংলা\" ভাস্কর্যের শিল্পী কে?</p>",
+                         *           "options": [
+                         *             {
+                         *               "key": "a",
+                         *               "html": "হামিদুজ্জামান খান"
+                         *             },
+                         *             {
+                         *               "key": "b",
+                         *               "html": "সৈয়দ আব্দুল্লাহ খালিদ"
+                         *             },
+                         *             {
+                         *               "key": "c",
+                         *               "html": "নভেরা আহমেদ"
+                         *             },
+                         *             {
+                         *               "key": "d",
+                         *               "html": "শামীম শিকদার"
+                         *             }
+                         *           ],
+                         *           "correct_option": null,
+                         *           "explanation": null,
+                         *           "answer_locked": true,
+                         *           "difficulty": 2,
+                         *           "source_label": "৪৪তম বিসিএস",
+                         *           "topic": {
+                         *             "id": "1401",
+                         *             "parent_id": "140",
+                         *             "type": "topic",
+                         *             "name_bn": "বাংলাদেশের সংস্কৃতি",
+                         *             "name_en": "Culture of Bangladesh",
+                         *             "slug": "culture-of-bangladesh",
+                         *             "icon": null,
+                         *             "question_count": 410,
+                         *             "has_children": false,
+                         *             "progress": null
+                         *           },
+                         *           "is_bookmarked": false,
+                         *           "stats": {
+                         *             "correct_pct": 44
+                         *           }
+                         *         }
+                         *       ],
+                         *       "meta": {
+                         *         "next_cursor": null,
+                         *         "has_more": false
+                         *       }
+                         *     }
+                         */
                         "application/json": {
                             data?: components["schemas"]["Question"][];
                             meta?: components["schemas"]["CursorMeta"];
@@ -1064,6 +1383,105 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": [
+                         *         {
+                         *           "id": "30001",
+                         *           "body": "<p>বাংলাদেশের সংবিধানের কোন অনুচ্ছেদে \"রাষ্ট্রধর্ম\" সম্পর্কে বলা হয়েছে?</p>",
+                         *           "options": [
+                         *             {
+                         *               "key": "a",
+                         *               "html": "অনুচ্ছেদ ২"
+                         *             },
+                         *             {
+                         *               "key": "b",
+                         *               "html": "অনুচ্ছেদ ২ক"
+                         *             },
+                         *             {
+                         *               "key": "c",
+                         *               "html": "অনুচ্ছেদ ৩"
+                         *             },
+                         *             {
+                         *               "key": "d",
+                         *               "html": "অনুচ্ছেদ ৪ক"
+                         *             }
+                         *           ],
+                         *           "correct_option": "b",
+                         *           "explanation": "<p>সংবিধানের ২ক অনুচ্ছেদে বলা হয়েছে, প্রজাতন্ত্রের রাষ্ট্রধর্ম ইসলাম, তবে অন্যান্য ধর্ম পালনে রাষ্ট্র সমমর্যাদা ও সমঅধিকার নিশ্চিত করবে।</p>",
+                         *           "answer_locked": false,
+                         *           "difficulty": 2,
+                         *           "source_label": "৪৫তম বিসিএস",
+                         *           "topic": {
+                         *             "id": "1203",
+                         *             "parent_id": "120",
+                         *             "type": "topic",
+                         *             "name_bn": "সংবিধান",
+                         *             "name_en": "Constitution",
+                         *             "slug": "constitution",
+                         *             "icon": null,
+                         *             "question_count": 640,
+                         *             "has_children": false,
+                         *             "progress": null
+                         *           },
+                         *           "is_bookmarked": true,
+                         *           "stats": {
+                         *             "correct_pct": 61.5
+                         *           },
+                         *           "highlight": "<p>বাংলাদেশের <mark>সংবিধানের</mark> কোন অনুচ্ছেদে \"রাষ্ট্রধর্ম\" সম্পর্কে বলা হয়েছে?</p>"
+                         *         },
+                         *         {
+                         *           "id": "30003",
+                         *           "body": "<p>\"অপরাজেয় বাংলা\" ভাস্কর্যের শিল্পী কে?</p>",
+                         *           "options": [
+                         *             {
+                         *               "key": "a",
+                         *               "html": "হামিদুজ্জামান খান"
+                         *             },
+                         *             {
+                         *               "key": "b",
+                         *               "html": "সৈয়দ আব্দুল্লাহ খালিদ"
+                         *             },
+                         *             {
+                         *               "key": "c",
+                         *               "html": "নভেরা আহমেদ"
+                         *             },
+                         *             {
+                         *               "key": "d",
+                         *               "html": "শামীম শিকদার"
+                         *             }
+                         *           ],
+                         *           "correct_option": null,
+                         *           "explanation": null,
+                         *           "answer_locked": true,
+                         *           "difficulty": 2,
+                         *           "source_label": "৪৪তম বিসিএস",
+                         *           "topic": {
+                         *             "id": "1401",
+                         *             "parent_id": "140",
+                         *             "type": "topic",
+                         *             "name_bn": "বাংলাদেশের সংস্কৃতি",
+                         *             "name_en": "Culture of Bangladesh",
+                         *             "slug": "culture-of-bangladesh",
+                         *             "icon": null,
+                         *             "question_count": 410,
+                         *             "has_children": false,
+                         *             "progress": null
+                         *           },
+                         *           "is_bookmarked": false,
+                         *           "stats": {
+                         *             "correct_pct": 44
+                         *           },
+                         *           "highlight": "<p>\"অপরাজেয় বাংলা\" ভাস্কর্যের শিল্পী কে?</p>"
+                         *         }
+                         *       ],
+                         *       "meta": {
+                         *         "total": 2,
+                         *         "page": 1,
+                         *         "took_ms": 12
+                         *       }
+                         *     }
+                         */
                         "application/json": {
                             data?: components["schemas"]["SearchHit"][];
                             meta?: {
@@ -1380,6 +1798,107 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": {
+                         *         "attempt_id": "90021",
+                         *         "kind": "live",
+                         *         "server_time": "2026-10-24T05:30:00.000Z",
+                         *         "started_at": "2026-10-24T05:30:00.000Z",
+                         *         "ends_at": "2030-01-01T00:00:00.000Z",
+                         *         "paper_url": null,
+                         *         "paper": {
+                         *           "exam_id": "5002",
+                         *           "version": 1,
+                         *           "mark_per_question": 1,
+                         *           "negative_mark": 0,
+                         *           "sections": [
+                         *             {
+                         *               "node_id": "1203",
+                         *               "label": "সাধারণ জ্ঞান",
+                         *               "question_ids": [
+                         *                 "30001",
+                         *                 "30002",
+                         *                 "30003"
+                         *               ]
+                         *             }
+                         *           ],
+                         *           "questions": [
+                         *             {
+                         *               "id": "30001",
+                         *               "body": "<p>বাংলাদেশের সংবিধানের কোন অনুচ্ছেদে \"রাষ্ট্রধর্ম\" সম্পর্কে বলা হয়েছে?</p>",
+                         *               "options": [
+                         *                 {
+                         *                   "key": "a",
+                         *                   "html": "অনুচ্ছেদ ২"
+                         *                 },
+                         *                 {
+                         *                   "key": "b",
+                         *                   "html": "অনুচ্ছেদ ২ক"
+                         *                 },
+                         *                 {
+                         *                   "key": "c",
+                         *                   "html": "অনুচ্ছেদ ৩"
+                         *                 },
+                         *                 {
+                         *                   "key": "d",
+                         *                   "html": "অনুচ্ছেদ ৪ক"
+                         *                 }
+                         *               ]
+                         *             },
+                         *             {
+                         *               "id": "30002",
+                         *               "body": "<p>যদি <span class=\"math\" data-latex=\"x^2 = 49\">x^2 = 49</span> হয় এবং x ধনাত্মক হয়, তবে x এর মান কত?</p>",
+                         *               "options": [
+                         *                 {
+                         *                   "key": "a",
+                         *                   "html": "৫"
+                         *                 },
+                         *                 {
+                         *                   "key": "b",
+                         *                   "html": "৬"
+                         *                 },
+                         *                 {
+                         *                   "key": "c",
+                         *                   "html": "৭"
+                         *                 },
+                         *                 {
+                         *                   "key": "d",
+                         *                   "html": "৮"
+                         *                 }
+                         *               ]
+                         *             },
+                         *             {
+                         *               "id": "30003",
+                         *               "body": "<p>\"অপরাজেয় বাংলা\" ভাস্কর্যের শিল্পী কে?</p>",
+                         *               "options": [
+                         *                 {
+                         *                   "key": "a",
+                         *                   "html": "হামিদুজ্জামান খান"
+                         *                 },
+                         *                 {
+                         *                   "key": "b",
+                         *                   "html": "সৈয়দ আব্দুল্লাহ খালিদ"
+                         *                 },
+                         *                 {
+                         *                   "key": "c",
+                         *                   "html": "নভেরা আহমেদ"
+                         *                 },
+                         *                 {
+                         *                   "key": "d",
+                         *                   "html": "শামীম শিকদার"
+                         *                 }
+                         *               ]
+                         *             }
+                         *           ]
+                         *         },
+                         *         "shuffle_seed": 12345,
+                         *         "shuffle_questions": false,
+                         *         "shuffle_options": false,
+                         *         "saved_answers": {}
+                         *       }
+                         *     }
+                         */
                         "application/json": {
                             data?: components["schemas"]["AttemptStart"];
                         };
@@ -1607,6 +2126,38 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": {
+                         *         "attempt_id": "91001",
+                         *         "exam_id": null,
+                         *         "title": "মিশ্র প্র্যাকটিস",
+                         *         "total_questions": 3,
+                         *         "correct": 2,
+                         *         "wrong": 1,
+                         *         "skipped": 0,
+                         *         "score": 2,
+                         *         "total_marks": 3,
+                         *         "negative_marks": 0,
+                         *         "accuracy_pct": 66.7,
+                         *         "time_taken_sec": 95,
+                         *         "passed": null,
+                         *         "rank": null,
+                         *         "sections": [
+                         *           {
+                         *             "node_id": "1203",
+                         *             "label": "মিশ্র প্র্যাকটিস",
+                         *             "correct": 2,
+                         *             "wrong": 1,
+                         *             "skipped": 0,
+                         *             "score": 2
+                         *           }
+                         *         ],
+                         *         "solutions_available": true,
+                         *         "solutions_available_at": null
+                         *       }
+                         *     }
+                         */
                         "application/json": {
                             data?: components["schemas"]["AttemptResult"];
                         };
@@ -1701,6 +2252,107 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": {
+                         *         "attempt_id": "91001",
+                         *         "kind": "quick_practice",
+                         *         "server_time": "2026-10-24T05:30:00.000Z",
+                         *         "started_at": "2026-10-24T05:30:00.000Z",
+                         *         "ends_at": "2030-01-01T00:00:00.000Z",
+                         *         "paper_url": null,
+                         *         "paper": {
+                         *           "exam_id": null,
+                         *           "version": 1,
+                         *           "mark_per_question": 1,
+                         *           "negative_mark": 0,
+                         *           "sections": [
+                         *             {
+                         *               "node_id": "1203",
+                         *               "label": "মিশ্র প্র্যাকটিস",
+                         *               "question_ids": [
+                         *                 "30001",
+                         *                 "30002",
+                         *                 "30003"
+                         *               ]
+                         *             }
+                         *           ],
+                         *           "questions": [
+                         *             {
+                         *               "id": "30001",
+                         *               "body": "<p>বাংলাদেশের সংবিধানের কোন অনুচ্ছেদে \"রাষ্ট্রধর্ম\" সম্পর্কে বলা হয়েছে?</p>",
+                         *               "options": [
+                         *                 {
+                         *                   "key": "a",
+                         *                   "html": "অনুচ্ছেদ ২"
+                         *                 },
+                         *                 {
+                         *                   "key": "b",
+                         *                   "html": "অনুচ্ছেদ ২ক"
+                         *                 },
+                         *                 {
+                         *                   "key": "c",
+                         *                   "html": "অনুচ্ছেদ ৩"
+                         *                 },
+                         *                 {
+                         *                   "key": "d",
+                         *                   "html": "অনুচ্ছেদ ৪ক"
+                         *                 }
+                         *               ]
+                         *             },
+                         *             {
+                         *               "id": "30002",
+                         *               "body": "<p>যদি <span class=\"math\" data-latex=\"x^2 = 49\">x^2 = 49</span> হয় এবং x ধনাত্মক হয়, তবে x এর মান কত?</p>",
+                         *               "options": [
+                         *                 {
+                         *                   "key": "a",
+                         *                   "html": "৫"
+                         *                 },
+                         *                 {
+                         *                   "key": "b",
+                         *                   "html": "৬"
+                         *                 },
+                         *                 {
+                         *                   "key": "c",
+                         *                   "html": "৭"
+                         *                 },
+                         *                 {
+                         *                   "key": "d",
+                         *                   "html": "৮"
+                         *                 }
+                         *               ]
+                         *             },
+                         *             {
+                         *               "id": "30003",
+                         *               "body": "<p>\"অপরাজেয় বাংলা\" ভাস্কর্যের শিল্পী কে?</p>",
+                         *               "options": [
+                         *                 {
+                         *                   "key": "a",
+                         *                   "html": "হামিদুজ্জামান খান"
+                         *                 },
+                         *                 {
+                         *                   "key": "b",
+                         *                   "html": "সৈয়দ আব্দুল্লাহ খালিদ"
+                         *                 },
+                         *                 {
+                         *                   "key": "c",
+                         *                   "html": "নভেরা আহমেদ"
+                         *                 },
+                         *                 {
+                         *                   "key": "d",
+                         *                   "html": "শামীম শিকদার"
+                         *                 }
+                         *               ]
+                         *             }
+                         *           ]
+                         *         },
+                         *         "shuffle_seed": null,
+                         *         "shuffle_questions": false,
+                         *         "shuffle_options": false,
+                         *         "saved_answers": {}
+                         *       }
+                         *     }
+                         */
                         "application/json": {
                             data?: components["schemas"]["AttemptStart"];
                         };
@@ -1750,6 +2402,15 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": {
+                         *         "is_correct": true,
+                         *         "correct_option": "b",
+                         *         "explanation": "<p>সংবিধানের ২ক অনুচ্ছেদে রাষ্ট্রধর্ম সম্পর্কে বলা হয়েছে।</p>"
+                         *       }
+                         *     }
+                         */
                         "application/json": {
                             data?: {
                                 is_correct?: boolean;
@@ -1793,6 +2454,55 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": {
+                         *         "answered_total": 1240,
+                         *         "accuracy_pct": 71.4,
+                         *         "exams_taken": 18,
+                         *         "avg_percentile": 76.2,
+                         *         "current_streak": 4,
+                         *         "best_streak": 12,
+                         *         "last_7_days": [
+                         *           {
+                         *             "day": "2026-10-18",
+                         *             "answered": 30,
+                         *             "correct": 22
+                         *           },
+                         *           {
+                         *             "day": "2026-10-19",
+                         *             "answered": 12,
+                         *             "correct": 9
+                         *           },
+                         *           {
+                         *             "day": "2026-10-20",
+                         *             "answered": 0,
+                         *             "correct": 0
+                         *           },
+                         *           {
+                         *             "day": "2026-10-21",
+                         *             "answered": 45,
+                         *             "correct": 31
+                         *           },
+                         *           {
+                         *             "day": "2026-10-22",
+                         *             "answered": 20,
+                         *             "correct": 16
+                         *           },
+                         *           {
+                         *             "day": "2026-10-23",
+                         *             "answered": 25,
+                         *             "correct": 18
+                         *           },
+                         *           {
+                         *             "day": "2026-10-24",
+                         *             "answered": 12,
+                         *             "correct": 9
+                         *           }
+                         *         ]
+                         *       }
+                         *     }
+                         */
                         "application/json": {
                             data?: components["schemas"]["AnalyticsOverview"];
                         };
@@ -1833,6 +2543,96 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": [
+                         *         {
+                         *           "node": {
+                         *             "id": "11",
+                         *             "parent_id": "1",
+                         *             "type": "subject",
+                         *             "name_bn": "বাংলা ভাষা ও সাহিত্য",
+                         *             "name_en": "Bangla",
+                         *             "slug": "bangla",
+                         *             "icon": null,
+                         *             "question_count": 9200,
+                         *             "has_children": true,
+                         *             "progress": {
+                         *               "attempted": 310,
+                         *               "accuracy_pct": 78.4
+                         *             }
+                         *           },
+                         *           "attempted": 310,
+                         *           "correct": 243,
+                         *           "accuracy_pct": 78.4,
+                         *           "is_weak": false
+                         *         },
+                         *         {
+                         *           "node": {
+                         *             "id": "13",
+                         *             "parent_id": "1",
+                         *             "type": "subject",
+                         *             "name_bn": "গাণিতিক যুক্তি",
+                         *             "name_en": "Mathematical reasoning",
+                         *             "slug": "math",
+                         *             "icon": null,
+                         *             "question_count": 6100,
+                         *             "has_children": true,
+                         *             "progress": {
+                         *               "attempted": 220,
+                         *               "accuracy_pct": 52.3
+                         *             }
+                         *           },
+                         *           "attempted": 220,
+                         *           "correct": 115,
+                         *           "accuracy_pct": 52.3,
+                         *           "is_weak": true
+                         *         },
+                         *         {
+                         *           "node": {
+                         *             "id": "14",
+                         *             "parent_id": "1",
+                         *             "type": "subject",
+                         *             "name_bn": "সাধারণ জ্ঞান",
+                         *             "name_en": "General knowledge",
+                         *             "slug": "gk",
+                         *             "icon": null,
+                         *             "question_count": 12400,
+                         *             "has_children": true,
+                         *             "progress": {
+                         *               "attempted": 480,
+                         *               "accuracy_pct": 64.6
+                         *             }
+                         *           },
+                         *           "attempted": 480,
+                         *           "correct": 310,
+                         *           "accuracy_pct": 64.6,
+                         *           "is_weak": false
+                         *         },
+                         *         {
+                         *           "node": {
+                         *             "id": "12",
+                         *             "parent_id": "1",
+                         *             "type": "subject",
+                         *             "name_bn": "ইংরেজি ভাষা ও সাহিত্য",
+                         *             "name_en": "English",
+                         *             "slug": "english",
+                         *             "icon": null,
+                         *             "question_count": 8700,
+                         *             "has_children": true,
+                         *             "progress": {
+                         *               "attempted": 230,
+                         *               "accuracy_pct": 47.8
+                         *             }
+                         *           },
+                         *           "attempted": 230,
+                         *           "correct": 110,
+                         *           "accuracy_pct": 47.8,
+                         *           "is_weak": true
+                         *         }
+                         *       ]
+                         *     }
+                         */
                         "application/json": {
                             data?: components["schemas"]["TopicStat"][];
                         };
@@ -1871,6 +2671,52 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": [
+                         *         {
+                         *           "exam_id": "5001",
+                         *           "title": "৪৭তম বিসিএস লাইভ মডেল টেস্ট - ০৮",
+                         *           "date": "2026-09-27T14:00:00.000Z",
+                         *           "score": 58.5,
+                         *           "total_marks": 100,
+                         *           "percentile": 64
+                         *         },
+                         *         {
+                         *           "exam_id": "5005",
+                         *           "title": "৪৭তম বিসিএস লাইভ মডেল টেস্ট - ০৯",
+                         *           "date": "2026-10-04T14:00:00.000Z",
+                         *           "score": 63,
+                         *           "total_marks": 100,
+                         *           "percentile": 71
+                         *         },
+                         *         {
+                         *           "exam_id": "5008",
+                         *           "title": "ব্যাংক জব লাইভ পরীক্ষা - ০৪",
+                         *           "date": "2026-10-11T14:00:00.000Z",
+                         *           "score": 38,
+                         *           "total_marks": 50,
+                         *           "percentile": 79
+                         *         },
+                         *         {
+                         *           "exam_id": "5010",
+                         *           "title": "৪৭তম বিসিএস লাইভ মডেল টেস্ট - ১০",
+                         *           "date": "2026-10-18T14:00:00.000Z",
+                         *           "score": 70.5,
+                         *           "total_marks": 100,
+                         *           "percentile": 83
+                         *         },
+                         *         {
+                         *           "exam_id": "5011",
+                         *           "title": "৪৭তম বিসিএস লাইভ মডেল টেস্ট - ১১",
+                         *           "date": "2026-10-21T14:00:00.000Z",
+                         *           "score": 68,
+                         *           "total_marks": 100,
+                         *           "percentile": 81
+                         *         }
+                         *       ]
+                         *     }
+                         */
                         "application/json": {
                             data?: {
                                 exam_id?: string;
@@ -2180,6 +3026,44 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": [
+                         *         {
+                         *           "id": "7001",
+                         *           "type": "exam_reminder",
+                         *           "title": "১৫ মিনিট পর পরীক্ষা শুরু",
+                         *           "body": "৪৭তম বিসিএস লাইভ মডেল টেস্ট - ১২ আজ রাত ৯টায় শুরু হবে।",
+                         *           "deep_link": "/exams/5003",
+                         *           "read": false,
+                         *           "created_at": "2026-10-24T05:15:00.000Z"
+                         *         },
+                         *         {
+                         *           "id": "7002",
+                         *           "type": "result",
+                         *           "title": "ফলাফল প্রকাশিত হয়েছে",
+                         *           "body": "ব্যাংক জব লাইভ পরীক্ষা - ০৪ এর মেধাক্রম দেখুন।",
+                         *           "deep_link": "/results/90011",
+                         *           "read": false,
+                         *           "created_at": "2026-10-24T02:00:00.000Z"
+                         *         },
+                         *         {
+                         *           "id": "7003",
+                         *           "type": "subscription",
+                         *           "title": "প্রিমিয়াম শেষ হতে ৩ দিন বাকি",
+                         *           "body": "রিনিউ করে প্রস্তুতি চালিয়ে যান।",
+                         *           "deep_link": "/plans",
+                         *           "read": true,
+                         *           "created_at": "2026-10-21T09:00:00.000Z"
+                         *         }
+                         *       ],
+                         *       "meta": {
+                         *         "next_cursor": null,
+                         *         "has_more": false,
+                         *         "unread_count": 2
+                         *       }
+                         *     }
+                         */
                         "application/json": {
                             data?: components["schemas"]["Notification"][];
                             meta?: components["schemas"]["CursorMeta"] & {
@@ -2265,6 +3149,16 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": {
+                         *         "exam_reminder": true,
+                         *         "result": true,
+                         *         "subscription": true,
+                         *         "promotional": false
+                         *       }
+                         *     }
+                         */
                         "application/json": {
                             data?: components["schemas"]["NotificationPrefs"];
                         };
