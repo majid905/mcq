@@ -11,6 +11,8 @@ const apiBase = process.env.E2E_API_BASE ?? MOCK;
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
+  // next dev on Windows can corrupt its cache when many pages compile at once.
+  workers: process.env.CI ? undefined : 2,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? 'github' : 'list',
