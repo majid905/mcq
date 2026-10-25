@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
@@ -9,9 +10,15 @@ const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 // Windows only allows with developer mode, so a plain local `pnpm build` must not depend on it.
 const standalone = process.env.NEXT_OUTPUT === 'standalone';
 
+// Shown in Settings (J4). Read as a file: JSON import attributes are not supported everywhere.
+const { version } = JSON.parse(
+  readFileSync(new URL('./package.json', import.meta.url), 'utf8'),
+) as { version: string };
+
 const config: NextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@mcq/api-client-ts', '@mcq/ui'],
+  env: { NEXT_PUBLIC_APP_VERSION: version },
   ...(standalone && {
     output: 'standalone' as const,
     // Monorepo root, so the workspace packages above are traced into the bundle.

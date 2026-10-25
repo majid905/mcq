@@ -2,6 +2,7 @@ import { ComponentGallery, type GalleryMessages, ThemeToggle } from '@mcq/ui';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
+import { Suspense } from 'react';
 import { LocaleSwitcher } from '@/components/locale-switcher';
 import type { Locale } from '@/i18n/routing';
 
@@ -25,11 +26,14 @@ export default async function GalleryPage({ params }: { params: Promise<{ locale
       messages={messages.gallery satisfies GalleryMessages}
       toolbar={
         <>
-          <LocaleSwitcher
-            target={locale === 'bn' ? 'en' : 'bn'}
-            label={t('locale.switchLabel')}
-            text={t('locale.switchTo')}
-          />
+          {/* LocaleSwitcher reads the query string; static pages need a boundary. */}
+          <Suspense>
+            <LocaleSwitcher
+              target={locale === 'bn' ? 'en' : 'bn'}
+              label={t('locale.switchLabel')}
+              text={t('locale.switchTo')}
+            />
+          </Suspense>
           <ThemeToggle
             labels={{ system: t('theme.system'), light: t('theme.light'), dark: t('theme.dark') }}
           />
