@@ -11,12 +11,13 @@ describe('contract + integration: search (MySQL fallback driver)', () => {
     app = await createTestApp();
   });
 
-  afterAll(async () => {
-    await app.close();
-  });
-
-  defineSearchTests({
+  const cleanup = defineSearchTests({
     app: () => app,
     makeSearchable: () => Promise.resolve(), // MySQL sees rows immediately
+  });
+
+  afterAll(async () => {
+    await cleanup();
+    await app.close();
   });
 });

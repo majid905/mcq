@@ -35,7 +35,16 @@ maybe('contract + integration: search (Meilisearch driver)', () => {
     await indexer.reindexAll(); // also creates the index with its settings
   }, 120_000);
 
+  const cleanup = defineSearchTests({
+    app: () => app,
+    makeSearchable: async (ids) => {
+      createdIds.push(...ids);
+      await viaOutbox(ids);
+    },
+  });
+
   afterAll(async () => {
+    await cleanup();
     const meili = app.get(MeiliClient);
     if (createdIds.length > 0) {
       await meili
@@ -43,14 +52,6 @@ maybe('contract + integration: search (Meilisearch driver)', () => {
         .catch(() => undefined);
     }
     await app.close();
-  });
-
-  defineSearchTests({
-    app: () => app,
-    makeSearchable: async (ids) => {
-      createdIds.push(...ids);
-      await viaOutbox(ids);
-    },
   });
 
   describe('index maintenance', () => {

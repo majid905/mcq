@@ -14,7 +14,11 @@ export interface SearchHarness {
 }
 
 /** The behaviour every search driver (Meilisearch, MySQL) must show. */
-export function defineSearchTests(h: SearchHarness): void {
+/**
+ * Returns a cleanup function. The caller must run it BEFORE closing the app: hooks of the same
+ * scope do not have a guaranteed order across Jest versions, and cleanup needs Redis and MySQL.
+ */
+export function defineSearchTests(h: SearchHarness): () => Promise<void> {
   const phones: string[] = [];
   const questionIds: bigint[] = [];
   let prisma: PrismaService;
@@ -70,7 +74,7 @@ export function defineSearchTests(h: SearchHarness): void {
     if (keys.length > 0) await redis.client.del(...keys);
   });
 
-  afterAll(async () => {
+  const cleanup = async () => {
     const users = await prisma.users.findMany({
       where: { phone: { in: phones } },
       select: { id: true },
@@ -84,7 +88,7 @@ export function defineSearchTests(h: SearchHarness): void {
       ...(await redis.client.keys('quota:search:*')),
     ];
     if (keys.length > 0) await redis.client.del(...new Set(keys));
-  });
+  };
 
   it('needs a token and a query of at least 2 characters', async () => {
     expect((await http().get('/v1/search/questions?q=ab')).status).toBe(401);
@@ -211,4 +215,6 @@ export function defineSearchTests(h: SearchHarness): void {
     for (let i = 0; i < 31; i++) last = (await search(s, 'q=ab')).status;
     expect(last).toBe(429);
   });
+
+  return cleanup;
 }
