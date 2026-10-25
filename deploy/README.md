@@ -30,7 +30,7 @@ The server is shared with other sites, so everything is isolated and local-only.
 | --- | --- |
 | API (`mcq-api`) | systemd, `127.0.0.1:3050`, user `mcq` |
 | Worker (`mcq-worker`: scoring) and scheduler (`mcq-scheduler`) | systemd, same user |
-| Web (`mcq-web`) / admin (`mcq-admin`) | systemd, `127.0.0.1:3051` / `3052`, from `/srv/mcq/{web,admin}/current` (symlink to `releases/<sha>`) |
+| Web (`mcq-web`) / admin (`mcq-admin`) | systemd, `localhost:3051` / `3052` (HOSTNAME must be `localhost`: with `127.0.0.1` Next 15 redirect-loops `/`), from `/srv/mcq/{web,admin}/current` (symlink to `releases/<sha>`) |
 | MySQL 8.4 | docker, `127.0.0.1:3307`, volume `mcq-prod_mysql-data` |
 | Redis 7 (AOF on) | docker, `127.0.0.1:6380` |
 | nginx | `/etc/nginx/sites-available/mcq.ellevix.com`, `/v1`, `/docs`, `/openapi.json` go to the API, everything else to web |

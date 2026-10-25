@@ -8,7 +8,7 @@ User=mcq
 Group=mcq
 WorkingDirectory=/srv/mcq/admin/current/apps/admin
 EnvironmentFile=/srv/mcq/admin.env
-Environment=NODE_ENV=production PORT=3052 HOSTNAME=127.0.0.1
+Environment=NODE_ENV=production PORT=3052 HOSTNAME=localhost
 ExecStart=/opt/node22/bin/node server.js
 Restart=always
 RestartSec=3
