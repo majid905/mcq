@@ -114,7 +114,7 @@ Two developers, each with their own Claude Code session. Full details: `docs/09-
 
 - Every session starts with `prompts/team/A-session-start.md` or `B-session-start.md`. Only edit files in your owner's folders (plus shared root config/docs when the task requires it).
 - Only Dev A changes `openapi.yaml`. Dev B's Claude writes a contract-change request instead of editing it.
-- Branches `a/<name>` or `b/<name>`; conventional commits with requirement IDs; PR into `main`, reviewed by the other developer.
+- No pull requests: commit small and push straight to `main`. Always `git pull --rebase origin main` first, run lint/typecheck/test before pushing, never force-push `main`. Conventional commits with requirement IDs.
 - `apps/mobile` is out of scope until the website is launched.
 
 ## Working rules for Claude Code

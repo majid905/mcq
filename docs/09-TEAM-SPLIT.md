@@ -1,5 +1,7 @@
 # 09 — Team split: website first (2 developers, 2 Claude Code)
 
+> **Workflow override (decided by the team):** no pull requests and no branch protection. Both developers push small commits straight to `main` after `git pull --rebase origin main` and a green `pnpm lint && pnpm typecheck && pnpm test`. Everywhere below that says "PR", "review" or "merge", read it as "commit and push to `main`". `openapi.yaml` stays Dev A only, and the folder ownership in section 2 still applies.
+
 Scope of this round: **website only** = NestJS API + MySQL + Next.js student web + Next.js admin panel. The Flutter app (`apps/mobile`) starts after the website is live; the API and contract built now are reused unchanged.
 
 Repository: `https://github.com/majid905/mcq` (default branch `main`).

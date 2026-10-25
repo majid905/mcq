@@ -6,27 +6,21 @@ Status date: 2026-10-24. Dev A has finished the A-00 skeleton and the whole A-01
 
 ## 1. Where the code is
 
-Dev A's work sits in eight stacked PRs. Until they are merged into `main`, everything is on one branch:
+Everything Dev A has built is already on `main`. We work **without pull requests**: both developers commit and push straight to `main`.
 
 ```bash
 git clone https://github.com/majid905/mcq.git && cd mcq
-git checkout a/exams-list-detail   # newest branch: contains every PR below plus this file
 ```
 
-| Order | Branch | Adds |
-| --- | --- | --- |
-| 0 | `a/bootstrap` | pnpm workspaces, turbo, `packages/config`, package shells, CI skeleton |
-| 1 | `a/contract-tooling` | `pnpm mock`, `@mcq/api-client-ts`, Bangla `examples`, shuffle + vectors |
-| 2 | `a/infra-db` | `docker-compose.yml`, `pnpm db:reset`, seed data |
-| 3 | `a/api-scaffold` | NestJS app, `GET /v1/health`, Swagger UI, contract tests, full CI |
-| 4 | `a/handoff-dev-b` | this doc |
-| 5 | `a/auth-otp` | OTP, register, login, refresh, logout, password reset, device binding |
-| 6 | `a/me-settings-home` | `/me`, device reset, push token, `/settings/public`, `/home`, maintenance + version gate |
-| 7 | `a/exams-list-detail` | `GET /exams`, `GET /exams/{id}`, exam reminders, `GET /exams/{id}/paper`, paper build job |
+Daily routine for both developers (and both Claude Code sessions):
 
-**Once Dev A tells you they are merged:** `git checkout main && git pull --rebase origin main`, then branch from `main` as usual (`b/design-tokens`, ...). Do not branch from `a/*` after that.
+1. `git pull --rebase origin main` before you start and again before every push.
+2. Small commits with conventional messages and requirement IDs (`feat(web): ... (FR-AUTH-01)`).
+3. Run `pnpm lint && pnpm typecheck && pnpm test` before `git push origin main`.
+4. If the push is rejected, `git pull --rebase origin main`, fix any conflict, push again. Never `git push --force` to `main`.
+5. Stay in your own folders (see `docs/09-TEAM-SPLIT.md`), so conflicts stay rare.
 
-Until then, branch your `b/*` work from `a/exams-list-detail`. When the A PRs merge, run `git rebase --onto origin/main a/exams-list-detail b/<your-branch>`.
+Dev A built the API through exams list/detail/paper. What is live is listed in section 6.
 
 ## 2. One-time setup
 
@@ -86,7 +80,7 @@ pnpm db:reset      # schema + seed (2,000 Bangla MCQs, 5 exams, 64 districts)
 pnpm --filter @mcq/api dev     # http://localhost:3000/v1, Swagger UI at http://localhost:3000/docs
 ```
 
-**Live on the real API (branches up to `a/exams-list-detail`, as soon as they are merged):** `GET /health`, all of `/auth/*` (OTP request/verify, register, login, refresh, logout, password reset), `GET/PATCH/DELETE /me`, `PUT /me/push-token`, `POST /me/devices/reset`, `GET /settings/public`, `GET /home`, `GET /exams`, `GET /exams/{id}`, `PUT/DELETE /exams/{id}/reminder`, `GET /exams/{id}/paper`. Everything else (start/submit, results, practice, search, billing, admin) is still mock-only; Dev A tells you in the daily message when the next group is live.
+**Live on the real API (already on `main`):** `GET /health`, all of `/auth/*` (OTP request/verify, register, login, refresh, logout, password reset), `GET/PATCH/DELETE /me`, `PUT /me/push-token`, `POST /me/devices/reset`, `GET /settings/public`, `GET /home`, `GET /exams`, `GET /exams/{id}`, `PUT/DELETE /exams/{id}/reminder`, `GET /exams/{id}/paper`. Everything else (start/submit, results, practice, search, billing, admin) is still mock-only; Dev A tells you in the daily message when the next group is live.
 
 Real-API notes for the web BFF:
 - **Dev OTP is always `123456`** (console SMS driver); no SMS is sent. Any valid Bangladeshi number works (`01[3-9]XXXXXXXX`).
@@ -126,5 +120,5 @@ Do not edit `openapi.yaml` (except `examples`). Open a GitHub issue with the `co
 
 | When | Dev A delivers | You can then |
 | --- | --- | --- |
-| Done (needs merge) | Auth (OTP, register, login, refresh), `/me`, `/settings/public`, `/home` | Switch login, onboarding, home from mock to real; Checkpoint 1 |
+| Done (on `main`) | Auth (OTP, register, login, refresh), `/me`, `/settings/public`, `/home` | Switch login, onboarding, home from mock to real; Checkpoint 1 |
 | Weeks 4-6 | Exams: list, detail, start, sync, submit, scoring, leaderboard, results | Exam room and results on real data; Checkpoint 2 |
