@@ -14,14 +14,290 @@
     "switchTo": "বাংলা",
     "switchLabel": "Change language"
   },
+  "nav": {
+    "main": "Main menu",
+    "home": "Home",
+    "exams": "Exams",
+    "practice": "Practice",
+    "analytics": "Analytics",
+    "profile": "Profile",
+    "search": "Search",
+    "notifications": "Notifications",
+    "bookmarks": "Bookmarks",
+    "bank": "Question bank"
+  },
+  "comingSoon": {
+    "title": "Coming soon",
+    "body": "This section is being built. Check live exams and today's goal on Home."
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "NETWORK": "No internet connection. Check it and try again.",
+    "INVALID_CREDENTIALS": "Wrong mobile number or password.",
+    "ACCOUNT_LOCKED": "Too many wrong passwords. Your account is locked for now.",
+    "OTP_INVALID": "That code is wrong. Check it and try again.",
+    "OTP_EXPIRED": "The code has expired. Ask for a new one.",
+    "PHONE_EXISTS": "There is already an account with this number.",
+    "RATE_LIMITED": "Too many attempts. Please wait a moment.",
+    "SESSION_REVOKED": "You were signed out because the account was opened on another device.",
+    "UNAUTHENTICATED": "Please log in.",
+    "FORBIDDEN": "Refresh the page and try again.",
+    "MAINTENANCE": "We are under maintenance. Please try again shortly.",
+    "INTERNAL_ERROR": "Something went wrong on the server. Please try again shortly."
+  },
+  "auth": {
+    "phone": "Mobile number",
+    "password": "Password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "strength": {
+      "weak": "Weak",
+      "fair": "Fair",
+      "strong": "Strong"
+    },
+    "phoneInvalid": "Enter a valid 11-digit mobile number (e.g. 01712345678)",
+    "resetDone": "Password changed. Log in with your new password.",
+    "lockedFor": "Account locked for now. Try again in {time}.",
+    "rateLimitedFor": "Too many attempts. Try again in {time}.",
+    "forgot": "Forgot password?",
+    "login": "Log in",
+    "noAccount": "No account yet?",
+    "register": "Sign up",
+    "otpHelp": "We will send a 6-digit code to this number",
+    "terms": "I agree to the <link>terms and privacy policy</link>",
+    "goToLogin": "Go to log in",
+    "sendOtp": "Send OTP",
+    "haveAccount": "Already have an account?",
+    "rememberPassword": "Remembered it?",
+    "otpSentTo": "We sent a 6-digit code to <b>{phone}</b>.",
+    "changeNumber": "Change number",
+    "otpCode": "OTP code",
+    "otpResent": "A new code has been sent.",
+    "verify": "Verify",
+    "resendIn": "You can resend the code in {time}",
+    "resend": "Resend code",
+    "name": "Your name",
+    "nameTooShort": "Name must be at least 2 characters",
+    "passwordRule": "At least 8 characters; mix letters and numbers",
+    "createAccount": "Create account",
+    "startOver": "Start again",
+    "newPassword": "New password",
+    "confirmPassword": "Repeat password",
+    "passwordMismatch": "The passwords do not match",
+    "savePassword": "Save password",
+    "loginTitle": "Log in",
+    "loginSubtitle": "Enter your mobile number and password",
+    "registerTitle": "Create your account",
+    "registerSubtitle": "Start with your mobile number — it takes a minute",
+    "otpTitle": "Verify the code",
+    "profileTitle": "About you",
+    "profileSubtitle": "Your name and a password",
+    "forgotTitle": "Reset password",
+    "forgotSubtitle": "Enter your account's mobile number and we will send a code",
+    "newPasswordTitle": "Choose a new password",
+    "deviceLimitTitle": "Signed in on another device",
+    "deviceLimitBody": "An account can be active on one device at a time. Logging in here signs the other device out.",
+    "useThisDevice": "Use this device",
+    "supportLabel": "Need help? Call"
+  },
+  "onboarding": {
+    "goalsTitle": "Which exams are you preparing for?",
+    "goalsSubtitle": "Pick one or more. Home and practice will follow your choice.",
+    "districtTitle": "Your district",
+    "districtSubtitle": "Used for district rankings. You can add it later.",
+    "step": "Step {current, number} of {total, number}",
+    "questionCount": "{count, number} questions",
+    "selectedCount": "{count} selected",
+    "next": "Next",
+    "districtSearch": "Find your district",
+    "districtPlaceholder": "e.g. Dhaka",
+    "districtNone": "No district with that name",
+    "skip": "Later",
+    "finish": "Get started"
+  },
   "home": {
-    "title": "Start preparing today",
-    "subtitle": "Live exams, practice and analytics in one place.",
-    "apiStatus": "Server status",
-    "apiOk": "Connected",
-    "apiDown": "Not connected",
-    "serverTime": "Server time: {time}",
-    "freeLiveExams": "Free live exams per month: {count, number}"
+    "title": "Welcome",
+    "examMeta": "{questions} questions · {marks} marks · {minutes} min",
+    "liveNow": "Live now",
+    "timeLeft": "{time} left",
+    "participants": "{count} joined",
+    "join": "Join",
+    "nextLive": "Next live exam",
+    "startsIn": "in {time}",
+    "reminder": "Reminder",
+    "reminderOn": "Reminder on",
+    "details": "Details",
+    "banners": "Offers and announcements",
+    "bannerN": "Banner {n, number}",
+    "todayGoal": "Today's goal",
+    "answeredOfGoal": "{answered}/{goal} questions",
+    "accuracy": "Accuracy {pct}%",
+    "goalDone": "Great! Today's goal is done",
+    "goalLeft": "{count} more to reach your goal",
+    "keepPracticing": "Keep practicing",
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening",
+      "night": "Good night"
+    },
+    "streak": "{count}-day streak",
+    "premium": "Premium",
+    "noExamsTitle": "No live exams right now",
+    "noExamsBody": "New exams will show up here. Practice in the meantime.",
+    "continuePractice": "Continue practice",
+    "continue": "Continue",
+    "quickActions": "Quick actions",
+    "quick": {
+      "practice": "Practice",
+      "bank": "Question bank",
+      "search": "Search",
+      "bookmarks": "Bookmarks"
+    }
+  },
+  "time": {
+    "daysHours": "{d} d {h} h",
+    "hoursMinutes": "{h} h {m} min",
+    "minutes": "{m} min"
+  },
+  "profile": {
+    "title": "Profile",
+    "editTitle": "Edit profile",
+    "edit": "Edit",
+    "premiumPlan": "Premium plan",
+    "freePlan": "Free plan",
+    "expires": "Expires {date}",
+    "trialAvailable": "You can start a free trial",
+    "freeBody": "Get premium for every explanation and unlimited exams",
+    "renew": "Renew",
+    "upgrade": "Get premium",
+    "menu": "Profile menu",
+    "menuItems": {
+      "myExams": "My exams",
+      "payments": "Payments",
+      "bookmarks": "Bookmarks",
+      "settings": "Settings",
+      "help": "Help"
+    },
+    "logout": "Log out",
+    "nameTooShort": "Name must be at least 2 characters",
+    "avatarSoon": "Photo upload is coming soon",
+    "name": "Name",
+    "goals": "Preparing for",
+    "saved": "Saved",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "settings": {
+    "title": "Settings",
+    "appearance": "Language and theme",
+    "language": "Language",
+    "theme": "Theme",
+    "themeSystem": "System",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "notifications": "Notifications",
+    "notify": {
+      "exam_reminder": "Exam reminders",
+      "result": "Results published",
+      "subscription": "Subscription and payments",
+      "promotional": "Offers and news"
+    },
+    "devices": "Devices",
+    "devicesBody": "If your account is open on another device, sign it out from there.",
+    "signOutOthers": "Sign out other devices",
+    "signedOutOthers": "Other devices have been signed out.",
+    "about": "About",
+    "privacy": "Privacy policy",
+    "terms": "Terms",
+    "version": "Version",
+    "dangerZone": "Account",
+    "deleteBody": "Deleting your account removes your results, practice and subscription for good.",
+    "deleteAccount": "Delete account",
+    "deleteConfirmTitle": "Delete your account?",
+    "deleteConfirmBody": "This cannot be undone. We will start deleting all your data.",
+    "cancel": "Cancel"
+  },
+  "maintenance": {
+    "title": "We are under maintenance",
+    "body": "We are improving the servers. Please try again shortly.",
+    "overTitle": "We are back",
+    "overBody": "Maintenance is over.",
+    "back": "Go to Home",
+    "check": "Check again"
+  },
+  "landing": {
+    "metaTitle": "BCS, bank and admission preparation — live MCQ exams",
+    "metaDescription": "Live model tests, topic practice, previous-year questions and rankings for BCS, bank, primary, NTRCA and admission exams, all in one place.",
+    "heroBadge": "Live exams every day",
+    "heroTitle": "Prepare for BCS with live exams",
+    "heroBody": "Sit the same exam at the same time as thousands of others, see your rank right away, and practice your weak topics.",
+    "ctaStart": "Start free",
+    "ctaLogin": "Log in",
+    "freeLine": "Free: {live} live exams a month, {practice} practice questions a day",
+    "preview": {
+      "live": "Live now",
+      "left": "38 min left",
+      "title": "47th BCS Preliminary Model Test",
+      "meta": "200 questions · 200 marks · 2 hours",
+      "option": {
+        "a": "Article 2",
+        "b": "Article 2A"
+      }
+    },
+    "featuresTitle": "Everything you need to prepare",
+    "features": {
+      "live": {
+        "title": "Live exams",
+        "body": "Same start time for everyone, submitted automatically when time is up."
+      },
+      "practice": {
+        "title": "Topic practice",
+        "body": "See the right answer and explanation right after each question."
+      },
+      "rank": {
+        "title": "Rankings",
+        "body": "See where you stand nationally and in your district."
+      },
+      "analytics": {
+        "title": "Analytics",
+        "body": "Weak topics and progress at a glance."
+      }
+    },
+    "plansTitle": "Packages",
+    "popular": "Popular",
+    "days": "{count} days",
+    "allPlans": "See all packages",
+    "appTitle": "Mobile app",
+    "appBody": "Use the same account on the mobile app; answers stay on your phone even if the internet drops.",
+    "appSoon": "Android and iPhone apps are coming soon",
+    "faqTitle": "Questions",
+    "faq": {
+      "free": {
+        "q": "What do I get for free?",
+        "a": "A few live exams every month and some practice questions every day. Premium unlocks everything."
+      },
+      "device": {
+        "q": "How many devices can I use?",
+        "a": "One at a time. Logging in on a new device signs out the old one."
+      },
+      "payment": {
+        "q": "How do I pay?",
+        "a": "With bKash or a card (SSLCommerz). Your package starts as soon as the payment goes through."
+      },
+      "offline": {
+        "q": "What if the internet drops during an exam?",
+        "a": "Your answers are saved on the device and sync on their own when you are back online."
+      }
+    },
+    "footerNav": "Footer links",
+    "footer": {
+      "about": "About us",
+      "contact": "Contact",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "refund": "Refund policy"
+    }
   },
   "gallery": {
     "title": "Component gallery",
