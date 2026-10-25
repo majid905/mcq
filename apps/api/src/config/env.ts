@@ -19,6 +19,10 @@ export const envSchema = z.object({
   /** Override when the contract file is not found by walking up to the repo root. */
   OPENAPI_PATH: z.string().optional(),
   JWT_ACCESS_SECRET: z.string().min(16, 'must be at least 16 characters'),
+  /** `console` only logs pushes (dev, staging); `fcm` sends through Firebase Cloud Messaging. */
+  PUSH_DRIVER: z.enum(['console', 'fcm']).default('console'),
+  /** Service account JSON (the whole file content) for PUSH_DRIVER=fcm. */
+  FCM_SERVICE_ACCOUNT_JSON: z.string().optional(),
   /** Meilisearch for GET /search/questions. Unset = MySQL LIKE search (fine for small data only). */
   MEILI_URL: z.url().optional(),
   MEILI_MASTER_KEY: z.string().optional(),
@@ -36,6 +40,9 @@ function crossChecks(cfg: AppConfig): string[] {
   const problems: string[] = [];
   if (cfg.SMS_DRIVER === 'http' && !cfg.SMS_HTTP_URL) {
     problems.push('  - SMS_HTTP_URL: required when SMS_DRIVER=http');
+  }
+  if (cfg.PUSH_DRIVER === 'fcm' && !cfg.FCM_SERVICE_ACCOUNT_JSON) {
+    problems.push('  - FCM_SERVICE_ACCOUNT_JSON: required when PUSH_DRIVER=fcm');
   }
   if (cfg.NODE_ENV === 'production' && cfg.SMS_DRIVER === 'console') {
     problems.push(

@@ -39,7 +39,7 @@ How to run tracks in parallel with Claude Code: open **three terminals / three C
 - [ ] Checkpoint 2: 3 devices (Android, iOS sim, web) take the same live exam; ranks match; kill the app mid-exam and resume with answers intact.
 
 ## Phase 3 — Practice, bank, search, analytics, notifications (prompts `30-*`)
-- [ ] A: taxonomy endpoints with progress, practice sessions (pools in Redis), quick-answer endpoint, bookmarks, wrong list, source exams, Meilisearch sync + search, analytics rollup workers, streaks, notifications + FCM sender, reminders scheduler.
+- [x] A: taxonomy endpoints with progress, practice sessions (pools in Redis), quick-answer endpoint, bookmarks, wrong list, source exams, Meilisearch sync + search, analytics rollup workers, streaks, notifications + FCM sender, reminders scheduler. Done except real FCM credentials (PUSH_DRIVER=console until the Firebase project exists) and an admin broadcast endpoint (Phase 4).
 - [ ] W & M: practice hub, drill-down, quick practice, custom builder, question bank, bookmarks, wrong list, search, analytics charts, notifications inbox, settings.
 
 ## Phase 4 — Payments + Admin (prompts `40-*`)

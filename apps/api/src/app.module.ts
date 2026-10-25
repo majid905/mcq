@@ -7,6 +7,7 @@ import { ExamsModule } from './exams/exams.module';
 import { HealthModule } from './health/health.module';
 import { HomeModule } from './home/home.module';
 import { MeModule } from './me/me.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { PracticeModule } from './practice/practice.module';
 import { QuestionsModule } from './questions/questions.module';
 import { SearchModule } from './search/search.module';
@@ -26,6 +27,7 @@ import { SettingsModule } from './settings/settings.module';
     PracticeModule,
     AnalyticsModule,
     SearchModule,
+    NotificationsModule,
     HomeModule,
   ],
 })

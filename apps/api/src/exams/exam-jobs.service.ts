@@ -1,8 +1,16 @@
-import { Injectable, Logger, type OnModuleDestroy, type OnModuleInit } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  Optional,
+  type OnModuleDestroy,
+  type OnModuleInit,
+} from '@nestjs/common';
 import { ATTEMPT_GRACE_SEC } from '../attempts/attempt-state';
 import { AttemptsService } from '../attempts/attempts.service';
 import { MeritService } from '../attempts/merit.service';
 import { missingPartitions, reorganizeSql } from '../attempts/partitions';
+import { NotificationService } from '../notifications/notification.service';
+import { examReminder, meritPublished } from '../notifications/templates';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { PaperService } from './paper.service';
@@ -28,6 +36,7 @@ export class ExamJobsService implements OnModuleInit, OnModuleDestroy {
     private readonly papers: PaperService,
     private readonly attempts: AttemptsService,
     private readonly merit: MeritService,
+    @Optional() private readonly notifications?: NotificationService,
   ) {}
 
   onModuleInit(): void {
@@ -47,6 +56,7 @@ export class ExamJobsService implements OnModuleInit, OnModuleDestroy {
       ['status', () => this.flipStatuses(now)],
       ['participants', () => this.flushParticipants()],
       ['autosubmit', () => this.autoSubmitEnded(now)],
+      ['reminders', () => this.sendReminders(now)],
       ['merit', () => this.publishMerit(now)],
       ['partitions', () => this.ensurePartitions(now)],
     ];
@@ -178,8 +188,79 @@ export class ExamJobsService implements OnModuleInit, OnModuleDestroy {
       }
       await this.merit.publish(exam.id);
       published++;
+      await this.notifyMerit(exam.id);
     }
     return published;
+  }
+
+  /**
+   * FR-EXAM-02: push to everyone who set a reminder, 15 and 1 minute before the start. Progress is
+   * kept in Redis (a cursor per exam and slot), so a crash or a slow tick never sends twice.
+   */
+  async sendReminders(now: Date): Promise<number> {
+    if (!this.notifications) return 0;
+    const exams = await this.prisma.exams.findMany({
+      where: {
+        status: { in: ['scheduled', 'running'] },
+        start_at: { gt: now, lte: new Date(now.getTime() + 16 * 60_000) },
+      },
+      select: { id: true, title_bn: true, title_en: true, start_at: true },
+    });
+    let sent = 0;
+    for (const exam of exams) {
+      const leftMs = (exam.start_at?.getTime() ?? 0) - now.getTime();
+      for (const slot of [15, 1]) {
+        if (leftMs > slot * 60_000) continue; // not due yet
+        if (slot === 15 && leftMs < 5 * 60_000) continue; // too late to still say "15 minutes"
+        const done = `remind:${exam.id}:${slot}:done`;
+        const cursorKey = `remind:${exam.id}:${slot}:cursor`;
+        if (await this.redis.client.exists(done)) continue;
+        const minutes = Math.max(1, Math.round(leftMs / 60_000));
+        let after = BigInt((await this.redis.client.get(cursorKey)) ?? 0);
+        for (;;) {
+          const rows = await this.prisma.exam_reminders.findMany({
+            where: { exam_id: exam.id, user_id: { gt: after } },
+            orderBy: { user_id: 'asc' },
+            take: 500,
+            select: { user_id: true },
+          });
+          if (rows.length === 0) break;
+          sent += await this.notifications.notifyMany(
+            rows.map((r) => r.user_id),
+            examReminder(exam, slot === 15 ? minutes : 1),
+          );
+          after = rows[rows.length - 1]?.user_id ?? after;
+          await this.redis.client.set(cursorKey, String(after), 'EX', 3600);
+        }
+        await this.redis.client.set(done, '1', 'EX', 86_400);
+      }
+    }
+    if (sent > 0) this.logger.log(`exam reminders sent: ${sent}`);
+    return sent;
+  }
+
+  /** FR-NOTI-01: tell every participant the final merit list is out. Never blocks the publish. */
+  private async notifyMerit(examId: bigint): Promise<void> {
+    if (!this.notifications) return;
+    const key = `merit:notified:${examId}`;
+    if ((await this.redis.client.set(key, '1', 'EX', 7 * 86_400, 'NX')) !== 'OK') return;
+    try {
+      const exam = await this.prisma.exams.findUniqueOrThrow({
+        where: { id: examId },
+        select: { id: true, title_bn: true, title_en: true },
+      });
+      const rows = await this.prisma.attempts.findMany({
+        where: { exam_id: examId, kind: 'live', status: 'scored' },
+        select: { user_id: true },
+      });
+      await this.notifications.notifyMany(
+        rows.map((r) => r.user_id),
+        meritPublished(exam),
+      );
+    } catch (err) {
+      await this.redis.client.del(key);
+      this.logger.error(`merit notifications failed exam=${examId}: ${(err as Error).message}`);
+    }
   }
 
   /** Daily: keep three future monthly partitions on `attempts` (database/partition-maintenance.sql). */
