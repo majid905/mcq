@@ -14,6 +14,7 @@ export const ERROR_STATUS = {
   PHONE_EXISTS: 409,
   ALREADY_ATTEMPTED: 409,
   DUPLICATE_QUESTION: 409,
+  ALREADY_REPORTED: 409,
   ATTEMPT_CLOSED: 410,
   COUPON_INVALID: 422,
   EXAM_NOT_PUBLISHABLE: 422,
@@ -59,6 +60,10 @@ export const ERROR_MESSAGES: Record<ErrorCode, Record<Locale, string>> = {
     en: 'You have already taken this exam',
   },
   DUPLICATE_QUESTION: { bn: 'প্রশ্নটি আগে থেকেই আছে', en: 'This question already exists' },
+  ALREADY_REPORTED: {
+    bn: 'আপনি এই কারণে আগেই রিপোর্ট করেছেন',
+    en: 'You have already reported this question for that reason',
+  },
   ATTEMPT_CLOSED: { bn: 'পরীক্ষার সময় শেষ', en: 'The attempt is closed' },
   COUPON_INVALID: {
     bn: 'কুপনটি সঠিক নয় বা মেয়াদোত্তীর্ণ',

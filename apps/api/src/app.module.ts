@@ -6,6 +6,7 @@ import { ExamsModule } from './exams/exams.module';
 import { HealthModule } from './health/health.module';
 import { HomeModule } from './home/home.module';
 import { MeModule } from './me/me.module';
+import { QuestionsModule } from './questions/questions.module';
 import { SettingsModule } from './settings/settings.module';
 
 /** HTTP API. Feature modules (exams, practice, ...) are added here as they are built. */
@@ -18,6 +19,7 @@ import { SettingsModule } from './settings/settings.module';
     SettingsModule,
     ExamsModule,
     AttemptsModule,
+    QuestionsModule,
     HomeModule,
   ],
 })

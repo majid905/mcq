@@ -25,12 +25,24 @@ export class JwtAuthGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
-    if (isPublic) return true;
 
     const req = context.switchToHttp().getRequest<AuthedRequest>();
     const header = req.headers.authorization;
     const token = header?.startsWith('Bearer ') ? header.slice(7).trim() : undefined;
     const claims = token ? this.tokens.verifyAccess(token) : null;
+
+    if (isPublic) {
+      // Public routes work without a token. A valid one still identifies the user, so e.g.
+      // GET /taxonomy can add progress for logged-in users. A bad token is simply ignored.
+      if (claims && !(await this.devices.isRevoked(claims.dev))) {
+        req.user = {
+          userId: BigInt(claims.sub),
+          deviceRowId: BigInt(claims.dev),
+          premium: claims.prem,
+        };
+      }
+      return true;
+    }
     if (!claims) throw new ApiException('UNAUTHENTICATED');
 
     if (await this.devices.isRevoked(claims.dev)) throw new ApiException('SESSION_REVOKED');

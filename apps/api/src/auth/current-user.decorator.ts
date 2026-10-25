@@ -17,3 +17,9 @@ export const CurrentUser = createParamDecorator(
     return req.user;
   },
 );
+
+/** `@OptionalUser()` on a @Public() route: the signed-in user, or undefined for anonymous visitors. */
+export const OptionalUser = createParamDecorator(
+  (_data: unknown, ctx: ExecutionContext): AuthUser | undefined =>
+    ctx.switchToHttp().getRequest<AuthedRequest>().user,
+);
