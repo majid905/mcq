@@ -1,0 +1,11 @@
+/* Import after the design tokens in each app's globals.css: @import '@mcq/ui/styles.css'; */
+
+/* OptionTile badge on select: scale 0.9 -> 1 (docs/05 §6). */
+@keyframes mcq-badge-pop {
+  from {
+    transform: scale(0.9);
+  }
+  to {
+    transform: scale(1);
+  }
+}
