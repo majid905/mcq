@@ -22,5 +22,86 @@
     "apiDown": "Not connected",
     "serverTime": "Server time: {time}",
     "freeLiveExams": "Free live exams per month: {count, number}"
+  },
+  "gallery": {
+    "title": "Component gallery",
+    "subtitle": "UI kit v1 — light and dark side by side. Use the button above to switch language.",
+    "light": "Light",
+    "dark": "Dark",
+    "sections": {
+      "buttons": "AppButton",
+      "textField": "AppTextField",
+      "options": "OptionTile",
+      "cards": "AppCard",
+      "chips": "AppChip",
+      "skeleton": "Skeleton",
+      "empty": "EmptyState",
+      "error": "ErrorState",
+      "timer": "TimerBar",
+      "navigator": "QuestionNavigator"
+    },
+    "button": {
+      "primary": "Join",
+      "secondary": "Details",
+      "ghost": "Later",
+      "danger": "Leave exam",
+      "small": "Reminder"
+    },
+    "textField": {
+      "label": "Your name",
+      "placeholder": "e.g. Rafi Ahmed",
+      "helper": "Shown on your certificate",
+      "errorLabel": "Mobile number",
+      "error": "Enter a valid 11-digit mobile number"
+    },
+    "option": {
+      "question": "Which article of the Constitution of Bangladesh is about the \"state religion\"?",
+      "a": "Article 2",
+      "b": "Article 2A",
+      "c": "Article 3",
+      "d": "Article 4A",
+      "correct": "Correct answer",
+      "wrong": "Your answer is wrong",
+      "missed": "Correct answer, you did not choose it",
+      "states": "In results: idle · correct · wrong · missed correct answer"
+    },
+    "card": {
+      "liveTitle": "47th BCS Preliminary Model Test — 12",
+      "liveMeta": "200 questions · 200 marks · 2 hours · 8,540 joined",
+      "upcomingTitle": "Sonali Bank SO Model Test",
+      "upcomingMeta": "Tomorrow 9:00 PM · 100 questions",
+      "join": "Join",
+      "details": "Details"
+    },
+    "chip": {
+      "live": "Live now",
+      "streak": "12-day streak",
+      "premium": "Premium",
+      "category": "Bank",
+      "correct": "Correct",
+      "wrong": "Wrong"
+    },
+    "empty": {
+      "title": "No bookmarks yet",
+      "description": "Tap ✩ next to a question to save it here.",
+      "action": "Open question bank"
+    },
+    "error": {
+      "message": "Something went wrong on the server. Please try again shortly.",
+      "retry": "Try again",
+      "offline": "No internet — your answers are saved on this device"
+    },
+    "timer": {
+      "label": "Time left",
+      "answered": "Answered {answered}/{total}",
+      "openNavigator": "Open question list"
+    },
+    "navigator": {
+      "answered": "Answered",
+      "unanswered": "Not answered",
+      "marked": "Review",
+      "cell": "Question {number}, {status}",
+      "current": "current question"
+    }
   }
 }

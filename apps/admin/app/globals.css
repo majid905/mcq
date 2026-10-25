@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import '@mcq/design-tokens/tokens.css';
 @import '@mcq/design-tokens/theme.css';
+@import '@mcq/ui/styles.css';
 
 /* Shared components live in packages/ui; Tailwind must scan them. */
 @source '../../../packages/ui/src';

@@ -22,5 +22,86 @@
     "apiDown": "সংযোগ নেই",
     "serverTime": "সার্ভারের সময়: {time}",
     "freeLiveExams": "ফ্রি লাইভ পরীক্ষা প্রতি মাসে: {count, number}টি"
+  },
+  "gallery": {
+    "title": "কম্পোনেন্ট গ্যালারি",
+    "subtitle": "UI কিট v1 — লাইট ও ডার্ক পাশাপাশি। ভাষা বদলাতে উপরের বোতাম ব্যবহার করুন।",
+    "light": "লাইট",
+    "dark": "ডার্ক",
+    "sections": {
+      "buttons": "AppButton",
+      "textField": "AppTextField",
+      "options": "OptionTile",
+      "cards": "AppCard",
+      "chips": "AppChip",
+      "skeleton": "Skeleton",
+      "empty": "EmptyState",
+      "error": "ErrorState",
+      "timer": "TimerBar",
+      "navigator": "QuestionNavigator"
+    },
+    "button": {
+      "primary": "অংশ নিন",
+      "secondary": "বিস্তারিত",
+      "ghost": "পরে দেখব",
+      "danger": "পরীক্ষা ছেড়ে দিন",
+      "small": "রিমাইন্ডার"
+    },
+    "textField": {
+      "label": "আপনার নাম",
+      "placeholder": "যেমন: রাফি আহমেদ",
+      "helper": "সার্টিফিকেটে এই নাম দেখাবে",
+      "errorLabel": "মোবাইল নম্বর",
+      "error": "সঠিক ১১ সংখ্যার মোবাইল নম্বর দিন"
+    },
+    "option": {
+      "question": "বাংলাদেশের সংবিধানের কোন অনুচ্ছেদে \"রাষ্ট্রধর্ম\" সম্পর্কে বলা হয়েছে?",
+      "a": "অনুচ্ছেদ ২",
+      "b": "অনুচ্ছেদ ২ক",
+      "c": "অনুচ্ছেদ ৩",
+      "d": "অনুচ্ছেদ ৪ক",
+      "correct": "সঠিক উত্তর",
+      "wrong": "আপনার উত্তর ভুল",
+      "missed": "সঠিক উত্তর, আপনি এটি দেননি",
+      "states": "ফলাফলে: সাধারণ · সঠিক · ভুল · বাদ পড়া সঠিক উত্তর"
+    },
+    "card": {
+      "liveTitle": "৪৭তম বিসিএস প্রিলি মডেল টেস্ট — ১২",
+      "liveMeta": "২০০ প্রশ্ন · ২০০ নম্বর · ২ ঘণ্টা · ৮,৫৪০ জন",
+      "upcomingTitle": "সোনালী ব্যাংক এসও মডেল টেস্ট",
+      "upcomingMeta": "আগামীকাল রাত ৯:০০ · ১০০ প্রশ্ন",
+      "join": "অংশ নিন",
+      "details": "বিস্তারিত"
+    },
+    "chip": {
+      "live": "এখন চলছে",
+      "streak": "১২ দিনের স্ট্রিক",
+      "premium": "প্রিমিয়াম",
+      "category": "ব্যাংক",
+      "correct": "সঠিক",
+      "wrong": "ভুল"
+    },
+    "empty": {
+      "title": "এখনো কোনো বুকমার্ক নেই",
+      "description": "প্রশ্নের পাশে ✩ চাপলে এখানে জমা হবে।",
+      "action": "প্রশ্ন ব্যাংক দেখুন"
+    },
+    "error": {
+      "message": "সার্ভারে সমস্যা হয়েছে। একটু পরে আবার চেষ্টা করুন।",
+      "retry": "আবার চেষ্টা করুন",
+      "offline": "ইন্টারনেট নেই — উত্তরগুলো ফোনে সংরক্ষিত আছে"
+    },
+    "timer": {
+      "label": "বাকি সময়",
+      "answered": "উত্তর {answered}/{total}",
+      "openNavigator": "প্রশ্ন তালিকা খুলুন"
+    },
+    "navigator": {
+      "answered": "উত্তর",
+      "unanswered": "বাকি",
+      "marked": "রিভিউ",
+      "cell": "প্রশ্ন {number}, {status}",
+      "current": "বর্তমান প্রশ্ন"
+    }
   }
 }
