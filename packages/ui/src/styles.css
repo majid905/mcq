@@ -9,3 +9,13 @@
     transform: scale(1);
   }
 }
+
+/* Question and option HTML from the API (images, KaTeX, line breaks). */
+.mcq-html img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--mcq-radius-sm);
+}
+.mcq-html p + p {
+  margin-top: var(--mcq-space-2);
+}

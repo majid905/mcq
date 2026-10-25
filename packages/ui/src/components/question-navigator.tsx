@@ -26,6 +26,8 @@ export interface QuestionNavigatorProps {
   locale: string;
   /** Jump to a question. Without it the grid is display-only. */
   onSelect?: (number: number) => void;
+  /** Hide the legend when several grids (one per section) are stacked. */
+  showLegend?: boolean;
   className?: string;
 }
 
@@ -42,24 +44,27 @@ export function QuestionNavigator({
   labels,
   locale,
   onSelect,
+  showLegend = true,
   className,
 }: QuestionNavigatorProps) {
   return (
     <div className={cn('flex flex-col gap-3', className)}>
-      <ul className="flex flex-wrap gap-3 text-caption text-text-muted" aria-hidden>
-        <li className="flex items-center gap-1.5">
-          <span className="size-2.5 rounded-pill bg-primary" />
-          {labels.answered}
-        </li>
-        <li className="flex items-center gap-1.5">
-          <span className="size-2.5 rounded-pill border-[1.5px] border-border-strong" />
-          {labels.unanswered}
-        </li>
-        <li className="flex items-center gap-1.5">
-          <span className="size-2.5 rounded-pill border-[1.5px] border-accent" />
-          {labels.marked}
-        </li>
-      </ul>
+      {showLegend && (
+        <ul className="flex flex-wrap gap-3 text-caption text-text-muted" aria-hidden>
+          <li className="flex items-center gap-1.5">
+            <span className="size-2.5 rounded-pill bg-primary" />
+            {labels.answered}
+          </li>
+          <li className="flex items-center gap-1.5">
+            <span className="size-2.5 rounded-pill border-[1.5px] border-border-strong" />
+            {labels.unanswered}
+          </li>
+          <li className="flex items-center gap-1.5">
+            <span className="size-2.5 rounded-pill border-[1.5px] border-accent" />
+            {labels.marked}
+          </li>
+        </ul>
+      )}
       <ol className="grid grid-cols-[repeat(auto-fill,minmax(40px,1fr))] gap-2">
         {items.map((item) => {
           const isCurrent = item.number === currentNumber;

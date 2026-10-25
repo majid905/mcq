@@ -1,5 +1,5 @@
 export { cn } from './lib/cn';
-export { fillTemplate, formatClock, formatInteger } from './lib/format';
+export { fillTemplate, formatClock, formatDecimal, formatInteger } from './lib/format';
 export {
   THEME_STORAGE_KEY,
   applyThemePreference,
@@ -47,3 +47,13 @@ export {
   type SegmentedOption,
 } from './components/form-controls';
 export { Avatar, ProgressBar, type AvatarProps, type ProgressBarProps } from './components/display';
+export { QuestionCard, type QuestionCardProps } from './components/question-card';
+export {
+  PremiumLock,
+  RankBadge,
+  ScoreRing,
+  StatTile,
+  useCountUp,
+  type ScoreRingProps,
+  type StatTileProps,
+} from './components/result-widgets';

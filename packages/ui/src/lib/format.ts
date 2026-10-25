@@ -25,3 +25,8 @@ export function formatClock(totalSeconds: number, locale: string): string {
 export function fillTemplate(template: string, values: Record<string, string>): string {
   return template.replace(/\{(\w+)\}/g, (match, key: string) => values[key] ?? match);
 }
+
+/** Scores and marks: up to `maxFraction` decimals in the locale's digits (৪২.৫). */
+export function formatDecimal(value: number, locale: string, maxFraction = 2): string {
+  return new Intl.NumberFormat(locale, { maximumFractionDigits: maxFraction }).format(value);
+}
