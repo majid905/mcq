@@ -1569,6 +1569,18 @@ paths:
         '204': { description: Marked read }
 
   /notifications/preferences:
+    get:
+      tags: [Notifications]
+      summary: Current notification toggles (FR-NOTI-03)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/NotificationPrefs' }
     put:
       tags: [Notifications]
       requestBody:
