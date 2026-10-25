@@ -1759,6 +1759,9 @@ export interface paths {
                         };
                     };
                 };
+                402: components["responses"]["Error"];
+                404: components["responses"]["Error"];
+                410: components["responses"]["Error"];
             };
         };
         delete?: never;

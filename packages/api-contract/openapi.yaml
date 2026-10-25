@@ -943,6 +943,9 @@ paths:
                       is_correct: { type: boolean }
                       correct_option: { $ref: '#/components/schemas/OptionKey' }
                       explanation: { type: [string, 'null'] }
+        '402': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '410': { $ref: '#/components/responses/Error' }
 
   # ------------------------------------------------------------------ Analytics
   /analytics/overview:
