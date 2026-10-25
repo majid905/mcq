@@ -17,9 +17,9 @@ Tokens: `design/tokens.json` → `pnpm tokens:gen` → CSS variables (web/admin)
 | Role | Light | Dark | Used for |
 | --- | --- | --- | --- |
 | primary | #0F766E | #2DBDAE | Main buttons, selected option, links, active nav |
-| accent | #E39B14 | #F2B53D | Streak, rank badges, premium crown, timer warning |
-| live | #E0344F | #FF5A73 | "LIVE" pill, running exam card edge, last-minute timer |
-| success / danger | #15803D / #C62828 | #3FCB74 / #F2706B | Correct / wrong answers, form errors |
+| accent | #E39B14 | #F2B53D | Streak, rank badges, premium crown, timer warning (fills; saffron text on soft backgrounds uses `accentText` #92640D / #F2B53D) |
+| live | #C52E46 | #FF5A73 | "LIVE" pill, running exam card edge, last-minute timer |
+| success / danger | #147C3B / #C62828 | #3FCB74 / #F2706B | Correct / wrong answers, form errors |
 | bg / surface | #F7F8F6 / #FFFFFF | #0D1412 / #141D1A | Page / cards |
 | text / textMuted | #14201B / #55635C | #E8EEEA / #A3B1AA | Body / secondary |
 

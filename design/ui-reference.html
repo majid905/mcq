@@ -10,23 +10,23 @@
 /* Values mirror design/tokens.json. Visual reference only — production code must use generated tokens. */
 :root{
   --bg:#F7F8F6;--surface:#FFFFFF;--surfaceMuted:#F0F2EF;--border:#DDE3DE;--borderStrong:#C3CCC5;
-  --text:#14201B;--textMuted:#55635C;--textSubtle:#7C8A83;
+  --text:#14201B;--textMuted:#55635C;--textSubtle:#646F69;
   --primary:#0F766E;--primarySoft:#E3F3F1;--onPrimary:#fff;
-  --accent:#E39B14;--accentSoft:#FDF2DC;--live:#E0344F;--liveSoft:#FDE7EA;
-  --success:#15803D;--successSoft:#E3F5E9;--danger:#C62828;--dangerSoft:#FCE8E8;
+  --accent:#E39B14;--accentSoft:#FDF2DC;--accentText:#92640D;--live:#C52E46;--liveSoft:#FDE7EA;
+  --success:#147C3B;--successSoft:#E3F5E9;--danger:#C62828;--dangerSoft:#FCE8E8;
   --page:#E9ECE8;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0D1412;--surface:#141D1A;--surfaceMuted:#1A2521;--border:#26332E;--borderStrong:#38473F;
-  --text:#E8EEEA;--textMuted:#A3B1AA;--textSubtle:#7A8981;
+  --text:#E8EEEA;--textMuted:#A3B1AA;--textSubtle:#7F8F87;
   --primary:#2DBDAE;--primarySoft:#12302C;--onPrimary:#04201C;
-  --accent:#F2B53D;--accentSoft:#33270E;--live:#FF5A73;--liveSoft:#3A1820;
+  --accent:#F2B53D;--accentSoft:#33270E;--accentText:#F2B53D;--live:#FF5A73;--liveSoft:#3A1820;
   --success:#3FCB74;--successSoft:#13301F;--danger:#F2706B;--dangerSoft:#3A1A19;--page:#060A09;}}
 :root[data-theme="dark"]{
   --bg:#0D1412;--surface:#141D1A;--surfaceMuted:#1A2521;--border:#26332E;--borderStrong:#38473F;
-  --text:#E8EEEA;--textMuted:#A3B1AA;--textSubtle:#7A8981;
+  --text:#E8EEEA;--textMuted:#A3B1AA;--textSubtle:#7F8F87;
   --primary:#2DBDAE;--primarySoft:#12302C;--onPrimary:#04201C;
-  --accent:#F2B53D;--accentSoft:#33270E;--live:#FF5A73;--liveSoft:#3A1820;
+  --accent:#F2B53D;--accentSoft:#33270E;--accentText:#F2B53D;--live:#FF5A73;--liveSoft:#3A1820;
   --success:#3FCB74;--successSoft:#13301F;--danger:#F2706B;--dangerSoft:#3A1A19;--page:#060A09;}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--page);color:var(--text);font-family:'Inter','Hind Siliguri',system-ui,sans-serif;padding:32px 16px 64px}
@@ -45,7 +45,7 @@ header.top p{color:var(--textMuted);font-size:14px;margin-top:4px;max-width:620p
 .muted{color:var(--textMuted)} .sub{color:var(--textSubtle)}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px}
 .chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:500}
-.chip.accent{background:var(--accentSoft);color:var(--accent)}
+.chip.accent{background:var(--accentSoft);color:var(--accentText)}
 .chip.live{background:var(--liveSoft);color:var(--live)}
 .chip.soft{background:var(--surfaceMuted);color:var(--textMuted)}
 .chip.primary{background:var(--primarySoft);color:var(--primary)}
@@ -66,7 +66,7 @@ header.top p{color:var(--textMuted);font-size:14px;margin-top:4px;max-width:620p
 .nav div{display:flex;flex-direction:column;align-items:center;gap:3px}
 .nav .on{color:var(--primary);font-weight:600}
 .timer{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px 0}
-.timer .t{font-variant-numeric:tabular-nums;font-size:20px;font-weight:600;color:var(--accent)}
+.timer .t{font-variant-numeric:tabular-nums;font-size:20px;font-weight:600;color:var(--accentText)}
 .timer .bar{margin-top:8px;border-radius:0;height:3px}
 .timer .bar>i{background:var(--accent);border-radius:0}
 .q{font-size:16px;font-weight:500;line-height:1.7}
@@ -90,7 +90,7 @@ header.top p{color:var(--textMuted);font-size:14px;margin-top:4px;max-width:620p
 .grid-nav{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
 .grid-nav span{aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-size:11px;border:1.5px solid var(--borderStrong);color:var(--textMuted)}
 .grid-nav .a{background:var(--primary);border-color:var(--primary);color:var(--onPrimary)}
-.grid-nav .m{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 2px var(--accentSoft)}
+.grid-nav .m{border-color:var(--accent);color:var(--accentText);box-shadow:0 0 0 2px var(--accentSoft)}
 .grid-nav .c{border-width:2.5px;border-color:var(--text);color:var(--text);font-weight:700}
 .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:24px 24px 0 0;padding:10px 16px 16px;border-top:1px solid var(--border);box-shadow:0 -12px 32px rgba(0,0,0,.15)}
 .handle{width:36px;height:4px;border-radius:9px;background:var(--borderStrong);margin:0 auto 12px}
