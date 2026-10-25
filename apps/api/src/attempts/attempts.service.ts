@@ -105,6 +105,7 @@ export class AttemptsService {
         ends_ms: endsAt.getTime(),
         status: 'in_progress',
         total: exam.question_count,
+        district_id: user.district_id === null ? null : String(user.district_id),
       };
       await this.redis.client
         .multi()
@@ -242,6 +243,8 @@ export class AttemptsService {
         meta.exam_id ?? '',
         'kind',
         meta.kind,
+        'district_id',
+        meta.district_id ?? '',
         'started_ms',
         String(meta.started_ms),
         'submitted_ms',
@@ -249,6 +252,57 @@ export class AttemptsService {
       )
       .exec();
     return received;
+  }
+
+  /**
+   * Scheduler auto-submit (FR-EXAM-08): queue an attempt whose owner never pressed submit, using
+   * the last synced answers. Returns false when it was already queued.
+   */
+  async autoSubmit(
+    row: {
+      id: bigint;
+      user_id: bigint;
+      exam_id: bigint | null;
+      kind: AttemptMeta['kind'];
+      started_at: Date;
+      district_id: number | null;
+    },
+    endsMs: number,
+  ): Promise<boolean> {
+    const first = await this.redis.client.set(
+      submitFlagKey(row.id),
+      '1',
+      'EX',
+      ATTEMPT_TTL_SEC,
+      'NX',
+    );
+    if (first !== 'OK') return false;
+    await this.redis.client
+      .multi()
+      .hset(metaKey(row.id), 'status', 'submitted')
+      .xadd(
+        SUBMIT_STREAM,
+        'MAXLEN',
+        '~',
+        1_000_000,
+        '*',
+        'attempt_id',
+        String(row.id),
+        'user_id',
+        String(row.user_id),
+        'exam_id',
+        row.exam_id === null ? '' : String(row.exam_id),
+        'kind',
+        row.kind,
+        'district_id',
+        row.district_id === null ? '' : String(row.district_id),
+        'started_ms',
+        String(row.started_at.getTime()),
+        'submitted_ms',
+        String(endsMs),
+      )
+      .exec();
+    return true;
   }
 
   private writeAnswers(attemptId: bigint, answers: Record<string, string>, body: AnswerSyncDto) {
@@ -293,6 +347,7 @@ export class AttemptsService {
       ends_ms: computeEndsAt(row.started_at, duration, row.kind, exam?.end_at ?? null).getTime(),
       status: row.status === 'in_progress' ? 'in_progress' : 'submitted',
       total: row.total_questions,
+      district_id: row.district_id === null ? null : String(row.district_id),
     };
     await this.redis.client
       .multi()

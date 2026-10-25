@@ -20,6 +20,8 @@ export interface AttemptMeta {
   ends_ms: number;
   status: 'in_progress' | 'submitted';
   total: number;
+  /** Snapshot of the user's district at start, for district merit. */
+  district_id: string | null;
 }
 
 export function metaToHash(m: AttemptMeta): Record<string, string> {
@@ -31,6 +33,7 @@ export function metaToHash(m: AttemptMeta): Record<string, string> {
     ends_ms: String(m.ends_ms),
     status: m.status,
     total: String(m.total),
+    district_id: m.district_id ?? '',
   };
 }
 
@@ -44,6 +47,7 @@ export function metaFromHash(h: Record<string, string>): AttemptMeta | null {
     ends_ms: Number(h.ends_ms),
     status: h.status === 'submitted' ? 'submitted' : 'in_progress',
     total: Number(h.total),
+    district_id: h.district_id ? h.district_id : null,
   };
 }
 

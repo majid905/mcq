@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
+import { ScoringWorkerModule } from './attempts/attempts.module';
 import { CoreModule } from './core.module';
 
-/** BullMQ processors (scoring, search sync, analytics, notifications) register here. */
-@Module({ imports: [CoreModule] })
+/** Stream consumers and queue processors (scoring now; search sync, analytics, notifications later). */
+@Module({ imports: [CoreModule, ScoringWorkerModule] })
 export class WorkerModule {}
