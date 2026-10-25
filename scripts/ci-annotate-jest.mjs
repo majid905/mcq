@@ -17,8 +17,11 @@ const clean = (s) =>
     .slice(0, 500);
 
 for (const suite of report.testResults ?? []) {
-  if (suite.status === 'failed' && (suite.assertionResults ?? []).length === 0) {
-    process.stdout.write(`::error title=jest suite failed::${clean(suite.name)} ${clean(suite.message)}\n`);
+  // A suite can fail with every test green (a hook such as afterAll threw): show its message too.
+  if (suite.status === 'failed' && suite.message && shown < 10) {
+    process.stdout.write(
+      `::error title=jest suite failed::${clean(suite.name)} ${clean(suite.message)}\n`,
+    );
     shown++;
   }
   for (const t of suite.assertionResults ?? []) {
