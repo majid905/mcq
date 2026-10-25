@@ -9,6 +9,7 @@ import { HomeModule } from './home/home.module';
 import { MeModule } from './me/me.module';
 import { PracticeModule } from './practice/practice.module';
 import { QuestionsModule } from './questions/questions.module';
+import { SearchModule } from './search/search.module';
 import { SettingsModule } from './settings/settings.module';
 
 /** HTTP API. Feature modules (exams, practice, ...) are added here as they are built. */
@@ -24,6 +25,7 @@ import { SettingsModule } from './settings/settings.module';
     QuestionsModule,
     PracticeModule,
     AnalyticsModule,
+    SearchModule,
     HomeModule,
   ],
 })

@@ -16,7 +16,9 @@
     "OPENAPI_PATH",
     "API_PORT",
     "SEED_*",
-    "NEXT_PUBLIC_*"
+    "NEXT_PUBLIC_*",
+    "MEILI_URL",
+    "MEILI_MASTER_KEY"
   ],
   "tasks": {
     "build": {

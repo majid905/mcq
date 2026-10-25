@@ -19,6 +19,9 @@ export const envSchema = z.object({
   /** Override when the contract file is not found by walking up to the repo root. */
   OPENAPI_PATH: z.string().optional(),
   JWT_ACCESS_SECRET: z.string().min(16, 'must be at least 16 characters'),
+  /** Meilisearch for GET /search/questions. Unset = MySQL LIKE search (fine for small data only). */
+  MEILI_URL: z.url().optional(),
+  MEILI_MASTER_KEY: z.string().optional(),
   /** `console` logs the OTP (dev only, fixed code 123456); `http` calls a Bangladeshi SMS gateway. */
   SMS_DRIVER: z.enum(['console', 'http']).default('console'),
   SMS_HTTP_URL: z.url().optional(),

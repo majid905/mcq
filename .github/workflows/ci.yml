@@ -30,11 +30,23 @@ jobs:
         ports: ['6379:6379']
         options: >-
           --health-cmd="redis-cli ping" --health-interval=5s --health-timeout=3s --health-retries=20
+      meilisearch:
+        image: getmeili/meilisearch:v1.12
+        env:
+          MEILI_ENV: development
+          MEILI_MASTER_KEY: ci-meili-master-key
+          MEILI_NO_ANALYTICS: 'true'
+        ports: ['7700:7700']
+        options: >-
+          --health-cmd="curl -fs http://localhost:7700/health || exit 1"
+          --health-interval=5s --health-timeout=5s --health-retries=20
     env:
       MYSQL_HOST: 127.0.0.1
       MYSQL_ROOT_PASSWORD: change-me-root
       DATABASE_URL: mysql://mcq:change-me@127.0.0.1:3306/mcq
       REDIS_URL: redis://127.0.0.1:6379
+      MEILI_URL: http://127.0.0.1:7700
+      MEILI_MASTER_KEY: ci-meili-master-key
       JWT_ACCESS_SECRET: ci-only-access-secret-0123456789
       SMS_DRIVER: console
     steps:
