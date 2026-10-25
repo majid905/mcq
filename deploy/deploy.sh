@@ -23,9 +23,13 @@ exec 9>"$LOCK"
 flock -n 9 || { echo "another deploy is running"; exit 1; }
 
 cd "$APP"
-echo "==> fetch"
-git fetch --quiet origin main
-git checkout --quiet --force "$SHA"
+if [ -z "${DEPLOY_REEXEC:-}" ]; then
+  echo "==> fetch"
+  git fetch --quiet origin main
+  git checkout --quiet --force "$SHA"
+  # The checkout may have replaced this very script: run the new version for the remaining steps.
+  DEPLOY_REEXEC=1 exec "$APP/deploy/deploy.sh" "$SHA"
+fi
 echo "    at $(git rev-parse --short HEAD): $(git log -1 --format=%s)"
 
 echo "==> install"
