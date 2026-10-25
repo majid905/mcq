@@ -5,7 +5,7 @@ import { BarChart3, Clock, House, NotebookPen, UserRound } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
-import { useMe } from '@/lib/queries';
+import { useCategories, useMe } from '@/lib/queries';
 
 /** docs/06 A: হোম · পরীক্ষা · প্র্যাকটিস · অ্যানালিটিক্স · প্রোফাইল. */
 export const NAV_ITEMS = [
@@ -118,8 +118,14 @@ export function MeAvatarLink() {
 /** New accounts without goals finish onboarding first (B7). */
 export function OnboardingGuard() {
   const me = useMe();
+  const categories = useCategories();
   const router = useRouter();
-  const needsGoals = me.data && (me.data.target_node_ids ?? []).length === 0;
+  // Only when there is something to pick: without GET /taxonomy the user would be stuck.
+  const needsGoals =
+    me.data &&
+    (me.data.target_node_ids ?? []).length === 0 &&
+    categories.isSuccess &&
+    categories.data.length > 0;
   useEffect(() => {
     if (needsGoals) router.replace('/onboarding/goals');
   }, [needsGoals, router]);

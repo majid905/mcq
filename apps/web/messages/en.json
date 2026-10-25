@@ -114,7 +114,8 @@
     "districtPlaceholder": "e.g. Dhaka",
     "districtNone": "No district with that name",
     "skip": "Later",
-    "finish": "Get started"
+    "finish": "Get started",
+    "later": "Choose later"
   },
   "home": {
     "title": "Welcome",

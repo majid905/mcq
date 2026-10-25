@@ -114,7 +114,8 @@
     "districtPlaceholder": "যেমন: ঢাকা",
     "districtNone": "এই নামে কোনো জেলা পাওয়া যায়নি",
     "skip": "পরে দেব",
-    "finish": "শুরু করুন"
+    "finish": "শুরু করুন",
+    "later": "পরে বেছে নেব"
   },
   "home": {
     "title": "স্বাগতম",

@@ -42,12 +42,18 @@ export function GoalsStep() {
   }
   if (categories.isError) {
     return (
-      <ErrorState
-        message={errorText(categories.error)}
-        retryLabel={tc('retry')}
-        onRetry={() => void categories.refetch()}
-        retrying={categories.isFetching}
-      />
+      <div className="flex flex-col gap-3">
+        <ErrorState
+          message={errorText(categories.error)}
+          retryLabel={tc('retry')}
+          onRetry={() => void categories.refetch()}
+          retrying={categories.isFetching}
+        />
+        {/* Never trap a new user here; goals can be set later in the profile. */}
+        <AppButton variant="ghost" onClick={() => router.push('/home')}>
+          {t('later')}
+        </AppButton>
+      </div>
     );
   }
 
