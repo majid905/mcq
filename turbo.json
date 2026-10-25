@@ -1,5 +1,23 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalPassThroughEnv": [
+    "DATABASE_URL",
+    "REDIS_URL",
+    "JWT_ACCESS_SECRET",
+    "SMS_DRIVER",
+    "SMS_HTTP_URL",
+    "SMS_HTTP_API_KEY",
+    "SMS_SENDER_ID",
+    "MYSQL_*",
+    "NODE_ENV",
+    "LOG_LEVEL",
+    "CORS_ORIGINS",
+    "TRUST_PROXY",
+    "OPENAPI_PATH",
+    "API_PORT",
+    "SEED_*",
+    "NEXT_PUBLIC_*"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
