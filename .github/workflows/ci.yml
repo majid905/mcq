@@ -60,4 +60,4 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - name: Contract tests (real responses vs openapi.yaml)
-        run: pnpm test:contract
+        run: pnpm test:contract -- --reporters=default --reporters=github-actions
