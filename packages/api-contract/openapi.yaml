@@ -2187,10 +2187,423 @@ paths:
               additionalProperties: true
       responses:
         '200': { description: Saved }
-# Packages, coupons, banners, admins and roles CRUD follow the same REST pattern:
-# /admin/packages, /admin/coupons, /admin/banners, /admin/admins, /admin/roles
-# (GET list, POST create, PUT /{id}, DELETE /{id}). Add them to this file in Phase 4
-# before implementing.
+  /admin/packages:
+    get:
+      tags: [Admin]
+      summary: 'List (perm: packages.read)'
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/AdminPackage' }
+                  meta: { $ref: '#/components/schemas/CursorMeta' }
+    post:
+      tags: [Admin]
+      summary: 'Create (perm: packages.write)'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminPackageInput' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AdminPackage' }
+        '409': { $ref: '#/components/responses/Error' }
+
+  /admin/packages/{id}:
+    put:
+      tags: [Admin]
+      summary: 'Update (perm: packages.write)'
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminPackageInput' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AdminPackage' }
+        '404': { $ref: '#/components/responses/Error' }
+    delete:
+      tags: [Admin]
+      summary: 'Delete (perm: packages.write)'
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '204': { description: Deleted }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+
+  /admin/coupons:
+    get:
+      tags: [Admin]
+      summary: 'List (perm: coupons.read)'
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/AdminCoupon' }
+                  meta: { $ref: '#/components/schemas/CursorMeta' }
+    post:
+      tags: [Admin]
+      summary: 'Create (perm: coupons.write)'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminCouponInput' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AdminCoupon' }
+        '409': { $ref: '#/components/responses/Error' }
+
+  /admin/coupons/{id}:
+    put:
+      tags: [Admin]
+      summary: 'Update (perm: coupons.write)'
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminCouponInput' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AdminCoupon' }
+        '404': { $ref: '#/components/responses/Error' }
+    delete:
+      tags: [Admin]
+      summary: 'Delete (perm: coupons.write)'
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '204': { description: Deleted }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+
+  /admin/banners:
+    get:
+      tags: [Admin]
+      summary: 'List (perm: banners.read)'
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/AdminBanner' }
+                  meta: { $ref: '#/components/schemas/CursorMeta' }
+    post:
+      tags: [Admin]
+      summary: 'Create (perm: banners.write)'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminBannerInput' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AdminBanner' }
+        '409': { $ref: '#/components/responses/Error' }
+
+  /admin/banners/{id}:
+    put:
+      tags: [Admin]
+      summary: 'Update (perm: banners.write)'
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminBannerInput' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AdminBanner' }
+        '404': { $ref: '#/components/responses/Error' }
+    delete:
+      tags: [Admin]
+      summary: 'Delete (perm: banners.write)'
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '204': { description: Deleted }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+
+  /admin/admins:
+    get:
+      tags: [Admin]
+      summary: 'List (perm: admins.read)'
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/AdminAccount' }
+                  meta: { $ref: '#/components/schemas/CursorMeta' }
+    post:
+      tags: [Admin]
+      summary: 'Create (perm: admins.write)'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminAccountInput' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AdminAccount' }
+        '409': { $ref: '#/components/responses/Error' }
+
+  /admin/admins/{id}:
+    put:
+      tags: [Admin]
+      summary: 'Update (perm: admins.write)'
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminAccountInput' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AdminAccount' }
+        '404': { $ref: '#/components/responses/Error' }
+    delete:
+      tags: [Admin]
+      summary: 'Delete (perm: admins.write)'
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '204': { description: Deleted }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+
+  /admin/roles:
+    get:
+      tags: [Admin]
+      summary: 'List (perm: roles.read)'
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/AdminRole' }
+                  meta: { $ref: '#/components/schemas/CursorMeta' }
+    post:
+      tags: [Admin]
+      summary: 'Create (perm: roles.write)'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminRoleInput' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AdminRole' }
+        '409': { $ref: '#/components/responses/Error' }
+
+  /admin/roles/{id}:
+    put:
+      tags: [Admin]
+      summary: 'Update (perm: roles.write)'
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminRoleInput' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AdminRole' }
+        '404': { $ref: '#/components/responses/Error' }
+    delete:
+      tags: [Admin]
+      summary: 'Delete (perm: roles.write)'
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '204': { description: Deleted }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+
+  /admin/taxonomy/reorder:
+    post:
+      tags: [Admin]
+      summary: 'Move/reorder nodes (perm: taxonomy.write)'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [items]
+              properties:
+                items:
+                  type: array
+                  maxItems: 500
+                  items:
+                    type: object
+                    required: [id, parent_id, sort_order]
+                    properties:
+                      id: { type: string }
+                      parent_id: { type: [string, 'null'] }
+                      sort_order: { type: integer }
+      responses:
+        '204': { description: Reordered }
+        '422': { $ref: '#/components/responses/Error' }
+
+  /admin/audit-logs:
+    get:
+      tags: [Admin]
+      summary: 'Audit trail (perm: audit.read)'
+      parameters:
+        - name: entity_type
+          in: query
+          schema: { type: string }
+        - name: entity_id
+          in: query
+          schema: { type: string }
+        - name: admin_id
+          in: query
+          schema: { type: string }
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/AuditLogEntry' }
+                  meta: { $ref: '#/components/schemas/CursorMeta' }
+
+  /admin/users/{id}:
+    get:
+      tags: [Admin]
+      summary: 'User detail with tab data (perm: users.read)'
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AdminUserDetail' }
+        '404': { $ref: '#/components/responses/Error' }
+
 
 components:
   securitySchemes:
@@ -3010,6 +3423,192 @@ components:
               is_active: { type: boolean }
         attempts_count: { type: integer }
         created_at: { type: string, format: date-time }
+
+    AdminPackage:
+      type: object
+      properties:
+        id: { type: string }
+        name_bn: { type: string }
+        name_en: { type: string }
+        description: { type: [string, 'null'] }
+        features:
+          type: array
+          items: { type: string }
+        category_ids:
+          type: [array, 'null']
+          items: { type: string }
+        duration_days: { type: integer }
+        price_bdt: { type: number }
+        compare_at_bdt: { type: [number, 'null'] }
+        is_active: { type: boolean }
+        is_featured: { type: boolean }
+        sort_order: { type: integer }
+        subscribers_count: { type: integer }
+
+    AdminPackageInput:
+      type: object
+      required: [name_bn, name_en, duration_days, price_bdt]
+      properties:
+        name_bn: { type: string, maxLength: 150 }
+        name_en: { type: string, maxLength: 150 }
+        description: { type: [string, 'null'] }
+        features:
+          type: array
+          items: { type: string }
+        category_ids:
+          type: [array, 'null']
+          items: { type: string }
+        duration_days: { type: integer, minimum: 1 }
+        price_bdt: { type: number, minimum: 0 }
+        compare_at_bdt: { type: [number, 'null'] }
+        is_active: { type: boolean }
+        is_featured: { type: boolean }
+        sort_order: { type: integer }
+
+    AdminCoupon:
+      type: object
+      properties:
+        id: { type: string }
+        code: { type: string }
+        type: { type: string, enum: [percent, fixed] }
+        value: { type: number }
+        max_discount_bdt: { type: [number, 'null'] }
+        package_ids:
+          type: [array, 'null']
+          items: { type: string }
+        usage_limit: { type: [integer, 'null'] }
+        per_user_limit: { type: integer }
+        used_count: { type: integer }
+        starts_at: { type: [string, 'null'], format: date-time }
+        ends_at: { type: [string, 'null'], format: date-time }
+        is_active: { type: boolean }
+
+    AdminCouponInput:
+      type: object
+      required: [code, type, value]
+      properties:
+        code: { type: string, pattern: '^[A-Za-z0-9_-]{3,40}$' }
+        type: { type: string, enum: [percent, fixed] }
+        value: { type: number, minimum: 0 }
+        max_discount_bdt: { type: [number, 'null'] }
+        package_ids:
+          type: [array, 'null']
+          items: { type: string }
+        usage_limit: { type: [integer, 'null'] }
+        per_user_limit: { type: integer, minimum: 1 }
+        starts_at: { type: [string, 'null'], format: date-time }
+        ends_at: { type: [string, 'null'], format: date-time }
+        is_active: { type: boolean }
+
+    AdminBanner:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        image_url: { type: string }
+        deep_link: { type: [string, 'null'] }
+        category_ids:
+          type: [array, 'null']
+          items: { type: string }
+        starts_at: { type: [string, 'null'], format: date-time }
+        ends_at: { type: [string, 'null'], format: date-time }
+        sort_order: { type: integer }
+        is_active: { type: boolean }
+
+    AdminBannerInput:
+      type: object
+      required: [title, image_url]
+      properties:
+        title: { type: string, maxLength: 150 }
+        image_url: { type: string, maxLength: 500 }
+        deep_link: { type: [string, 'null'] }
+        category_ids:
+          type: [array, 'null']
+          items: { type: string }
+        starts_at: { type: [string, 'null'], format: date-time }
+        ends_at: { type: [string, 'null'], format: date-time }
+        sort_order: { type: integer }
+        is_active: { type: boolean }
+
+    AdminAccount:
+      type: object
+      properties:
+        id: { type: string }
+        email: { type: string, format: email }
+        name: { type: string }
+        role_id: { type: string }
+        role_name: { type: string }
+        is_active: { type: boolean }
+        totp_enabled: { type: boolean }
+        last_login_at: { type: [string, 'null'], format: date-time }
+        created_at: { type: string, format: date-time }
+
+    AdminAccountInput:
+      type: object
+      required: [email, name, role_id]
+      properties:
+        email: { type: string, format: email }
+        name: { type: string, maxLength: 100 }
+        role_id: { type: string }
+        password: { type: string, minLength: 10, description: Required on create }
+        is_active: { type: boolean }
+        reset_totp: { type: boolean }
+
+    AdminRole:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        permissions:
+          type: array
+          items: { type: string }
+        admins_count: { type: integer }
+
+    AdminRoleInput:
+      type: object
+      required: [name, permissions]
+      properties:
+        name: { type: string, maxLength: 50 }
+        permissions:
+          type: array
+          items: { type: string }
+
+    AuditLogEntry:
+      type: object
+      properties:
+        id: { type: string }
+        admin_id: { type: [string, 'null'] }
+        admin_name: { type: [string, 'null'] }
+        action: { type: string }
+        entity_type: { type: string }
+        entity_id: { type: string }
+        before: {}
+        after: {}
+        ip: { type: [string, 'null'] }
+        created_at: { type: string, format: date-time }
+
+    AdminUserDetail:
+      allOf:
+        - $ref: '#/components/schemas/AdminUser'
+        - type: object
+          properties:
+            subscriptions:
+              type: array
+              items:
+                type: object
+                properties:
+                  id: { type: string }
+                  package_name: { type: [string, 'null'] }
+                  source: { type: string, enum: [payment, trial, manual] }
+                  starts_at: { type: string, format: date-time }
+                  ends_at: { type: string, format: date-time }
+                  note: { type: [string, 'null'] }
+            payments:
+              type: array
+              items: { $ref: '#/components/schemas/Payment' }
+            recent_attempts:
+              type: array
+              items: { $ref: '#/components/schemas/AttemptSummary' }
 
     ImportJob:
       type: object
