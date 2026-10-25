@@ -40,7 +40,8 @@ function deviceInfo(req: NextRequest) {
   return {
     device_id: req.cookies.get(COOKIES.device)?.value ?? crypto.randomUUID(),
     platform: 'web' as const,
-    model: (req.headers.get('user-agent') ?? 'browser').slice(0, 120),
+    // The API caps device.model at 100 characters.
+    model: (req.headers.get('user-agent') ?? 'browser').slice(0, 100),
   };
 }
 
