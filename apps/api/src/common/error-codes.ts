@@ -16,6 +16,7 @@ export const ERROR_STATUS = {
   DUPLICATE_QUESTION: 409,
   ALREADY_REPORTED: 409,
   ATTEMPT_CLOSED: 410,
+  NOT_ENOUGH_QUESTIONS: 422,
   COUPON_INVALID: 422,
   EXAM_NOT_PUBLISHABLE: 422,
   ACCOUNT_LOCKED: 423,
@@ -65,6 +66,10 @@ export const ERROR_MESSAGES: Record<ErrorCode, Record<Locale, string>> = {
     en: 'You have already reported this question for that reason',
   },
   ATTEMPT_CLOSED: { bn: 'পরীক্ষার সময় শেষ', en: 'The attempt is closed' },
+  NOT_ENOUGH_QUESTIONS: {
+    bn: 'এই বিষয়ে যথেষ্ট প্রশ্ন নেই',
+    en: 'Not enough questions for this selection',
+  },
   COUPON_INVALID: {
     bn: 'কুপনটি সঠিক নয় বা মেয়াদোত্তীর্ণ',
     en: 'The coupon is invalid or expired',

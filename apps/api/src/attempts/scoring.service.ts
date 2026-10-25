@@ -3,11 +3,18 @@ import { Prisma } from '@prisma/client';
 import { PaperService, type AnswerKey } from '../exams/paper.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
-import { answersKey, extraKey, SUBMIT_STREAM, ATTEMPT_TTL_SEC } from './attempt-state';
+import { STATS_STREAM } from '../stats/stats.service';
+import {
+  answersKey,
+  extraKey,
+  practiceKeyKey,
+  SUBMIT_STREAM,
+  ATTEMPT_TTL_SEC,
+} from './attempt-state';
 import { leaderboardScore, scoreAttempt } from './scoring';
 
 export const SCORING_GROUP = 'scorers';
-export const STATS_STREAM = 'q:stats';
+export { STATS_STREAM };
 export const lbKey = (examId: bigint | string) => `lb:${examId}`;
 export const lbDistrictKey = (examId: bigint | string, districtId: string) =>
   `lb:${examId}:d:${districtId}`;
@@ -89,12 +96,12 @@ export class ScoringService {
     for (const [i, m] of messages.entries()) {
       const answers = (fetched[i * 2]?.[1] ?? {}) as Record<string, string>;
       const extra = (fetched[i * 2 + 1]?.[1] ?? {}) as Record<string, string>;
+      const examKey = m.examId === null ? `p${m.attemptId}` : String(m.examId);
       if (m.examId === null) {
-        done.push(m.streamId); // practice/custom attempts are scored by the practice flow
-        continue;
-      }
-      const examKey = String(m.examId);
-      if (!keys.has(examKey)) {
+        // Practice / custom session: the key was stored with the session.
+        if (!keys.has(examKey)) keys.set(examKey, await this.practiceKey(m.attemptId));
+        durations.set(examKey, 0);
+      } else if (!keys.has(examKey)) {
         keys.set(examKey, await this.papers.getKey(m.examId).catch(() => null));
         const exam = await this.prisma.exams.findUnique({
           where: { id: m.examId },
@@ -139,12 +146,47 @@ export class ScoringService {
         'user_id',
         String(s.msg.userId),
         'exam_id',
-        String(s.msg.examId),
+        s.msg.examId === null ? '' : String(s.msg.examId),
+        'kind',
+        s.msg.kind,
+        'at',
+        String(s.msg.submittedMs),
       );
       done.push(s.msg.streamId);
     }
     await stats.exec();
     return done;
+  }
+
+  /** Answer key of a practice/custom session: Redis first, else rebuilt from the saved question list. */
+  private async practiceKey(attemptId: bigint): Promise<AnswerKey | null> {
+    const cached = await this.redis.client.get(practiceKeyKey(attemptId));
+    let correct: Record<string, string> | null = cached
+      ? (JSON.parse(cached) as Record<string, string>)
+      : null;
+    if (!correct) {
+      const row = await this.prisma.attempts.findFirst({
+        where: { id: attemptId },
+        select: { question_ids: true },
+      });
+      const ids = Array.isArray(row?.question_ids)
+        ? (row.question_ids as (string | number)[]).map((i) => BigInt(i))
+        : [];
+      if (ids.length === 0) return null;
+      const qs = await this.prisma.questions.findMany({
+        where: { id: { in: ids } },
+        select: { id: true, correct_option: true },
+      });
+      correct = Object.fromEntries(qs.map((q) => [String(q.id), q.correct_option]));
+    }
+    return {
+      correct,
+      section: {},
+      sections: [],
+      mark_per_question: 1,
+      negative_mark: 0,
+      total_marks: Object.keys(correct).length,
+    };
   }
 
   /** Upsert in chunks of 500 (docs/03 rule 3). The key is (id, started_at) so partitions prune. */

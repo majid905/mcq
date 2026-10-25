@@ -19,6 +19,7 @@ import {
   metaFromHash,
   metaKey,
   metaToHash,
+  practiceKeyKey,
   startLockKey,
   submitFlagKey,
   type AttemptMeta,
@@ -200,7 +201,7 @@ export class AttemptsService {
   async sync(userId: bigint, attemptId: bigint, body: AnswerSyncDto) {
     await this.limits.assert(`att:${attemptId}:sync`, 6, 60);
     const meta = await this.openMeta(userId, attemptId);
-    const answers = await this.filter(meta, body.answers);
+    const answers = await this.filter(attemptId, meta, body.answers);
     await this.writeAnswers(attemptId, answers, body).exec();
     return { saved_count: Object.keys(answers).length, server_time: new Date().toISOString() };
   }
@@ -226,7 +227,7 @@ export class AttemptsService {
     );
     if (first !== 'OK') return received;
 
-    const answers = await this.filter(meta, body.answers);
+    const answers = await this.filter(attemptId, meta, body.answers);
     await this.writeAnswers(attemptId, answers, body)
       .hset(metaKey(attemptId), 'status', 'submitted')
       .xadd(
@@ -358,8 +359,14 @@ export class AttemptsService {
   }
 
   /** Drops answers for questions that are not in this exam, so junk never reaches the worker. */
-  private async filter(meta: AttemptMeta, answers: Record<string, string>) {
-    if (!meta.exam_id) return answers;
+  private async filter(attemptId: bigint, meta: AttemptMeta, answers: Record<string, string>) {
+    if (!meta.exam_id) {
+      // Practice / custom session: only the questions that were handed out.
+      const raw = await this.redis.client.get(practiceKeyKey(attemptId));
+      if (!raw) return answers;
+      const known = JSON.parse(raw) as Record<string, string>;
+      return Object.fromEntries(Object.entries(answers).filter(([qid]) => qid in known));
+    }
     const ids = await this.knownQuestionIds(BigInt(meta.exam_id));
     return Object.fromEntries(Object.entries(answers).filter(([qid]) => ids.has(qid)));
   }

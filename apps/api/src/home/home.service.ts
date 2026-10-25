@@ -3,7 +3,9 @@ import type { users } from '@prisma/client';
 import type { ExamCardDto } from '../exams/exam-card';
 import { ExamCardsService } from '../exams/exam-cards.service';
 import { dhakaDay } from '../me/me.service';
+import { answersKey } from '../attempts/attempt-state';
 import { PrismaService } from '../prisma/prisma.service';
+import { RedisService } from '../redis/redis.service';
 import { SettingsService } from '../settings/settings.service';
 
 export interface HomeFeedDto {
@@ -25,6 +27,7 @@ export class HomeService {
     private readonly prisma: PrismaService,
     private readonly settings: SettingsService,
     private readonly examCards: ExamCardsService,
+    private readonly redis: RedisService,
   ) {}
 
   async feed(user: users): Promise<HomeFeedDto> {
@@ -68,7 +71,12 @@ export class HomeService {
     const lastDay = streak?.last_day?.toISOString().slice(0, 10);
     const streakNow = streak && lastDay && lastDay >= yesterday ? streak.current_streak : 0;
 
-    const answers = practice?.answers;
+    // Answers of a running session live in Redis; the saved JSON is the fallback.
+    const saved = practice?.answers;
+    const practiceAnswered = practice
+      ? (await this.redis.client.hlen(answersKey(practice.id))) ||
+        (saved && typeof saved === 'object' ? Object.keys(saved).length : 0)
+      : 0;
     return {
       server_time: now.toISOString(),
       banners,
@@ -78,7 +86,7 @@ export class HomeService {
         ? {
             attempt_id: String(practice.id),
             title: user.locale === 'en' ? 'Continue practice' : 'অনুশীলন চালিয়ে যান',
-            answered: answers && typeof answers === 'object' ? Object.keys(answers).length : 0,
+            answered: practiceAnswered,
             total: practice.total_questions,
           }
         : null,

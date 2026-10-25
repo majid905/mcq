@@ -34,7 +34,7 @@ export class EntitlementService {
     private readonly settings: SettingsService,
   ) {}
 
-  async hasSubscription(userId: bigint, categoryId: number, now = new Date()): Promise<boolean> {
+  private async activeSubs(userId: bigint, now: Date): Promise<CachedSub[]> {
     const key = subCacheKey(userId);
     let subs: CachedSub[];
     const cached = await this.redis.client.get(key);
@@ -51,10 +51,17 @@ export class EntitlementService {
       }));
       await this.redis.client.set(key, JSON.stringify(subs), 'EX', SUB_TTL_SEC);
     }
-    return subs.some(
-      (s) =>
-        new Date(s.ends_at) > now &&
-        (s.category_ids === null || s.category_ids.includes(categoryId)),
+    return subs.filter((s) => new Date(s.ends_at) > now);
+  }
+
+  /** Any active subscription at all (used for the free daily practice limit). */
+  async hasAnySubscription(userId: bigint, now = new Date()): Promise<boolean> {
+    return (await this.activeSubs(userId, now)).length > 0;
+  }
+
+  async hasSubscription(userId: bigint, categoryId: number, now = new Date()): Promise<boolean> {
+    return (await this.activeSubs(userId, now)).some(
+      (s) => s.category_ids === null || s.category_ids.includes(categoryId),
     );
   }
 

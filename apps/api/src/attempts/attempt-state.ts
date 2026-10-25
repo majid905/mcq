@@ -8,6 +8,8 @@ export const SUBMIT_STREAM = 'q:submit';
 export const metaKey = (id: bigint | string) => `att:${id}:meta`;
 export const answersKey = (id: bigint | string) => `att:${id}:answers`;
 export const extraKey = (id: bigint | string) => `att:${id}:extra`;
+/** Practice/custom sessions: JSON {question_id: correct_option} for the session's questions. */
+export const practiceKeyKey = (id: bigint | string) => `att:${id}:pkey`;
 export const submitFlagKey = (id: bigint | string) => `att:${id}:submitted`;
 export const startLockKey = (examId: bigint, userId: bigint) => `att:lock:${examId}:${userId}`;
 

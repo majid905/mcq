@@ -46,6 +46,7 @@ Access JWT claims: `sub` (user id), `dev` (device row id), `prem` (bool), `exp`.
 | 409 | ALREADY_REPORTED | Same user reported the same question for the same reason |
 | 409 | DUPLICATE_QUESTION | content_hash clash; `details.existing_id` |
 | 410 | ATTEMPT_CLOSED | Sync/submit after deadline + grace |
+| 422 | NOT_ENOUGH_QUESTIONS | Practice selection (topics, difficulty, exclude seen) gave fewer than 5 questions; `details.found` |
 | 422 | COUPON_INVALID | Expired, limit reached, wrong package |
 | 422 | EXAM_NOT_PUBLISHABLE | Missing questions etc.; `details.problems` |
 | 423 | ACCOUNT_LOCKED | Too many failed logins; `details.until` |

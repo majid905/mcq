@@ -102,7 +102,13 @@ export class ResultsService {
     return {
       attempt_id: String(row.id),
       exam_id: row.exam_id === null ? null : String(row.exam_id),
-      title: exam ? (locale === 'en' ? exam.title_en : exam.title_bn) : '',
+      title: exam
+        ? locale === 'en'
+          ? exam.title_en
+          : exam.title_bn
+        : locale === 'en'
+          ? 'Practice'
+          : 'অনুশীলন',
       total_questions: row.total_questions,
       correct,
       wrong,
@@ -162,19 +168,27 @@ export class ResultsService {
   /** FR-RES-05. Live exams reveal answers only after `end_at`. */
   async solutions(userId: bigint, attemptId: bigint, filter: SolutionFilter) {
     const row = await this.mine(userId, attemptId);
-    if (!row.exam_id) throw new ApiException('NOT_FOUND');
-    const exam = await this.prisma.exams.findUnique({ where: { id: row.exam_id } });
-    if (!exam) throw new ApiException('NOT_FOUND');
-    if (row.kind === 'live' && exam.end_at && Date.now() < exam.end_at.getTime()) {
+    const exam = row.exam_id
+      ? await this.prisma.exams.findUnique({ where: { id: row.exam_id } })
+      : null;
+    if (row.exam_id && !exam) throw new ApiException('NOT_FOUND');
+    if (row.kind === 'live' && exam?.end_at && Date.now() < exam.end_at.getTime()) {
       throw new ApiException('SOLUTIONS_LOCKED', { available_at: exam.end_at.toISOString() });
     }
     if (row.status !== 'scored') throw new ApiException('FORBIDDEN', undefined, 'Not scored yet');
 
-    const links = await this.prisma.exam_questions.findMany({
-      where: { exam_id: row.exam_id },
-      orderBy: { position: 'asc' },
-      select: { question_id: true, position: true },
-    });
+    // Exam attempts follow the exam's order; practice/custom sessions keep their own question list.
+    const sessionIds = Array.isArray(row.question_ids)
+      ? (row.question_ids as (string | number)[]).map((i) => BigInt(i))
+      : [];
+    if (!row.exam_id && sessionIds.length === 0) throw new ApiException('NOT_FOUND');
+    const links = row.exam_id
+      ? await this.prisma.exam_questions.findMany({
+          where: { exam_id: row.exam_id },
+          orderBy: { position: 'asc' },
+          select: { question_id: true, position: true },
+        })
+      : sessionIds.map((question_id, i) => ({ question_id, position: i + 1 }));
     const questions = await this.prisma.questions.findMany({
       where: { id: { in: links.map((l) => l.question_id) } },
       select: {
@@ -250,7 +264,13 @@ export class ResultsService {
       return {
         attempt_id: String(r.id),
         kind: r.kind,
-        title: e ? (user.locale === 'en' ? e.title_en : e.title_bn) : '',
+        title: e
+          ? user.locale === 'en'
+            ? e.title_en
+            : e.title_bn
+          : user.locale === 'en'
+            ? 'Practice'
+            : 'অনুশীলন',
         started_at: r.started_at.toISOString(),
         status: r.status,
         score: r.score === null ? null : Number(r.score),

@@ -43,6 +43,31 @@ export class TaxonomyService {
     };
   }
 
+  /** Sum of the user's per-topic stats over each node's whole subtree (materialized path). */
+  async subtreeStats(
+    ids: number[],
+    userId: bigint,
+  ): Promise<Map<number, { attempted: number; correct: number }>> {
+    const out = new Map<number, { attempted: number; correct: number }>();
+    if (ids.length === 0) return out;
+    const rows = await this.prisma.$queryRaw<
+      { id: number | bigint; attempted: bigint | null; correct: bigint | null }[]
+    >(Prisma.sql`
+      SELECT c.id, SUM(s.attempted) AS attempted, SUM(s.correct) AS correct
+      FROM taxonomy_nodes c
+      JOIN taxonomy_nodes d ON d.path LIKE CONCAT(c.path, '%')
+      JOIN user_topic_stats s ON s.node_id = d.id AND s.user_id = ${userId}
+      WHERE c.id IN (${Prisma.join(ids)})
+      GROUP BY c.id`);
+    for (const r of rows) {
+      out.set(Number(r.id), {
+        attempted: Number(r.attempted ?? 0),
+        correct: Number(r.correct ?? 0),
+      });
+    }
+    return out;
+  }
+
   /** FR-PRAC-01: children of `parentId` (roots when null), with the user's progress per subtree. */
   async children(parentId: number | null, userId?: bigint): Promise<TaxonomyNodeDto[]> {
     const nodes = await this.prisma.taxonomy_nodes.findMany({
@@ -58,25 +83,7 @@ export class TaxonomyService {
     });
     const parents = new Set(withChildren.map((g) => g.parent_id));
 
-    const progress = new Map<number, { attempted: number; correct: number }>();
-    if (userId) {
-      // Sum the user's per-topic stats over each child's whole subtree (materialized path).
-      const rows = await this.prisma.$queryRaw<
-        { id: number | bigint; attempted: bigint | null; correct: bigint | null }[]
-      >(Prisma.sql`
-        SELECT c.id, SUM(s.attempted) AS attempted, SUM(s.correct) AS correct
-        FROM taxonomy_nodes c
-        JOIN taxonomy_nodes d ON d.path LIKE CONCAT(c.path, '%')
-        JOIN user_topic_stats s ON s.node_id = d.id AND s.user_id = ${userId}
-        WHERE c.id IN (${Prisma.join(ids)})
-        GROUP BY c.id`);
-      for (const r of rows) {
-        progress.set(Number(r.id), {
-          attempted: Number(r.attempted ?? 0),
-          correct: Number(r.correct ?? 0),
-        });
-      }
-    }
+    const progress = userId ? await this.subtreeStats(ids, userId) : new Map();
 
     return nodes.map((n) => {
       const p = userId ? (progress.get(n.id) ?? { attempted: 0, correct: 0 }) : null;
