@@ -13,6 +13,8 @@ export const PROTECTED_PREFIXES = [
   '/bookmarks',
   '/bank',
   '/wrong',
+  '/checkout',
+  '/payment',
   '/onboarding',
   '/room',
   '/results',

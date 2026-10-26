@@ -9,6 +9,8 @@ export interface ApiEvents {
   onSessionLost?: (code: string) => void;
   /** 503 MAINTENANCE from any endpoint. */
   onMaintenance?: () => void;
+  /** 402 PREMIUM_REQUIRED / QUOTA_EXHAUSTED from any endpoint (shared paywall). */
+  onPaywall?: (code: string, details: Record<string, unknown>) => void;
 }
 
 function readCookie(name: string): string | undefined {
@@ -30,12 +32,16 @@ export class ApiError extends Error {
   }
 }
 
-async function errorCodeOf(response: Response): Promise<string | undefined> {
+async function errorOf(
+  response: Response,
+): Promise<{ code?: string; details: Record<string, unknown> }> {
   try {
-    const body = (await response.clone().json()) as { error?: { code?: string } };
-    return body.error?.code;
+    const body = (await response.clone().json()) as {
+      error?: { code?: string; details?: Record<string, unknown> };
+    };
+    return { code: body.error?.code, details: body.error?.details ?? {} };
   } catch {
-    return undefined;
+    return { details: {} };
   }
 }
 
@@ -51,9 +57,13 @@ export function createBrowserApiClient(locale: string, events: ApiEvents = {}): 
     async onResponse({ request, response }) {
       const path = new URL(request.url).pathname;
       if (response.status === 401 && !path.startsWith(`${BFF_BASE}/auth/`)) {
-        events.onSessionLost?.((await errorCodeOf(response)) ?? 'UNAUTHENTICATED');
-      } else if (response.status === 503 && (await errorCodeOf(response)) === 'MAINTENANCE') {
+        events.onSessionLost?.((await errorOf(response)).code ?? 'UNAUTHENTICATED');
+      } else if (response.status === 503 && (await errorOf(response)).code === 'MAINTENANCE') {
         events.onMaintenance?.();
+      } else if (response.status === 402) {
+        const { code, details } = await errorOf(response);
+        if (code === 'PREMIUM_REQUIRED' || code === 'QUOTA_EXHAUSTED')
+          events.onPaywall?.(code, details);
       }
       return response;
     },

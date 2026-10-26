@@ -633,6 +633,81 @@
     "unread": "unread",
     "more": "Load more"
   },
+  "plans": {
+    "title": "Packages",
+    "subtitle": "Every live exam, every explanation and unlimited practice, for as long as you need.",
+    "premiumUntil": "Your premium is active until {date}",
+    "trialAvailable": "You can still start a free trial",
+    "free": "You are on the free plan",
+    "popular": "Popular",
+    "wasPrice": "was {price}",
+    "duration": "{days} days",
+    "perMonth": "{price} a month",
+    "buy": "Buy",
+    "empty": "No packages right now",
+    "secure": "You pay on the secure bKash or SSLCommerz page. Premium starts as soon as the payment is verified."
+  },
+  "checkout": {
+    "title": "Checkout",
+    "notFound": "Package not found",
+    "backToPlans": "See packages",
+    "price": "Price",
+    "discount": "Coupon {code}",
+    "total": "Total",
+    "coupon": "Coupon code",
+    "apply": "Apply",
+    "couponApplied": "Coupon applied.",
+    "method": "Payment method",
+    "gateways": {
+      "bkash": {
+        "name": "bKash",
+        "hint": "Pay with your bKash account"
+      },
+      "sslcommerz": {
+        "name": "Nagad / card",
+        "hint": "Nagad, Rocket, Visa, Mastercard (SSLCommerz)"
+      }
+    },
+    "pay": "Pay {total}",
+    "redirectNote": "You will go to the payment page and come back here afterwards."
+  },
+  "payment": {
+    "statusTitle": "Payment status",
+    "paidTitle": "Premium is on!",
+    "paidUntil": "Valid until {date}.",
+    "paidBody": "Every live exam and explanation is now open to you.",
+    "start": "Start preparing",
+    "failedTitle": "The payment did not go through",
+    "cancelledTitle": "The payment was cancelled",
+    "failedBody": "If money left your account it will be refunded automatically. Please try again.",
+    "retry": "Try again",
+    "pendingTitle": "Verifying your payment",
+    "pendingBody": "This takes up to a minute. Keep this page open.",
+    "checkAgain": "Check again",
+    "historyTitle": "Payments",
+    "historyEmpty": "No payments yet",
+    "seePlans": "See packages",
+    "gatewayName": {
+      "bkash": "bKash",
+      "sslcommerz": "SSLCommerz"
+    },
+    "status": {
+      "paid": "Paid",
+      "failed": "Failed",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded",
+      "initiated": "Started",
+      "pending": "Verifying"
+    }
+  },
+  "paywall": {
+    "premiumTitle": "Premium needed",
+    "premiumBody": "This is for premium members. Get a package to unlock everything.",
+    "quotaTitle": "Today's free limit is used up",
+    "quotaBody": "It resets {time}, or go premium to continue now.",
+    "seePlans": "See packages",
+    "later": "Later"
+  },
   "gallery": {
     "title": "Component gallery",
     "subtitle": "UI kit v1 — light and dark side by side. Use the button above to switch language.",

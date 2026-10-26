@@ -28,7 +28,7 @@ const MENU: {
   icon: LucideIcon;
 }[] = [
   { href: '/history', key: 'myExams', icon: ClipboardList },
-  { href: '/payments', key: 'payments', icon: Receipt },
+  { href: '/profile/payments', key: 'payments', icon: Receipt },
   { href: '/bookmarks', key: 'bookmarks', icon: Bookmark },
   { href: '/settings', key: 'settings', icon: Settings },
   { href: '/contact', key: 'help', icon: LifeBuoy },

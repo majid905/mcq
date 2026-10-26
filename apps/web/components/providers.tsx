@@ -6,6 +6,7 @@ import { useLocale } from 'next-intl';
 import { type ReactNode, createContext, useContext, useMemo, useState } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import { createBrowserApiClient } from '@/lib/api';
+import { Paywall, type PaywallState } from './billing/paywall';
 import { makeQueryClient } from '@/lib/query-client';
 
 const ApiContext = createContext<ApiClient | null>(null);
@@ -14,6 +15,7 @@ export function Providers({ children }: { children: ReactNode }) {
   const locale = useLocale();
   const router = useRouter();
   const [queryClient] = useState(makeQueryClient);
+  const [paywall, setPaywall] = useState<PaywallState | null>(null);
   const api = useMemo(
     () =>
       createBrowserApiClient(locale, {
@@ -26,12 +28,16 @@ export function Providers({ children }: { children: ReactNode }) {
           }
         },
         onMaintenance: () => router.replace('/maintenance'),
+        onPaywall: (code, details) => setPaywall({ code: code as PaywallState['code'], details }),
       }),
     [locale, router, queryClient],
   );
   return (
     <ApiContext.Provider value={api}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        {children}
+        <Paywall state={paywall} onClose={() => setPaywall(null)} />
+      </QueryClientProvider>
     </ApiContext.Provider>
   );
 }

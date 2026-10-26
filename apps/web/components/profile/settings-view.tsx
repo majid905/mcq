@@ -11,7 +11,7 @@ import {
   subscribeThemePreference,
 } from '@mcq/ui';
 import type { components } from '@mcq/api-client-ts';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ChevronRight } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { type ReactNode, useState, useSyncExternalStore } from 'react';
@@ -27,8 +27,7 @@ import { useLogout } from './profile-view';
 
 type Prefs = components['schemas']['NotificationPrefs'];
 
-// There is no GET for notification preferences yet (contract-change request), so the toggles
-// start from these defaults and every change is saved with PUT.
+// Shown until GET /notifications/preferences answers (and the key order of the toggles).
 const DEFAULT_PREFS: Required<Prefs> = {
   exam_reminder: true,
   result: true,
@@ -74,17 +73,24 @@ export function SettingsView() {
     readThemePreference,
     () => 'system' as const,
   );
-  const [prefs, setPrefs] = useState<Required<Prefs>>(DEFAULT_PREFS);
+  const qc = useQueryClient();
+  const prefsKey = ['notifications', 'preferences'] as const;
+  const saved = useQuery({
+    queryKey: prefsKey,
+    queryFn: () => unwrap(api.GET('/notifications/preferences')),
+  });
+  const prefs: Required<Prefs> = { ...DEFAULT_PREFS, ...saved.data };
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const savePrefs = useMutation({
     mutationFn: (next: Prefs) => unwrap(api.PUT('/notifications/preferences', { body: next })),
     onMutate: (next) => {
-      const prev = prefs;
-      setPrefs({ ...prefs, ...next });
+      const prev = qc.getQueryData<Prefs>(prefsKey);
+      qc.setQueryData<Prefs>(prefsKey, { ...prefs, ...next });
       return { prev };
     },
-    onError: (_e, _n, ctx) => ctx && setPrefs(ctx.prev),
+    onError: (_e, _n, ctx) => qc.setQueryData(prefsKey, ctx?.prev),
+    onSuccess: (data) => qc.setQueryData(prefsKey, data),
   });
   const resetDevices = useMutation({ mutationFn: () => expectOk(api.POST('/me/devices/reset')) });
   const deleteAccount = useMutation({
@@ -139,7 +145,7 @@ export function SettingsView() {
             key={key}
             label={t(`notify.${key}`)}
             checked={prefs[key]}
-            disabled={savePrefs.isPending}
+            disabled={savePrefs.isPending || saved.isPending}
             onCheckedChange={(on) => savePrefs.mutate({ ...prefs, [key]: on })}
           />
         ))}
