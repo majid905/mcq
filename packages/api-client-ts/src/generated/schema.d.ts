@@ -3459,6 +3459,20 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": {
+                         *         "id": "1",
+                         *         "email": "admin@example.com",
+                         *         "name": "সুপার অ্যাডমিন",
+                         *         "role": "super_admin",
+                         *         "permissions": [
+                         *           "*"
+                         *         ],
+                         *         "totp_enabled": false
+                         *       }
+                         *     }
+                         */
                         "application/json": {
                             data?: components["schemas"]["AdminProfile"];
                         };
@@ -3580,6 +3594,60 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": {
+                         *         "signups_today": 184,
+                         *         "dau": 6240,
+                         *         "mau": 48210,
+                         *         "revenue_today_bdt": 23870,
+                         *         "revenue_month_bdt": 612400,
+                         *         "active_subscriptions": 3120,
+                         *         "questions_published": 18420,
+                         *         "open_reports": 37,
+                         *         "upcoming_exams": [
+                         *           {
+                         *             "id": "5003",
+                         *             "type": "live",
+                         *             "title": "৪৭তম বিসিএস লাইভ মডেল টেস্ট - ১২",
+                         *             "category": "বিসিএস",
+                         *             "start_at": "2026-10-25T14:00:00.000Z",
+                         *             "end_at": "2026-10-25T16:00:00.000Z",
+                         *             "duration_sec": 3600,
+                         *             "question_count": 100,
+                         *             "total_marks": 100,
+                         *             "participant_count": 0,
+                         *             "is_premium": false,
+                         *             "status": "upcoming",
+                         *             "my_attempt": null,
+                         *             "has_reminder": false
+                         *           },
+                         *           {
+                         *             "id": "5004",
+                         *             "type": "live",
+                         *             "title": "প্রাথমিক শিক্ষক নিয়োগ লাইভ পরীক্ষা - ০৩",
+                         *             "category": "প্রাইমারি",
+                         *             "start_at": "2026-10-27T14:00:00.000Z",
+                         *             "end_at": "2026-10-27T16:00:00.000Z",
+                         *             "duration_sec": 2400,
+                         *             "question_count": 60,
+                         *             "total_marks": 60,
+                         *             "participant_count": 0,
+                         *             "is_premium": true,
+                         *             "status": "upcoming",
+                         *             "my_attempt": null,
+                         *             "has_reminder": false
+                         *           }
+                         *         ],
+                         *         "queues": {
+                         *           "q:submit": 0,
+                         *           "q:score": 3,
+                         *           "q:stats": 12,
+                         *           "q:push": 0
+                         *         }
+                         *       }
+                         *     }
+                         */
                         "application/json": {
                             data?: components["schemas"]["AdminDashboard"];
                         };
@@ -6511,6 +6579,25 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
+                /**
+                 * @example {
+                 *       "data": {
+                 *         "access_token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwidHlwIjoiYWRtaW4ifQ.mock-admin",
+                 *         "access_expires_in": 900,
+                 *         "refresh_token": "mock-admin-refresh-3b7d",
+                 *         "admin": {
+                 *           "id": "1",
+                 *           "email": "admin@example.com",
+                 *           "name": "সুপার অ্যাডমিন",
+                 *           "role": "super_admin",
+                 *           "permissions": [
+                 *             "*"
+                 *           ],
+                 *           "totp_enabled": false
+                 *         }
+                 *       }
+                 *     }
+                 */
                 "application/json": {
                     data?: components["schemas"]["AdminSession"];
                 };
