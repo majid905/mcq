@@ -3,7 +3,11 @@
     "appName": "MCQ Admin",
     "tagline": "Content and exam management",
     "retry": "Try again",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "forbiddenTitle": "You cannot open this page",
+    "forbiddenBody": "Your role does not include this permission. Ask a super admin if you need it.",
+    "comingTitle": "Coming soon",
+    "comingBody": "This screen arrives in the next update."
   },
   "theme": {
     "system": "Theme: system",
@@ -14,14 +18,68 @@
     "switchTo": "বাংলা",
     "switchLabel": "Change language"
   },
-  "home": {
-    "title": "Admin panel",
-    "subtitle": "Manage questions, exams, users and payments.",
-    "apiStatus": "Server status",
-    "apiOk": "Connected",
-    "apiDown": "Not connected",
-    "serverTime": "Server time: {time}",
-    "freeLiveExams": "Free live exams per month: {count, number}"
+  "auth": {
+    "logout": "Log out"
+  },
+  "nav": {
+    "main": "Admin menu",
+    "groups": {
+      "overview": "Overview",
+      "content": "Content",
+      "exams": "Exams",
+      "people": "People",
+      "billing": "Billing",
+      "ops": "Operations"
+    },
+    "dashboard": "Dashboard",
+    "questions": "Questions",
+    "imports": "Imports",
+    "taxonomy": "Taxonomy",
+    "reports": "Reports",
+    "exams": "Exams",
+    "users": "Users",
+    "payments": "Payments",
+    "packages": "Packages",
+    "coupons": "Coupons",
+    "notifications": "Notifications",
+    "banners": "Banners",
+    "settings": "Settings",
+    "admins": "Admins & roles"
+  },
+  "login": {
+    "title": "Admin login",
+    "subtitle": "Content and exam management",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Log in",
+    "codePrompt": "Enter the 6-digit code from your authenticator app",
+    "code": "Verification code",
+    "verify": "Verify",
+    "wrongCredentials": "Wrong email or password.",
+    "wrongCode": "That code is wrong or expired.",
+    "locked": "Too many failed attempts. The account is locked for now.",
+    "generic": "Could not log in. Please try again."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "signupsToday": "New today",
+    "dau": "Daily active",
+    "mau": "Monthly active",
+    "revenueToday": "Revenue today",
+    "revenueMonth": "Revenue this month",
+    "activeSubs": "Active subscriptions",
+    "published": "Published questions",
+    "openReports": "Open reports",
+    "upcoming": "Upcoming exams",
+    "noUpcoming": "No upcoming exams",
+    "exam": "Exam",
+    "starts": "Starts (Dhaka time)",
+    "questions": "Questions",
+    "premium": "Premium",
+    "queues": "Queue health",
+    "backlogHigh": "backlog",
+    "backlogOk": "normal",
+    "revenueChartPending": "The 30-day revenue chart appears once the API provides the series."
   },
   "gallery": {
     "title": "Component gallery",
