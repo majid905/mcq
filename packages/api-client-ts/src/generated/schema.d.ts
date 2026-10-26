@@ -2766,6 +2766,62 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": [
+                         *         {
+                         *           "id": "1",
+                         *           "name": "মাসিক প্রিমিয়াম",
+                         *           "description": "সব লাইভ পরীক্ষা, প্রশ্ন ব্যাংক ও ব্যাখ্যা",
+                         *           "features": [
+                         *             "সব লাইভ পরীক্ষা",
+                         *             "সব প্রশ্নের ব্যাখ্যা",
+                         *             "আনলিমিটেড প্র্যাকটিস",
+                         *             "বিস্তারিত অ্যানালিটিক্স"
+                         *           ],
+                         *           "duration_days": 30,
+                         *           "price_bdt": 199,
+                         *           "compare_at_bdt": null,
+                         *           "is_featured": false,
+                         *           "category_ids": null
+                         *         },
+                         *         {
+                         *           "id": "2",
+                         *           "name": "৬ মাসের প্রিমিয়াম",
+                         *           "description": "বিসিএস প্রিলির পুরো প্রস্তুতি",
+                         *           "features": [
+                         *             "সব লাইভ পরীক্ষা",
+                         *             "সব প্রশ্নের ব্যাখ্যা",
+                         *             "আনলিমিটেড প্র্যাকটিস",
+                         *             "বিস্তারিত অ্যানালিটিক্স",
+                         *             "মডেল টেস্ট সিরিজ"
+                         *           ],
+                         *           "duration_days": 180,
+                         *           "price_bdt": 899,
+                         *           "compare_at_bdt": 1194,
+                         *           "is_featured": true,
+                         *           "category_ids": null
+                         *         },
+                         *         {
+                         *           "id": "3",
+                         *           "name": "বার্ষিক প্রিমিয়াম",
+                         *           "description": "এক বছরের নিশ্চিন্ত প্রস্তুতি",
+                         *           "features": [
+                         *             "সব লাইভ পরীক্ষা",
+                         *             "সব প্রশ্নের ব্যাখ্যা",
+                         *             "আনলিমিটেড প্র্যাকটিস",
+                         *             "বিস্তারিত অ্যানালিটিক্স",
+                         *             "মডেল টেস্ট সিরিজ"
+                         *           ],
+                         *           "duration_days": 365,
+                         *           "price_bdt": 1499,
+                         *           "compare_at_bdt": 2388,
+                         *           "is_featured": false,
+                         *           "category_ids": null
+                         *         }
+                         *       ]
+                         *     }
+                         */
                         "application/json": {
                             data?: components["schemas"]["Package"][];
                         };
@@ -2812,6 +2868,14 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": {
+                         *         "discount_bdt": 90,
+                         *         "payable_bdt": 809
+                         *       }
+                         *     }
+                         */
                         "application/json": {
                             data?: {
                                 discount_bdt?: number;
@@ -2865,6 +2929,15 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": {
+                         *         "payment_id": "7001",
+                         *         "redirect_url": "https://sandbox.sslcommerz.com/EasyCheckOut/testcde7001",
+                         *         "payable_bdt": 809
+                         *       }
+                         *     }
+                         */
                         "application/json": {
                             data?: {
                                 payment_id?: string;
@@ -2908,6 +2981,21 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": {
+                         *         "id": "7001",
+                         *         "package_name": "৬ মাসের প্রিমিয়াম",
+                         *         "amount_bdt": 809,
+                         *         "discount_bdt": 90,
+                         *         "gateway": "bkash",
+                         *         "status": "paid",
+                         *         "gateway_tran_id": "BK7A2F9Q1X",
+                         *         "created_at": "2026-10-24T05:30:00.000Z",
+                         *         "paid_at": "2026-10-24T05:31:12.000Z"
+                         *       }
+                         *     }
+                         */
                         "application/json": {
                             data?: components["schemas"]["Payment"];
                         };
@@ -2945,6 +3033,34 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /**
+                         * @example {
+                         *       "data": [
+                         *         {
+                         *           "id": "7001",
+                         *           "package_name": "৬ মাসের প্রিমিয়াম",
+                         *           "amount_bdt": 809,
+                         *           "discount_bdt": 90,
+                         *           "gateway": "bkash",
+                         *           "status": "paid",
+                         *           "gateway_tran_id": "BK7A2F9Q1X",
+                         *           "created_at": "2026-10-24T05:30:00.000Z",
+                         *           "paid_at": "2026-10-24T05:31:12.000Z"
+                         *         },
+                         *         {
+                         *           "id": "6990",
+                         *           "package_name": "মাসিক প্রিমিয়াম",
+                         *           "amount_bdt": 199,
+                         *           "discount_bdt": 0,
+                         *           "gateway": "sslcommerz",
+                         *           "status": "failed",
+                         *           "gateway_tran_id": null,
+                         *           "created_at": "2026-09-20T10:00:00.000Z",
+                         *           "paid_at": null
+                         *         }
+                         *       ]
+                         *     }
+                         */
                         "application/json": {
                             data?: components["schemas"]["Payment"][];
                         };
