@@ -41,7 +41,7 @@ interface AdminClaims {
   sub: string;
 }
 
-const ctxKey = (id: bigint | string) => `admin:ctx:${id}`;
+const ctxKey = (id: bigint | number | string) => `admin:ctx:${id}`;
 const refreshKey = (token: string) => `admin:rt:${sha256(token)}`;
 const totpPendingKey = (id: bigint) => `admin:totp:pending:${id}`;
 const totpLastStepKey = (id: bigint) => `admin:totp:last:${id}`;
@@ -184,7 +184,7 @@ export class AdminAuthService {
   }
 
   /** Call after changing an admin or a role so the next request sees it. */
-  forget(adminId: bigint | string): Promise<unknown> {
+  forget(adminId: bigint | number | string): Promise<unknown> {
     return this.redis.client.del(ctxKey(adminId));
   }
 

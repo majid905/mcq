@@ -46,7 +46,8 @@ async function main(): Promise<void> {
   });
   process.stdout.write(`admin ${normalized} (${role}) ready
 `);
-  if (generated) process.stdout.write(`password: ${password}
+  if (generated)
+    process.stdout.write(`password: ${password}
 `);
   await app.close();
 }

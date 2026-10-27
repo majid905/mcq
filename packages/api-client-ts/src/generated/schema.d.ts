@@ -3461,6 +3461,7 @@ export interface paths {
                     };
                 };
                 423: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -3496,6 +3497,7 @@ export interface paths {
             responses: {
                 200: components["responses"]["AdminSession"];
                 401: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -3536,6 +3538,7 @@ export interface paths {
                     };
                     content?: never;
                 };
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -3586,6 +3589,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         put?: never;
@@ -3630,6 +3634,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -3671,6 +3676,7 @@ export interface paths {
                     content?: never;
                 };
                 400: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -3761,6 +3767,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         put?: never;
@@ -3808,6 +3815,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         put?: never;
@@ -3840,6 +3848,7 @@ export interface paths {
                     };
                 };
                 409: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -3877,6 +3886,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         put: {
@@ -3905,6 +3915,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         post?: never;
@@ -3955,6 +3966,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -4007,6 +4019,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -4052,6 +4065,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -4089,6 +4103,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         put?: never;
@@ -4136,6 +4151,7 @@ export interface paths {
                     };
                     content?: never;
                 };
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -4171,6 +4187,7 @@ export interface paths {
                     };
                     content?: never;
                 };
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -4212,6 +4229,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -4250,6 +4268,7 @@ export interface paths {
                     };
                     content?: never;
                 };
+                default: components["responses"]["Error"];
             };
         };
         post?: never;
@@ -4272,6 +4291,7 @@ export interface paths {
                     content?: never;
                 };
                 409: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         options?: never;
@@ -4310,6 +4330,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         put?: never;
@@ -4338,6 +4359,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -4376,6 +4398,7 @@ export interface paths {
                     };
                     content?: never;
                 };
+                default: components["responses"]["Error"];
             };
         };
         post?: never;
@@ -4418,6 +4441,7 @@ export interface paths {
                     };
                     content?: never;
                 };
+                default: components["responses"]["Error"];
             };
         };
         post?: never;
@@ -4466,6 +4490,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -4503,6 +4528,7 @@ export interface paths {
                     content?: never;
                 };
                 422: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -4548,6 +4574,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         put?: never;
@@ -4590,6 +4617,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         put?: never;
@@ -4638,6 +4666,7 @@ export interface paths {
                     };
                     content?: never;
                 };
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -4678,6 +4707,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         put?: never;
@@ -4728,6 +4758,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         put?: never;
@@ -4773,6 +4804,7 @@ export interface paths {
                     };
                     content?: never;
                 };
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -4817,6 +4849,7 @@ export interface paths {
                     };
                     content?: never;
                 };
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -4854,6 +4887,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         put?: never;
@@ -4883,6 +4917,7 @@ export interface paths {
                     };
                     content?: never;
                 };
+                default: components["responses"]["Error"];
             };
         };
         trace?: never;
@@ -4919,6 +4954,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         put?: never;
@@ -4948,6 +4984,7 @@ export interface paths {
                     };
                 };
                 409: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -4992,6 +5029,7 @@ export interface paths {
                     };
                 };
                 404: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         post?: never;
@@ -5016,6 +5054,7 @@ export interface paths {
                 };
                 404: components["responses"]["Error"];
                 409: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         options?: never;
@@ -5055,6 +5094,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         put?: never;
@@ -5084,6 +5124,7 @@ export interface paths {
                     };
                 };
                 409: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -5128,6 +5169,7 @@ export interface paths {
                     };
                 };
                 404: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         post?: never;
@@ -5152,6 +5194,7 @@ export interface paths {
                 };
                 404: components["responses"]["Error"];
                 409: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         options?: never;
@@ -5191,6 +5234,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         put?: never;
@@ -5220,6 +5264,7 @@ export interface paths {
                     };
                 };
                 409: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -5264,6 +5309,7 @@ export interface paths {
                     };
                 };
                 404: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         post?: never;
@@ -5288,6 +5334,7 @@ export interface paths {
                 };
                 404: components["responses"]["Error"];
                 409: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         options?: never;
@@ -5327,6 +5374,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         put?: never;
@@ -5356,6 +5404,7 @@ export interface paths {
                     };
                 };
                 409: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -5400,6 +5449,7 @@ export interface paths {
                     };
                 };
                 404: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         post?: never;
@@ -5424,6 +5474,7 @@ export interface paths {
                 };
                 404: components["responses"]["Error"];
                 409: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         options?: never;
@@ -5463,6 +5514,7 @@ export interface paths {
                         };
                     };
                 };
+                default: components["responses"]["Error"];
             };
         };
         put?: never;
@@ -5492,6 +5544,7 @@ export interface paths {
                     };
                 };
                 409: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -5536,6 +5589,7 @@ export interface paths {
                     };
                 };
                 404: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         post?: never;
@@ -5560,6 +5614,7 @@ export interface paths {
                 };
                 404: components["responses"]["Error"];
                 409: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         options?: never;
@@ -5604,6 +5659,7 @@ export interface paths {
                     content?: never;
                 };
                 422: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -5648,6 +5704,7 @@ export interface paths {
                     };
                 };
                 403: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         put?: never;
@@ -5689,6 +5746,7 @@ export interface paths {
                     };
                 };
                 404: components["responses"]["Error"];
+                default: components["responses"]["Error"];
             };
         };
         put?: never;

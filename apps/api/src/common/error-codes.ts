@@ -16,6 +16,8 @@ export const ERROR_STATUS = {
   DUPLICATE_QUESTION: 409,
   ALREADY_REPORTED: 409,
   TRIAL_USED: 409,
+  IN_USE: 409,
+  CONFLICT: 409,
   ATTEMPT_CLOSED: 410,
   NOT_ENOUGH_QUESTIONS: 422,
   COUPON_INVALID: 422,
@@ -66,7 +68,15 @@ export const ERROR_MESSAGES: Record<ErrorCode, Record<Locale, string>> = {
     bn: 'আপনি এই কারণে আগেই রিপোর্ট করেছেন',
     en: 'You have already reported this question for that reason',
   },
-  TRIAL_USED: { bn: 'ফ্রি ট্রায়াল আগেই ব্যবহার করা হয়েছে', en: 'The free trial has already been used' },
+  TRIAL_USED: {
+    bn: 'ফ্রি ট্রায়াল আগেই ব্যবহার করা হয়েছে',
+    en: 'The free trial has already been used',
+  },
+  IN_USE: {
+    bn: 'এটি ব্যবহৃত হচ্ছে, মুছে ফেলা যাবে না',
+    en: 'This is in use and cannot be deleted',
+  },
+  CONFLICT: { bn: 'এই তথ্য আগে থেকেই আছে', en: 'This already exists' },
   ATTEMPT_CLOSED: { bn: 'পরীক্ষার সময় শেষ', en: 'The attempt is closed' },
   NOT_ENOUGH_QUESTIONS: {
     bn: 'এই বিষয়ে যথেষ্ট প্রশ্ন নেই',

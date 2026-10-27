@@ -16,6 +16,7 @@ import { AdminAuthService, type AdminContext } from './admin-auth.service';
 export type AdminRequest = Request & { admin?: AdminContext };
 
 const PERMISSIONS = 'adminPermissions';
+const PERMISSIONS_ANY = 'adminPermissionsAny';
 const PUBLIC_ADMIN = 'adminPublic';
 
 /** `*` is the super admin; otherwise the exact permission string must be in the role. */
@@ -35,6 +36,17 @@ export const AdminPublic = () => SetMetadata(PUBLIC_ADMIN, true);
 /** Permission string(s) the role must hold, e.g. `@RequirePermission('packages.write')`. All are required. */
 export const RequirePermission = (...permissions: string[]) =>
   SetMetadata(PERMISSIONS, permissions);
+
+/** At least one of these (e.g. a list screen that both readers and writers may open). */
+export const RequireAnyPermission = (...permissions: string[]) =>
+  SetMetadata(PERMISSIONS_ANY, permissions);
+
+/** For handlers whose permission depends on the body (e.g. user actions). */
+export function assertPermission(admin: AdminContext, needed: string): void {
+  if (!hasPermission(admin.permissions, needed)) {
+    throw new ApiException('FORBIDDEN', { required: [needed] });
+  }
+}
 
 @Injectable()
 export class AdminAuthGuard implements CanActivate {
@@ -61,6 +73,10 @@ export class AdminAuthGuard implements CanActivate {
     const needed = this.reflector.getAllAndOverride<string[] | undefined>(PERMISSIONS, targets);
     if (needed && !needed.every((p) => hasPermission(ctx.permissions, p))) {
       throw new ApiException('FORBIDDEN', { required: needed });
+    }
+    const any = this.reflector.getAllAndOverride<string[] | undefined>(PERMISSIONS_ANY, targets);
+    if (any && !any.some((p) => hasPermission(ctx.permissions, p))) {
+      throw new ApiException('FORBIDDEN', { required_any: any });
     }
     req.admin = ctx;
     return true;
