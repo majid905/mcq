@@ -8,6 +8,9 @@ set -euo pipefail
 
 APP=/srv/mcq/app
 export PATH=/opt/node22/bin:/srv/mcq/tools/bin:$PATH
+# sanitize-html (question HTML cleaning) is ESM-only; Node loads it with require() from 22.12.
+node -e 'const [a, b] = process.versions.node.split(".").map(Number); process.exit(a > 22 || (a === 22 && b >= 12) ? 0 : 1)' \
+  || { echo "need Node >= 22.12, found $(node -v)"; exit 1; }
 SHA="${1:-origin/main}"
 [[ "$SHA" =~ ^([0-9a-f]{7,40}|origin/main)$ ]] || { echo "bad revision: $SHA"; exit 2; }
 LOCK=/srv/mcq/deploy.lock

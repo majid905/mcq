@@ -11,10 +11,15 @@ import type { Request } from 'express';
 import { IS_PUBLIC } from '../auth/public.decorator';
 import { ApiException } from '../common/api-exception';
 import { RateLimitService } from '../common/rate-limit.service';
+import { Inject } from '@nestjs/common';
+import { APP_CONFIG, type AppConfig } from '../config/env';
 import { AdminAuthService, type AdminContext } from './admin-auth.service';
+import { ipAllowed } from './ip-allowlist';
 
 export type AdminRequest = Request & { admin?: AdminContext };
 
+/** What a session without TOTP may still call: read itself, set TOTP up, sign out. */
+const TOTP_SETUP_PATHS = /^\/v1\/admin\/(me|auth\/(totp\/(setup|enable)|logout))$/;
 const PERMISSIONS = 'adminPermissions';
 const PERMISSIONS_ANY = 'adminPermissionsAny';
 const PUBLIC_ADMIN = 'adminPublic';
@@ -54,10 +59,14 @@ export class AdminAuthGuard implements CanActivate {
     private readonly reflector: Reflector,
     private readonly admins: AdminAuthService,
     private readonly limits: RateLimitService,
+    @Inject(APP_CONFIG) private readonly config: AppConfig,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const targets = [context.getHandler(), context.getClass()];
+    const request = context.switchToHttp().getRequest<AdminRequest>();
+    // Checked first, so login and refresh are closed to other networks too.
+    if (!ipAllowed(request.ip, this.config.ADMIN_IP_ALLOWLIST)) throw new ApiException('FORBIDDEN');
     if (this.reflector.getAllAndOverride<boolean>(PUBLIC_ADMIN, targets)) return true;
 
     const req = context.switchToHttp().getRequest<AdminRequest>();
@@ -69,6 +78,12 @@ export class AdminAuthGuard implements CanActivate {
     const ctx = await this.admins.context(adminId);
     if (!ctx) throw new ApiException('UNAUTHENTICATED');
     await this.limits.assert(`admin:${adminId}`, 600, 60);
+
+    // docs/08: TOTP is mandatory for admins. Until it is set up, the session can only do that.
+    const requireTotp = this.config.ADMIN_REQUIRE_TOTP ?? this.config.NODE_ENV === 'production';
+    if (requireTotp && !ctx.totpEnabled && !TOTP_SETUP_PATHS.test(request.path)) {
+      throw new ApiException('FORBIDDEN', { reason: 'totp_setup_required' });
+    }
 
     const needed = this.reflector.getAllAndOverride<string[] | undefined>(PERMISSIONS, targets);
     if (needed && !needed.every((p) => hasPermission(ctx.permissions, p))) {

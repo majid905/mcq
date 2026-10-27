@@ -76,3 +76,8 @@ jobs:
       - name: Annotate failed contract tests
         if: failure()
         run: node scripts/ci-annotate-jest.mjs apps/api/jest-contract.json
+      # Reports known-vulnerable production dependencies. Not blocking yet: a few findings sit in
+      # apps/admin (Next.js' postcss) and prisma's CLI, see docs/SECURITY-REVIEW.md.
+      - name: Dependency audit (high and critical)
+        continue-on-error: true
+        run: pnpm audit --prod --audit-level=high

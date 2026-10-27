@@ -11,3 +11,8 @@ allowBuilds:
   esbuild: false
   prisma: true
   unrs-resolver: false
+
+# Security: force patched versions of transitive dependencies (see docs/SECURITY-REVIEW.md).
+overrides:
+  uuid@<11.1.1: "^11.1.1"
+  multer@<2.5.0: ">=2.5.0"

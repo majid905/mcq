@@ -11,7 +11,8 @@ import { RedisService } from '../redis/redis.service';
 import { newTotpSecret, openSecret, otpauthUrl, sealSecret, verifyTotp } from './totp';
 
 export const ADMIN_ACCESS_TTL_SEC = 900;
-export const ADMIN_REFRESH_TTL_SEC = 12 * 3600;
+/** docs/08 section 2: admin session timeout 8 h. */
+export const ADMIN_REFRESH_TTL_SEC = 8 * 3600;
 const CONTEXT_TTL_SEC = 30;
 const LOGIN_WINDOW_SEC = 900;
 const LOGIN_LIMIT_PER_EMAIL = 8;

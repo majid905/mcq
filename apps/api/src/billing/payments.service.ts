@@ -183,6 +183,8 @@ export class PaymentsService {
     hint: Record<string, string>,
   ): Promise<string> {
     if (!/^\d{1,19}$/.test(pid)) throw new ApiException('NOT_FOUND');
+    // Each call can query the gateway: cap how often one payment may trigger that.
+    await this.limits.assert(`payret:${pid}`, 20, 60);
     const p = await this.load(BigInt(pid));
     if (p.gateway !== name) throw new ApiException('NOT_FOUND');
     await this.process(p, hint);

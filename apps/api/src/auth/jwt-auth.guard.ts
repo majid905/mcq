@@ -41,6 +41,10 @@ export class JwtAuthGuard implements CanActivate {
           premium: claims.prem,
         };
       }
+      if (!req.user && !req.path.endsWith('/health') && !req.path.startsWith('/v1/admin')) {
+        // Anonymous traffic is limited per address; the health check must stay free for uptime probes.
+        await this.limits.assert(`public:${req.ip ?? 'unknown'}`, 600, 60);
+      }
       return true;
     }
     if (!claims) throw new ApiException('UNAUTHENTICATED');

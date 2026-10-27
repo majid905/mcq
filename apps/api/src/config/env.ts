@@ -32,6 +32,10 @@ export const envSchema = z.object({
   SMS_HTTP_API_KEY: z.string().optional(),
   SMS_SENDER_ID: z.string().optional(),
   /** "fake" redirects straight back as paid/failed (dev, tests); "live" talks to bKash and SSLCommerz. */
+  /** Optional wall for /admin: addresses or IPv4 ranges, e.g. "203.0.113.4,10.0.0.0/24". Empty = open. */
+  ADMIN_IP_ALLOWLIST: csv.default([]),
+  /** Admins must set up TOTP before they can do anything else. Defaults to on in production, off elsewhere. */
+  ADMIN_REQUIRE_TOTP: z.stringbool().optional(),
   PAYMENT_DRIVER: z.enum(['fake', 'live']).default('fake'),
   /** Public base of this API, used to build the gateway callback URLs (e.g. https://mcq.ellevix.com). */
   PUBLIC_API_URL: z.url().default('http://localhost:3000'),
@@ -86,6 +90,9 @@ function crossChecks(cfg: AppConfig): string[] {
         '  - BKASH_APP_KEY / APP_SECRET / USERNAME / PASSWORD: required when PAYMENT_DRIVER=live',
       );
     }
+  }
+  if (cfg.NODE_ENV === 'production' && cfg.JWT_ACCESS_SECRET.length < 32) {
+    problems.push('  - JWT_ACCESS_SECRET: at least 32 characters in production');
   }
   if (cfg.NODE_ENV === 'production' && cfg.PAYMENT_DRIVER === 'fake') {
     problems.push(
