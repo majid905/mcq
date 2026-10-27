@@ -38,6 +38,8 @@ export const envSchema = z.object({
   ADMIN_REQUIRE_TOTP: z.stringbool().optional(),
   /** Bearer token Prometheus must send to /metrics. Empty = no check (keep the port private). */
   METRICS_TOKEN: z.string().min(16).optional(),
+  /** URLs per sitemap file. 50,000 is the protocol limit; tests use a small value. */
+  SITEMAP_PAGE_SIZE: z.coerce.number().int().min(1).max(50_000).default(50_000),
   PAYMENT_DRIVER: z.enum(['fake', 'live']).default('fake'),
   /** Public base of this API, used to build the gateway callback URLs (e.g. https://mcq.ellevix.com). */
   PUBLIC_API_URL: z.url().default('http://localhost:3000'),

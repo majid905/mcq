@@ -135,3 +135,15 @@ Do not edit `openapi.yaml` (except `examples`). Open a GitHub issue with the `co
 - Deploys use a Linux build with `NEXT_OUTPUT=standalone`. It is opt-in in `next.config.ts`, so a normal local `pnpm build` is unaffected (standalone needs symlinks, which fail on Windows without developer mode). Keep the `standalone` block in both `next.config.ts` files.
 - `pnpm tokens:gen` must run before `next build` (CI and the deploy do it). Anything else a build needs, such as a new env variable, has to be added to `.github/workflows/deploy.yml` (Majid owns it, tell him).
 - The OTP on this server is always `123456` and the data is placeholder content: it is a preview, not production.
+
+## 13. Sitemap data for `apps/web` (your contract-change request is done)
+
+Three public endpoints, cached for an hour by Cloudflare (`Cache-Control: public, max-age=3600`):
+
+| Endpoint | Use |
+| --- | --- |
+| `GET /public/sitemap/questions` | `{ page_size: 50000, total, pages: [{ page, count }] }`: one sitemap file per entry (`generateSitemaps()` in Next.js returns `pages.map(p => ({ id: p.page }))`) |
+| `GET /public/sitemap/questions/{page}` | `[{ slug, updated_at }]` for that file; the URL is `/{locale}/questions/{slug}` |
+| `GET /public/sitemap/exams` | `[{ id, slug, type, updated_at }]`, latest 5,000 exams that are not drafts or cancelled |
+
+Only published questions that have a slug are listed. The layout is recomputed hourly, so a sitemap file is not a stable snapshot: a new question can shift later entries into the next page. That is fine for crawlers. Do not call these from the browser; fetch them in server code (`sitemap.ts`, revalidate 3600). Admin-created and imported questions get a slug (`q-<id>`) when they are published; the seed data has none, so staging lists only questions published through the admin panel.
