@@ -8,10 +8,11 @@ User=mcq
 Group=mcq
 WorkingDirectory=/srv/mcq/app/apps/api
 EnvironmentFile=/srv/mcq/.env
-ExecStart=/opt/node22/bin/node dist/worker.js
+ExecStart=/opt/node22/bin/node --max-old-space-size=1000 dist/worker.js
 Restart=always
 RestartSec=3
-MemoryMax=700M
+# A 50,000-row .xlsx import is parsed in memory (about 400 MB); scoring itself needs far less.
+MemoryMax=1300M
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectHome=true
