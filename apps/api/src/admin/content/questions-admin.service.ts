@@ -146,6 +146,19 @@ export class QuestionsAdminService {
     return { prepared, primary, tags };
   }
 
+  /**
+   * Questions in a scheduled or running exam are frozen: the paper and answer key are built from them,
+   * so changing the answer or pulling the question would break scoring. Returns the blocking exam ids.
+   */
+  private async lockedByExams(qids: bigint[]): Promise<string[]> {
+    const rows = await this.prisma.exam_questions.findMany({
+      where: { question_id: { in: qids }, exams: { status: { in: ['scheduled', 'running'] } } },
+      select: { exam_id: true },
+      distinct: ['exam_id'],
+    });
+    return rows.map((r) => String(r.exam_id));
+  }
+
   private async nearDuplicates(primary: number, bodyText: string, exceptId: bigint) {
     const prefix = bodyText.slice(0, 40);
     if (prefix.length < 15) return [];
@@ -223,6 +236,19 @@ export class QuestionsAdminService {
     }
 
     const status = i.status ?? before.status;
+    const changesAnswer =
+      before.correct_option !== i.correct_option ||
+      JSON.stringify(before.options) !== JSON.stringify(prepared.options) ||
+      status !== 'published';
+    if (before.status === 'published' && changesAnswer) {
+      const blocking = await this.lockedByExams([id]);
+      if (blocking.length > 0) {
+        throw new ApiException('IN_USE', {
+          exam_ids: blocking,
+          reason: 'question is in a scheduled or running exam',
+        });
+      }
+    }
     const oldTags = before.question_tags.map((t) => t.node_id);
     await this.prisma.$transaction(async (tx) => {
       await tx.questions.update({
@@ -288,6 +314,15 @@ export class QuestionsAdminService {
       });
     }
     const qids = [...new Set(ids.map((x) => parseId(x)))];
+    if (action === 'archive' || action === 'send_to_review') {
+      const blocking = await this.lockedByExams(qids);
+      if (blocking.length > 0) {
+        throw new ApiException('IN_USE', {
+          exam_ids: blocking,
+          reason: 'some questions are in a scheduled or running exam',
+        });
+      }
+    }
     const touchedTags = (
       await this.prisma.question_tags.findMany({
         where: { question_id: { in: qids } },

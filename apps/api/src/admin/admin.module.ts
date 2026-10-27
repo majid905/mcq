@@ -15,6 +15,8 @@ import { QuestionsAdminService } from './content/questions-admin.service';
 import { TaxonomyAdminService } from './content/taxonomy-admin.service';
 import { TaxonomyCounts } from './content/taxonomy-counts';
 import { NotificationsCoreModule } from '../notifications/notifications.module';
+import { ExamsAdminController } from './exams/exams-admin.controller';
+import { ExamsAdminService } from './exams/exams-admin.service';
 import { OpsAdminController } from './ops/ops-admin.controller';
 import { OpsAdminService } from './ops/ops-admin.service';
 import { AdminAuthController } from './admin-auth.controller';
@@ -39,6 +41,7 @@ import { AuditService } from './audit.service';
     AccountsAdminController,
     OpsAdminController,
     ContentAdminController,
+    ExamsAdminController,
   ],
   providers: [
     AdminAuthService,
@@ -53,6 +56,7 @@ import { AuditService } from './audit.service';
     TaxonomyAdminService,
     TaxonomyCounts,
     ModerationAdminService,
+    ExamsAdminService,
   ],
   exports: [AdminAuthService, AdminAuthGuard, AuditService, RateLimitService],
 })
