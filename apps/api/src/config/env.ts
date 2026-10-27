@@ -31,6 +31,23 @@ export const envSchema = z.object({
   SMS_HTTP_URL: z.url().optional(),
   SMS_HTTP_API_KEY: z.string().optional(),
   SMS_SENDER_ID: z.string().optional(),
+  /** "fake" redirects straight back as paid/failed (dev, tests); "live" talks to bKash and SSLCommerz. */
+  PAYMENT_DRIVER: z.enum(['fake', 'live']).default('fake'),
+  /** Public base of this API, used to build the gateway callback URLs (e.g. https://mcq.ellevix.com). */
+  PUBLIC_API_URL: z.url().default('http://localhost:3000'),
+  /** Where the browser lands after paying: <WEB_BASE_URL>/payment/<id>/status. */
+  WEB_BASE_URL: z.url().default('http://localhost:3001'),
+  /** Deep-link scheme of the mobile app: <scheme>://payment/<id>. */
+  APP_SCHEME: z.string().default('mcqapp'),
+  SSLCOMMERZ_STORE_ID: z.string().optional(),
+  SSLCOMMERZ_STORE_PASSWORD: z.string().optional(),
+  /** Sandbox hosts are used unless this is true. */
+  SSLCOMMERZ_LIVE: z.stringbool().default(false),
+  BKASH_APP_KEY: z.string().optional(),
+  BKASH_APP_SECRET: z.string().optional(),
+  BKASH_USERNAME: z.string().optional(),
+  BKASH_PASSWORD: z.string().optional(),
+  BKASH_LIVE: z.stringbool().default(false),
 });
 
 export type AppConfig = z.infer<typeof envSchema>;
@@ -43,6 +60,23 @@ function crossChecks(cfg: AppConfig): string[] {
   }
   if (cfg.PUSH_DRIVER === 'fcm' && !cfg.FCM_SERVICE_ACCOUNT_JSON) {
     problems.push('  - FCM_SERVICE_ACCOUNT_JSON: required when PUSH_DRIVER=fcm');
+  }
+  if (cfg.PAYMENT_DRIVER === 'live') {
+    if (!cfg.SSLCOMMERZ_STORE_ID || !cfg.SSLCOMMERZ_STORE_PASSWORD) {
+      problems.push(
+        '  - SSLCOMMERZ_STORE_ID / SSLCOMMERZ_STORE_PASSWORD: required when PAYMENT_DRIVER=live',
+      );
+    }
+    if (!cfg.BKASH_APP_KEY || !cfg.BKASH_APP_SECRET || !cfg.BKASH_USERNAME || !cfg.BKASH_PASSWORD) {
+      problems.push(
+        '  - BKASH_APP_KEY / APP_SECRET / USERNAME / PASSWORD: required when PAYMENT_DRIVER=live',
+      );
+    }
+  }
+  if (cfg.NODE_ENV === 'production' && cfg.PAYMENT_DRIVER === 'fake') {
+    problems.push(
+      '  - PAYMENT_DRIVER: "fake" marks payments paid without money; not allowed in production',
+    );
   }
   if (cfg.NODE_ENV === 'production' && cfg.SMS_DRIVER === 'console') {
     problems.push(

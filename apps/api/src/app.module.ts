@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AdminModule } from './admin/admin.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { BillingModule } from './billing/billing.module';
 import { AttemptsModule } from './attempts/attempts.module';
 import { AuthModule } from './auth/auth.module';
 import { CoreModule } from './core.module';
@@ -31,6 +32,7 @@ import { SettingsModule } from './settings/settings.module';
     NotificationsModule,
     HomeModule,
     AdminModule,
+    BillingModule,
   ],
 })
 export class AppModule {}
