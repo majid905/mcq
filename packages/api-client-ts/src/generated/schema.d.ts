@@ -2948,6 +2948,8 @@ export interface paths {
                         };
                     };
                 };
+                404: components["responses"]["Error"];
+                422: components["responses"]["Error"];
             };
         };
         delete?: never;
@@ -3113,6 +3115,112 @@ export interface paths {
                     };
                     content?: never;
                 };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/payments/return/{gateway}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Browser return from the gateway (bKash callbackURL). Verifies, then redirects to the app */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Our payment id */
+                    pid: string;
+                };
+                header?: never;
+                path: {
+                    gateway: "bkash" | "sslcommerz";
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Redirect to the web payment page or the app deep link */
+                302: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        /** Browser return from the gateway (SSLCommerz success/fail/cancel url, form post) */
+        post: {
+            parameters: {
+                query: {
+                    pid: string;
+                };
+                header?: never;
+                path: {
+                    gateway: "bkash" | "sslcommerz";
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/x-www-form-urlencoded": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            responses: {
+                /** @description Redirect to the web payment page or the app deep link */
+                303: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/trial": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Activate the free trial, once per account and phone (FR-PAY-04) */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Trial started */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data?: components["schemas"]["SubscriptionSummary"];
+                        };
+                    };
+                };
+                409: components["responses"]["Error"];
             };
         };
         delete?: never;

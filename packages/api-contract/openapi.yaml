@@ -1604,7 +1604,7 @@ paths:
           description: Our payment id
           schema: { type: string }
       responses:
-        '302': { description: Redirect to WEB_BASE_URL/payments/{id} or [scheme]://payment/{id} }
+        '302': { description: 'Redirect to the web payment page or the app deep link' }
     post:
       tags: [Billing]
       security: []
@@ -1623,7 +1623,7 @@ paths:
           application/x-www-form-urlencoded:
             schema: { type: object, additionalProperties: true }
       responses:
-        '303': { description: Redirect to WEB_BASE_URL/payments/{id} or [scheme]://payment/{id} }
+        '303': { description: 'Redirect to the web payment page or the app deep link' }
 
   /me/trial:
     post:
