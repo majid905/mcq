@@ -469,6 +469,100 @@ paths:
                   stats: { correct_pct: 61.5 }
         '404': { $ref: '#/components/responses/Error' }
 
+  /public/sitemap/questions:
+    get:
+      tags: [Questions]
+      security: []
+      summary: Sitemap layout for public question pages (FR-WEB-02, NFR-PERF-05)
+      description: |
+        Published questions that have a public page, split into pages of `page_size` (50,000, the
+        sitemap protocol limit). The layout is cached for an hour. Build one sitemap file per entry of
+        `pages` with GET /public/sitemap/questions/{page}, and a sitemap index that lists them.
+      responses:
+        default: { $ref: '#/components/responses/Error' }
+        '200':
+          description: OK
+          headers:
+            Cache-Control: { schema: { type: string }, description: 'public, max-age=3600' }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      page_size: { type: integer, example: 50000 }
+                      total: { type: integer }
+                      pages:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            page: { type: integer, minimum: 1 }
+                            count: { type: integer }
+              example:
+                data:
+                  page_size: 50000
+                  total: 120000
+                  pages: [{ page: 1, count: 50000 }, { page: 2, count: 50000 }, { page: 3, count: 20000 }]
+
+  /public/sitemap/questions/{page}:
+    get:
+      tags: [Questions]
+      security: []
+      summary: One sitemap page of public question slugs
+      parameters:
+        - name: page
+          in: path
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        default: { $ref: '#/components/responses/Error' }
+        '200':
+          description: OK
+          headers:
+            Cache-Control: { schema: { type: string }, description: 'public, max-age=3600' }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        slug: { type: string }
+                        updated_at: { type: string, format: date-time }
+        '404': { $ref: '#/components/responses/Error' }
+
+  /public/sitemap/exams:
+    get:
+      tags: [Exams]
+      security: []
+      summary: Public exam pages for the sitemap (latest 5,000 that are not drafts or cancelled)
+      responses:
+        default: { $ref: '#/components/responses/Error' }
+        '200':
+          description: OK
+          headers:
+            Cache-Control: { schema: { type: string }, description: 'public, max-age=3600' }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: string }
+                        slug: { type: string }
+                        type: { type: string, enum: [live, model, previous_year] }
+                        updated_at: { type: string, format: date-time }
+
   /public/questions/{slug}:
     get:
       tags: [Questions]

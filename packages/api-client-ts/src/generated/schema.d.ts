@@ -891,6 +891,178 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/public/sitemap/questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Sitemap layout for public question pages (FR-WEB-02, NFR-PERF-05)
+         * @description Published questions that have a public page, split into pages of `page_size` (50,000, the
+         *     sitemap protocol limit). The layout is cached for an hour. Build one sitemap file per entry of
+         *     `pages` with GET /public/sitemap/questions/{page}, and a sitemap index that lists them.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        /** @description public, max-age=3600 */
+                        "Cache-Control"?: string;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        /**
+                         * @example {
+                         *       "data": {
+                         *         "page_size": 50000,
+                         *         "total": 120000,
+                         *         "pages": [
+                         *           {
+                         *             "page": 1,
+                         *             "count": 50000
+                         *           },
+                         *           {
+                         *             "page": 2,
+                         *             "count": 50000
+                         *           },
+                         *           {
+                         *             "page": 3,
+                         *             "count": 20000
+                         *           }
+                         *         ]
+                         *       }
+                         *     }
+                         */
+                        "application/json": {
+                            data?: {
+                                /** @example 50000 */
+                                page_size?: number;
+                                total?: number;
+                                pages?: {
+                                    page?: number;
+                                    count?: number;
+                                }[];
+                            };
+                        };
+                    };
+                };
+                default: components["responses"]["Error"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/public/sitemap/questions/{page}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One sitemap page of public question slugs */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    page: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        /** @description public, max-age=3600 */
+                        "Cache-Control"?: string;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data?: {
+                                slug?: string;
+                                /** Format: date-time */
+                                updated_at?: string;
+                            }[];
+                        };
+                    };
+                };
+                404: components["responses"]["Error"];
+                default: components["responses"]["Error"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/public/sitemap/exams": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Public exam pages for the sitemap (latest 5,000 that are not drafts or cancelled) */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        /** @description public, max-age=3600 */
+                        "Cache-Control"?: string;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data?: {
+                                id?: string;
+                                slug?: string;
+                                /** @enum {string} */
+                                type?: "live" | "model" | "previous_year";
+                                /** Format: date-time */
+                                updated_at?: string;
+                            }[];
+                        };
+                    };
+                };
+                default: components["responses"]["Error"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/public/questions/{slug}": {
         parameters: {
             query?: never;
