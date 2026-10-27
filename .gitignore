@@ -49,3 +49,4 @@ next-env.d.ts
 load/tokens.json
 apps/api/jest-contract.json
 .uploads/
+*.cpuprofile
