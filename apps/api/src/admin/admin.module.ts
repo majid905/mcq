@@ -17,6 +17,10 @@ import { TaxonomyCounts } from './content/taxonomy-counts';
 import { NotificationsCoreModule } from '../notifications/notifications.module';
 import { ExamsAdminController } from './exams/exams-admin.controller';
 import { ExamsAdminService } from './exams/exams-admin.service';
+import { LocalStorageController, UploadsController } from './uploads/uploads.controller';
+import { UploadsService } from './uploads/uploads.service';
+import { ImportsController } from './imports/imports.controller';
+import { ImportsService } from './imports/imports.service';
 import { OpsAdminController } from './ops/ops-admin.controller';
 import { OpsAdminService } from './ops/ops-admin.service';
 import { AdminAuthController } from './admin-auth.controller';
@@ -42,6 +46,9 @@ import { AuditService } from './audit.service';
     OpsAdminController,
     ContentAdminController,
     ExamsAdminController,
+    UploadsController,
+    LocalStorageController,
+    ImportsController,
   ],
   providers: [
     AdminAuthService,
@@ -57,6 +64,8 @@ import { AuditService } from './audit.service';
     TaxonomyCounts,
     ModerationAdminService,
     ExamsAdminService,
+    UploadsService,
+    ImportsService,
   ],
   exports: [AdminAuthService, AdminAuthGuard, AuditService, RateLimitService],
 })

@@ -13,9 +13,15 @@ export interface AuditEntry {
   after?: unknown;
 }
 
-/** What a handler knows about the caller, for audit rows. */
+/** What a handler knows about the caller. */
 export interface Actor {
   admin: AdminContext;
+  ip?: string | undefined;
+}
+
+/** Audit rows need only the id, so background jobs can write them on behalf of the admin who started them. */
+export interface AuditActor {
+  admin: Pick<AdminContext, 'id'>;
   ip?: string | undefined;
 }
 
@@ -31,7 +37,7 @@ const toJson = (v: unknown): Prisma.InputJsonValue | typeof Prisma.JsonNull =>
 export class AuditService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async record(actor: Actor, e: AuditEntry): Promise<void> {
+  async record(actor: AuditActor, e: AuditEntry): Promise<void> {
     await this.prisma.audit_logs.create({
       data: {
         admin_id: Number(actor.admin.id),

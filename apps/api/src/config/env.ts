@@ -39,6 +39,14 @@ export const envSchema = z.object({
   WEB_BASE_URL: z.url().default('http://localhost:3001'),
   /** Deep-link scheme of the mobile app: <scheme>://payment/<id>. */
   APP_SCHEME: z.string().default('mcqapp'),
+  /** Cloudflare R2 for uploads (images, import files). Unset = files go to UPLOAD_DIR on this server. */
+  R2_ACCOUNT_ID: z.string().optional(),
+  R2_ACCESS_KEY_ID: z.string().optional(),
+  R2_SECRET_ACCESS_KEY: z.string().optional(),
+  R2_BUCKET: z.string().optional(),
+  /** CDN host in front of the bucket; images are shown from here. */
+  R2_PUBLIC_BASE_URL: z.url().optional(),
+  UPLOAD_DIR: z.string().default('./.uploads'),
   SSLCOMMERZ_STORE_ID: z.string().optional(),
   SSLCOMMERZ_STORE_PASSWORD: z.string().optional(),
   /** Sandbox hosts are used unless this is true. */
@@ -60,6 +68,12 @@ function crossChecks(cfg: AppConfig): string[] {
   }
   if (cfg.PUSH_DRIVER === 'fcm' && !cfg.FCM_SERVICE_ACCOUNT_JSON) {
     problems.push('  - FCM_SERVICE_ACCOUNT_JSON: required when PUSH_DRIVER=fcm');
+  }
+  const r2 = [cfg.R2_ACCOUNT_ID, cfg.R2_ACCESS_KEY_ID, cfg.R2_SECRET_ACCESS_KEY, cfg.R2_BUCKET];
+  if (r2.some(Boolean) && !r2.every(Boolean)) {
+    problems.push(
+      '  - R2_ACCOUNT_ID / R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY / R2_BUCKET: set all four or none',
+    );
   }
   if (cfg.PAYMENT_DRIVER === 'live') {
     if (!cfg.SSLCOMMERZ_STORE_ID || !cfg.SSLCOMMERZ_STORE_PASSWORD) {

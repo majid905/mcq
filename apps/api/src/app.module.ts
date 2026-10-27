@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { StorageModule } from './storage/storage.module';
 import { AdminModule } from './admin/admin.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { BillingModule } from './billing/billing.module';
@@ -31,6 +32,7 @@ import { SettingsModule } from './settings/settings.module';
     SearchModule,
     NotificationsModule,
     HomeModule,
+    StorageModule,
     AdminModule,
     BillingModule,
   ],

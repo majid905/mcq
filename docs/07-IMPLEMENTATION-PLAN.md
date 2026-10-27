@@ -43,7 +43,7 @@ How to run tracks in parallel with Claude Code: open **three terminals / three C
 - [ ] W & M: practice hub, drill-down, quick practice, custom builder, question bank, bookmarks, wrong list, search, analytics charts, notifications inbox, settings.
 
 ## Phase 4 — Payments + Admin (prompts `40-*`)
-- [ ] A: packages, coupons, checkout (bKash + SSLCommerz drivers, sandbox), IPN validation, idempotent subscription activation, quotas & PremiumGuard; all admin endpoints with RBAC + audit; import pipeline (xlsx/csv/docx parse → validate → batch insert → outbox); exam generator; monitor endpoint. Add remaining admin CRUD paths to openapi.yaml first.
+- [x] A: packages, coupons, checkout (bKash + SSLCommerz drivers; `PAYMENT_DRIVER=fake` until sandbox credentials exist), IPN validation, idempotent subscription activation, free trial, expiry reminders; admin auth (email+password+TOTP), RBAC and audit; admin APIs for dashboard, users and actions, payments, settings, packages, coupons, banners, admins, roles, questions (+bulk), taxonomy (+reorder), reports, broadcast, exams (generator, publish, monitor), R2/local signed uploads, import pipeline (xlsx/csv/docx, 50,000 rows in about 2 minutes). Not yet verified against live gateways, and the worker must run for imports and scoring.
 - [ ] W: plans, checkout, payment status, history; **admin app** L1–L13.
 - [ ] M: plans, checkout (Custom Tabs / SFSafariViewController), payment status, paywall component; iOS purchase visibility flag.
 
