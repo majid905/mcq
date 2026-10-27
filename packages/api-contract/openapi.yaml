@@ -2169,7 +2169,14 @@ paths:
             schema: { $ref: '#/components/schemas/TaxonomyInput' }
       responses:
         default: { $ref: '#/components/responses/Error' }
-        '200': { description: Updated }
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/TaxonomyNode' }
     delete:
       tags: [Admin]
       parameters:

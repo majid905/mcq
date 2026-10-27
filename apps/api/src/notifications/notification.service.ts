@@ -273,6 +273,11 @@ export class NotificationService {
     }
   }
 
+  /** Push to one more topic without another inbox row (a broadcast aimed at several categories). */
+  async pushTopic(topic: string, tpl: Template): Promise<void> {
+    await this.push.sendToTopic(topic, { ...tpl.bn, deepLink: tpl.deepLink ?? null });
+  }
+
   /** Category broadcast: one inbox row for everyone, one push to a topic (admin composer, Phase 4). */
   async broadcast(tpl: Template, topic: string): Promise<void> {
     await this.prisma.notifications.create({

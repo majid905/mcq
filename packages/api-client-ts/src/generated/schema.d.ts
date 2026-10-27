@@ -4266,7 +4266,11 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": {
+                            data?: components["schemas"]["TaxonomyNode"];
+                        };
+                    };
                 };
                 default: components["responses"]["Error"];
             };

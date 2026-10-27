@@ -9,6 +9,12 @@ import { AccountsAdminController } from './accounts/accounts-admin.controller';
 import { AccountsAdminService } from './accounts/accounts-admin.service';
 import { CatalogAdminController } from './catalog/catalog-admin.controller';
 import { CatalogAdminService } from './catalog/catalog-admin.service';
+import { ContentAdminController } from './content/content-admin.controller';
+import { ModerationAdminService } from './content/moderation-admin.service';
+import { QuestionsAdminService } from './content/questions-admin.service';
+import { TaxonomyAdminService } from './content/taxonomy-admin.service';
+import { TaxonomyCounts } from './content/taxonomy-counts';
+import { NotificationsCoreModule } from '../notifications/notifications.module';
 import { OpsAdminController } from './ops/ops-admin.controller';
 import { OpsAdminService } from './ops/ops-admin.service';
 import { AdminAuthController } from './admin-auth.controller';
@@ -21,6 +27,7 @@ import { AuditService } from './audit.service';
   imports: [
     AuthModule,
     ExamsModule,
+    NotificationsCoreModule,
     JwtModule.registerAsync({
       inject: [APP_CONFIG],
       useFactory: (config: AppConfig) => ({ secret: config.JWT_ACCESS_SECRET }),
@@ -31,6 +38,7 @@ import { AuditService } from './audit.service';
     CatalogAdminController,
     AccountsAdminController,
     OpsAdminController,
+    ContentAdminController,
   ],
   providers: [
     AdminAuthService,
@@ -41,6 +49,10 @@ import { AuditService } from './audit.service';
     CatalogAdminService,
     AccountsAdminService,
     OpsAdminService,
+    QuestionsAdminService,
+    TaxonomyAdminService,
+    TaxonomyCounts,
+    ModerationAdminService,
   ],
   exports: [AdminAuthService, AdminAuthGuard, AuditService, RateLimitService],
 })

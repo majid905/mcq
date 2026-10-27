@@ -10,3 +10,11 @@ export class Page<T, M extends object = CursorMeta> {
     readonly meta: M,
   ) {}
 }
+
+/** A single object plus `meta` (e.g. a created question with its near-duplicate hints). */
+export class WithMeta<D, M extends object> {
+  constructor(
+    readonly data: D,
+    readonly meta: M,
+  ) {}
+}
