@@ -3984,7 +3984,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Signed R2 upload URL for images/import files */
+        /** Signed upload URL (perm: questions.write for images, questions.import for import files, banners.write for banners). Import files are private: public_url is an upload:// reference to pass to POST /admin/imports as file_url */
         post: {
             parameters: {
                 query?: never;
@@ -4013,8 +4013,12 @@ export interface paths {
                             data?: {
                                 /** Format: uri */
                                 upload_url?: string;
-                                /** Format: uri */
                                 public_url?: string;
+                                /** @description Headers the PUT must send (Content-Type) */
+                                headers?: {
+                                    [key: string]: string;
+                                };
+                                expires_in?: number;
                             };
                         };
                     };
@@ -4028,6 +4032,115 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/uploads/local/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Dev/staging storage only. Signed download of a private file (import error report) */
+        get: {
+            parameters: {
+                query: {
+                    exp: number;
+                    sig: string;
+                };
+                header?: never;
+                path: {
+                    key: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The file */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "*/*": string;
+                    };
+                };
+                default: components["responses"]["Error"];
+            };
+        };
+        /** Dev/staging storage only. Target of the signed upload_url when R2 is not configured */
+        put: {
+            parameters: {
+                query: {
+                    exp: number;
+                    sig: string;
+                };
+                header?: never;
+                path: {
+                    key: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "*/*": string;
+                };
+            };
+            responses: {
+                /** @description Stored */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                default: components["responses"]["Error"];
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Dev/staging storage only. Public images (question images, banners) when no CDN host is set */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    key: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The image */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "image/*": string;
+                    };
+                };
+                default: components["responses"]["Error"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/imports": {
         parameters: {
             query?: never;
@@ -4035,7 +4148,34 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Import history (perm: questions.import) */
+        get: {
+            parameters: {
+                query?: {
+                    cursor?: components["parameters"]["Cursor"];
+                    limit?: components["parameters"]["Limit"];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data?: components["schemas"]["ImportJob"][];
+                            meta?: components["schemas"]["CursorMeta"];
+                        };
+                    };
+                };
+                default: components["responses"]["Error"];
+            };
+        };
         put?: never;
         /** Create import job from uploaded file (FR-ADM-07) */
         post: {
@@ -6866,7 +7006,12 @@ export interface components {
                 field?: string;
                 message?: string;
             }[];
+            /** @description Short-lived signed link to a CSV of the failed rows */
             error_file_url?: string | null;
+            /** Format: date-time */
+            created_at?: string;
+            /** Format: date-time */
+            finished_at?: string | null;
         };
     };
     responses: {

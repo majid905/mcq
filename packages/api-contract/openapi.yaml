@@ -2039,7 +2039,7 @@ paths:
   /admin/uploads:
     post:
       tags: [Admin]
-      summary: Signed R2 upload URL for images/import files
+      summary: 'Signed upload URL (perm: questions.write for images, questions.import for import files, banners.write for banners). Import files are private: public_url is an upload:// reference to pass to POST /admin/imports as file_url'
       requestBody:
         required: true
         content:
@@ -2064,9 +2064,102 @@ paths:
                     type: object
                     properties:
                       upload_url: { type: string, format: uri }
-                      public_url: { type: string, format: uri }
+                      public_url: { type: string }
+                      headers:
+                        type: object
+                        additionalProperties: { type: string }
+                        description: Headers the PUT must send (Content-Type)
+                      expires_in: { type: integer }
+
+  /admin/uploads/local/{key}:
+    put:
+      tags: [Admin]
+      security: []
+      summary: Dev/staging storage only. Target of the signed upload_url when R2 is not configured
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema: { type: string }
+        - name: exp
+          in: query
+          required: true
+          schema: { type: integer }
+        - name: sig
+          in: query
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          '*/*':
+            schema: { type: string, format: binary }
+      responses:
+        default: { $ref: '#/components/responses/Error' }
+        '204': { description: Stored }
+    get:
+      tags: [Admin]
+      security: []
+      summary: Dev/staging storage only. Signed download of a private file (import error report)
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema: { type: string }
+        - name: exp
+          in: query
+          required: true
+          schema: { type: integer }
+        - name: sig
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        default: { $ref: '#/components/responses/Error' }
+        '200':
+          description: The file
+          content:
+            '*/*':
+              schema: { type: string, format: binary }
+
+  /files/{key}:
+    get:
+      tags: [Admin]
+      security: []
+      summary: Dev/staging storage only. Public images (question images, banners) when no CDN host is set
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        default: { $ref: '#/components/responses/Error' }
+        '200':
+          description: The image
+          content:
+            image/*:
+              schema: { type: string, format: binary }
 
   /admin/imports:
+    get:
+      tags: [Admin]
+      summary: 'Import history (perm: questions.import)'
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        default: { $ref: '#/components/responses/Error' }
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/ImportJob' }
+                  meta: { $ref: '#/components/schemas/CursorMeta' }
     post:
       tags: [Admin]
       summary: Create import job from uploaded file (FR-ADM-07)
@@ -4098,4 +4191,6 @@ components:
               row: { type: integer }
               field: { type: string }
               message: { type: string }
-        error_file_url: { type: [string, 'null'] }
+        error_file_url: { type: [string, 'null'], description: Short-lived signed link to a CSV of the failed rows }
+        created_at: { type: string, format: date-time }
+        finished_at: { type: [string, 'null'], format: date-time }
