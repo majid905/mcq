@@ -4329,7 +4329,7 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            data?: components["schemas"]["ExamDetail"][];
+                            data?: components["schemas"]["AdminExam"][];
                             meta?: components["schemas"]["CursorMeta"];
                         };
                     };
@@ -4359,7 +4359,7 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            data?: components["schemas"]["ExamDetail"];
+                            data?: components["schemas"]["AdminExam"];
                         };
                     };
                 };
@@ -4379,7 +4379,32 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** One exam with its settings (perm: exams.read) */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: components["parameters"]["Id"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data?: components["schemas"]["AdminExam"];
+                        };
+                    };
+                };
+                default: components["responses"]["Error"];
+            };
+        };
         put: {
             parameters: {
                 query?: never;
@@ -4400,7 +4425,11 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": {
+                            data?: components["schemas"]["AdminExam"];
+                        };
+                    };
                 };
                 default: components["responses"]["Error"];
             };
@@ -4419,7 +4448,38 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Current paper in order (perm: exams.read) */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: components["parameters"]["Id"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data?: {
+                                position?: number;
+                                question_id?: string;
+                                section_node_id?: string | null;
+                                body_text?: string;
+                                status?: components["schemas"]["QuestionStatus"];
+                            }[];
+                        };
+                    };
+                };
+                default: components["responses"]["Error"];
+            };
+        };
         /** Set paper manually (ordered ids) */
         put: {
             parameters: {
@@ -4532,6 +4592,48 @@ export interface paths {
                     content?: never;
                 };
                 422: components["responses"]["Error"];
+                default: components["responses"]["Error"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/exams/{id}/unpublish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Back to draft while nobody has started it (perm: exams.publish) */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: components["parameters"]["Id"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Back to draft */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data?: components["schemas"]["AdminExam"];
+                        };
+                    };
+                };
+                409: components["responses"]["Error"];
                 default: components["responses"]["Error"];
             };
         };
@@ -6544,6 +6646,40 @@ export interface components {
                 /** @default 10 */
                 exclude_used_in_last_exams: number;
             };
+        };
+        AdminExam: {
+            id?: string;
+            /** @enum {string} */
+            type?: "live" | "model" | "previous_year";
+            category_id?: string;
+            title_bn?: string;
+            title_en?: string;
+            slug?: string;
+            description?: string | null;
+            /** Format: date-time */
+            start_at?: string | null;
+            /** Format: date-time */
+            end_at?: string | null;
+            duration_sec?: number;
+            question_count?: number;
+            mark_per_question?: number;
+            negative_mark?: number;
+            total_marks?: number;
+            pass_marks?: number | null;
+            is_premium?: boolean;
+            shuffle_questions?: boolean;
+            shuffle_options?: boolean;
+            /** Format: date-time */
+            result_publish_at?: string | null;
+            source_exam_id?: string | null;
+            blueprint?: unknown;
+            /** @enum {string} */
+            status?: "draft" | "scheduled" | "running" | "ended" | "merit_published" | "cancelled";
+            /** @description Questions currently in the paper */
+            paper_questions?: number;
+            participant_count?: number;
+            /** Format: date-time */
+            created_at?: string;
         };
         AdminUser: {
             id?: string;
