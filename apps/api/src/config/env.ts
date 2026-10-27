@@ -36,6 +36,8 @@ export const envSchema = z.object({
   ADMIN_IP_ALLOWLIST: csv.default([]),
   /** Admins must set up TOTP before they can do anything else. Defaults to on in production, off elsewhere. */
   ADMIN_REQUIRE_TOTP: z.stringbool().optional(),
+  /** Bearer token Prometheus must send to /metrics. Empty = no check (keep the port private). */
+  METRICS_TOKEN: z.string().min(16).optional(),
   PAYMENT_DRIVER: z.enum(['fake', 'live']).default('fake'),
   /** Public base of this API, used to build the gateway callback URLs (e.g. https://mcq.ellevix.com). */
   PUBLIC_API_URL: z.url().default('http://localhost:3000'),

@@ -5,6 +5,7 @@ import { requestContext } from './common/request-context.middleware';
 import { ResponseEnvelopeInterceptor } from './common/response-envelope.interceptor';
 import { APP_CONFIG, type AppConfig } from './config/env';
 import { mountDocs } from './docs/mount-docs';
+import { MetricsService } from './metrics/metrics.service';
 
 export const API_PREFIX = 'v1';
 
@@ -20,7 +21,9 @@ export function configureApp(app: INestApplication): void {
   (app.getHttpAdapter().getInstance() as { disable(k: string): void }).disable('x-powered-by');
   app.use(securityHeaders);
   app.use(requestContext);
-  app.setGlobalPrefix(API_PREFIX);
+  app.use(app.get(MetricsService).middleware);
+  // Operations endpoints that are not part of the public contract live outside /v1.
+  app.setGlobalPrefix(API_PREFIX, { exclude: ['metrics'] });
   app.useGlobalInterceptors(new ResponseEnvelopeInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
   app.enableCors({

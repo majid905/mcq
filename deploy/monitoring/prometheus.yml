@@ -1,0 +1,28 @@
+# Prometheus for the MCQ platform. Scrapes the API's /metrics (not exposed by nginx).
+# Run: see deploy/monitoring/README.md
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - /etc/prometheus/alerts.yml
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['alertmanager:9093']
+
+scrape_configs:
+  - job_name: mcq-api
+    metrics_path: /metrics
+    # Uncomment when METRICS_TOKEN is set in the API environment:
+    # authorization: { type: Bearer, credentials_file: /etc/prometheus/metrics-token }
+    static_configs:
+      # With several API containers list them all; the dashboard sums over instances.
+      - targets: ['host.docker.internal:3050']
+
+  # Optional exporters (not part of this repo):
+  # - job_name: mysql-host
+  #   static_configs: [{ targets: ['db-host:9100'] }]       # node_exporter
+  # - job_name: mysqld
+  #   static_configs: [{ targets: ['db-host:9104'] }]       # mysqld_exporter

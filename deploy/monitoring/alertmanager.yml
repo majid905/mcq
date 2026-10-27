@@ -1,0 +1,27 @@
+# Where alerts go. Replace the receiver with a real channel before relying on it
+# (Telegram, Slack and e-mail receivers are all supported by Alertmanager).
+route:
+  receiver: ops
+  group_by: [alertname]
+  group_wait: 30s
+  repeat_interval: 2h
+  routes:
+    - matchers: ['severity="critical"']
+      receiver: ops
+      repeat_interval: 30m
+
+receivers:
+  - name: ops
+    # Example: Telegram bot
+    # telegram_configs:
+    #   - bot_token: '<token>'
+    #     chat_id: -1001234567890
+    #     parse_mode: ''
+    # Example: e-mail
+    # email_configs:
+    #   - to: ops@example.com
+    #     from: alerts@example.com
+    #     smarthost: smtp.example.com:587
+    #     auth_username: alerts@example.com
+    #     auth_password: '<password>'
+    # Until one of those is filled in, alerts are only visible in the Prometheus/Alertmanager UI.

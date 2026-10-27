@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { MetricsController } from './metrics/metrics.controller';
+import { MetricsService } from './metrics/metrics.service';
 import { StorageModule } from './storage/storage.module';
 import { AdminModule } from './admin/admin.module';
 import { AnalyticsModule } from './analytics/analytics.module';
@@ -36,5 +38,7 @@ import { SettingsModule } from './settings/settings.module';
     AdminModule,
     BillingModule,
   ],
+  controllers: [MetricsController],
+  providers: [MetricsService],
 })
 export class AppModule {}

@@ -1,0 +1,44 @@
+# Prometheus + Alertmanager + Grafana, all on loopback ports. For a staging or the production box:
+#   cd deploy/monitoring && GRAFANA_PASSWORD=... docker compose up -d
+# Grafana: http://127.0.0.1:3100 (reach it through an SSH tunnel; do not publish it)
+name: mcq-monitoring
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=15d
+    ports: ['127.0.0.1:9090:9090']
+    extra_hosts: ['host.docker.internal:host-gateway']
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus-data:/prometheus
+    mem_limit: 400m
+
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    restart: unless-stopped
+    ports: ['127.0.0.1:9093:9093']
+    volumes:
+      - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    mem_limit: 100m
+
+  grafana:
+    image: grafana/grafana:11.3.1
+    restart: unless-stopped
+    ports: ['127.0.0.1:3100:3000']
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:?set GRAFANA_PASSWORD}
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    mem_limit: 300m
+
+volumes:
+  prometheus-data:
+  grafana-data:

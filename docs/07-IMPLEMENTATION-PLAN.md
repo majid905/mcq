@@ -48,9 +48,9 @@ How to run tracks in parallel with Claude Code: open **three terminals / three C
 - [ ] M: plans, checkout (Custom Tabs / SFSafariViewController), payment status, paywall component; iOS purchase visibility flag.
 
 ## Phase 5 — Hardening & launch (prompt `50-hardening.md`)
-- [ ] k6 load test 10,000 VUs on live exam flow; tune MySQL/Redis/Node; fix p95.
-- [ ] Security pass (OWASP checklist in `docs/08`), rate limits, WAF rules, secrets audit.
+- [~] k6 load test: run on one laptop up to 3,000 students over 2 minutes, all thresholds pass (see `load/README.md`). The 10,000-VU run still needs a Linux load generator against staging.
+- [~] Security pass of the API done (`docs/SECURITY-REVIEW.md`): headers, rate limits, mandatory admin TOTP, IP allowlist, anonymisation job, patched dependencies. Open: origin firewall (ops), web/admin items (Dev B), live payment gateways.
 - [ ] SEO: public pages, sitemap, OG images, Core Web Vitals.
-- [ ] Observability: Sentry (api/web/app), Prometheus + Grafana dashboards, uptime alerts.
-- [ ] Backups (XtraBackup + binlog to R2), restore drill.
+- [~] Observability: Prometheus `/metrics`, alert rules, Alertmanager, Grafana dashboard in `deploy/monitoring/`. Sentry not done (needs a DSN).
+- [~] Backups: encrypted nightly dump to R2 and a restore drill script (tested locally, 39 s), `docs/BACKUP-RESTORE.md`. XtraBackup + binlog point-in-time recovery is documented but not rehearsed; the staging MySQL has the binary log off.
 - [ ] Store assets, privacy policy, Play Console & App Store submission; production deploy.

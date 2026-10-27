@@ -1,0 +1,99 @@
+# Prometheus alert rules for the signals in docs/08-QUALITY-SECURITY-DEPLOY.md section 4.
+# Loaded by prometheus.yml (rule_files). Check with: promtool check rules alerts.yml
+groups:
+  - name: mcq-api
+    rules:
+      - alert: ApiLatencyHigh
+        expr: histogram_quantile(0.95, sum by (le) (rate(mcq_http_request_duration_seconds_bucket[5m]))) > 0.5
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: 'API p95 latency above 500 ms for 5 minutes'
+
+      - alert: ApiErrorRateHigh
+        expr: |
+          sum(rate(mcq_http_request_duration_seconds_count{status=~"5.."}[5m]))
+            / sum(rate(mcq_http_request_duration_seconds_count[5m])) > 0.01
+        for: 5m
+        labels: { severity: critical }
+        annotations:
+          summary: 'More than 1% of API responses are 5xx'
+
+      - alert: PaymentWebhookFailing
+        expr: |
+          sum(increase(mcq_http_request_duration_seconds_count{route=~"/v1/payments/(webhooks|return)/.*",status=~"5.."}[5m])) > 0
+        labels: { severity: critical }
+        annotations:
+          summary: 'A payment webhook or return call answered 5xx: a paid customer may not have been activated'
+
+      - alert: ApiDown
+        expr: up{job="mcq-api"} == 0
+        for: 2m
+        labels: { severity: critical }
+        annotations:
+          summary: 'The API does not answer Prometheus scrapes'
+
+  - name: mcq-queues
+    rules:
+      - alert: SubmitQueueDeep
+        expr: mcq_queue_backlog{queue="submit"} > 2000
+        for: 1m
+        labels: { severity: critical }
+        annotations:
+          summary: 'More than 2,000 submissions are waiting to be scored'
+
+      - alert: ScoringLagHigh
+        expr: mcq_queue_oldest_age_seconds{queue="submit"} > 60
+        for: 1m
+        labels: { severity: critical }
+        annotations:
+          summary: 'The oldest unscored submission is over 60 s old. Is the worker running?'
+
+      - alert: ImportStuck
+        expr: mcq_queue_oldest_age_seconds{queue="import"} > 900
+        labels: { severity: warning }
+        annotations:
+          summary: 'An import has been waiting for more than 15 minutes'
+
+  - name: mcq-dependencies
+    rules:
+      - alert: DatabaseDown
+        expr: mcq_database_up == 0
+        for: 1m
+        labels: { severity: critical }
+        annotations: { summary: 'The API cannot reach MySQL' }
+
+      - alert: RedisDown
+        expr: mcq_redis_up == 0
+        for: 1m
+        labels: { severity: critical }
+        annotations: { summary: 'The API cannot reach Redis' }
+
+      - alert: RedisMemoryHigh
+        expr: mcq_redis_memory_used_ratio > 0.75
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: 'Redis is above 75% of maxmemory (policy is noeviction: at 100% writes fail)'
+
+      # The next two need exporters that are not part of this repo: mysqld_exporter and node_exporter
+      # on the database host. Without them the series do not exist and the rules stay silent.
+      - alert: MysqlConnectionsHigh
+        expr: mysql_global_status_threads_connected > 300
+        for: 5m
+        labels: { severity: warning }
+        annotations: { summary: 'More than 300 MySQL connections' }
+
+      - alert: MysqlHostCpuHigh
+        expr: 100 - avg(rate(node_cpu_seconds_total{mode="idle",job="mysql-host"}[5m])) * 100 > 80
+        for: 5m
+        labels: { severity: warning }
+        annotations: { summary: 'MySQL host CPU above 80%' }
+
+  - name: mcq-backups
+    rules:
+      - alert: BackupStale
+        # written by deploy/backup/backup-mysql.sh through the node_exporter textfile collector
+        expr: time() - mcq_backup_last_success_timestamp_seconds > 129600
+        labels: { severity: critical }
+        annotations: { summary: 'No successful database backup for 36 hours' }
