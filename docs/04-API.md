@@ -44,6 +44,7 @@ Access JWT claims: `sub` (user id), `dev` (device row id), `prem` (bool), `exp`.
 | 409 | PHONE_EXISTS | Register with existing phone |
 | 409 | ALREADY_ATTEMPTED | Second ranked attempt |
 | 409 | ALREADY_REPORTED | Same user reported the same question for the same reason |
+| 409 | TRIAL_USED | Free trial already used by this account or phone |
 | 409 | DUPLICATE_QUESTION | content_hash clash; `details.existing_id` |
 | 410 | ATTEMPT_CLOSED | Sync/submit after deadline + grace |
 | 422 | NOT_ENOUGH_QUESTIONS | Practice selection (topics, difficulty, exclude seen) gave fewer than 5 questions; `details.found` |

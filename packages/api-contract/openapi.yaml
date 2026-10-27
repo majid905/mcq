@@ -1504,6 +1504,8 @@ paths:
                   payment_id: '7001'
                   redirect_url: https://sandbox.sslcommerz.com/EasyCheckOut/testcde7001
                   payable_bdt: 809
+        '404': { $ref: '#/components/responses/Error' }
+        '422': { $ref: '#/components/responses/Error' }
 
   /payments/{id}:
     get:
@@ -1585,6 +1587,58 @@ paths:
             schema: { type: object, additionalProperties: true }
       responses:
         '200': { description: Acknowledged }
+
+  /payments/return/{gateway}:
+    get:
+      tags: [Billing]
+      security: []
+      summary: Browser return from the gateway (bKash callbackURL). Verifies, then redirects to the app
+      parameters:
+        - name: gateway
+          in: path
+          required: true
+          schema: { type: string, enum: [bkash, sslcommerz] }
+        - name: pid
+          in: query
+          required: true
+          description: Our payment id
+          schema: { type: string }
+      responses:
+        '302': { description: Redirect to WEB_BASE_URL/payments/{id} or [scheme]://payment/{id} }
+    post:
+      tags: [Billing]
+      security: []
+      summary: Browser return from the gateway (SSLCommerz success/fail/cancel url, form post)
+      parameters:
+        - name: gateway
+          in: path
+          required: true
+          schema: { type: string, enum: [bkash, sslcommerz] }
+        - name: pid
+          in: query
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '303': { description: Redirect to WEB_BASE_URL/payments/{id} or [scheme]://payment/{id} }
+
+  /me/trial:
+    post:
+      tags: [Billing]
+      summary: Activate the free trial, once per account and phone (FR-PAY-04)
+      responses:
+        '200':
+          description: Trial started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/SubscriptionSummary' }
+        '409': { $ref: '#/components/responses/Error' }
 
   # ------------------------------------------------------------------ Notifications
   /notifications:
