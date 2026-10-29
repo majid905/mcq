@@ -34,7 +34,7 @@ export interface ProgressBarProps {
   max: number;
   /** Accessible name, e.g. "আজকের লক্ষ্য". */
   label: string;
-  tone?: 'primary' | 'accent' | 'success';
+  tone?: 'primary' | 'accent' | 'success' | 'danger';
   className?: string;
 }
 
@@ -51,8 +51,14 @@ export function ProgressBar({ value, max, label, tone = 'primary', className }: 
     >
       <div
         className={cn(
-          'h-full rounded-pill',
-          tone === 'accent' ? 'bg-accent' : tone === 'success' ? 'bg-success' : 'bg-primary',
+          'h-full rounded-pill transition-[width] duration-(--mcq-duration-slow) ease-standard',
+          tone === 'accent'
+            ? 'bg-accent'
+            : tone === 'success'
+              ? 'bg-success'
+              : tone === 'danger'
+                ? 'bg-danger'
+                : 'bg-primary',
         )}
         style={{ width: `${pct}%` }}
       />

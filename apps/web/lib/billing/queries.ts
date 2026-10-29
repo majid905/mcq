@@ -89,8 +89,4 @@ export function usePaymentHistory() {
   });
 }
 
-/** Monthly equivalent for "৳১৫০/মাস" lines. */
-export function perMonth(p: Package): number {
-  const months = Math.max(1, Math.round((p.duration_days ?? 30) / 30));
-  return Math.round((p.price_bdt ?? 0) / months);
-}
+export { perMonth } from './price';

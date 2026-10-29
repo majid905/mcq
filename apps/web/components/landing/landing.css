@@ -1,0 +1,172 @@
+/*
+ * Landing page motion and the few decorative effects Tailwind utilities can't express
+ * (design/landing/tokens.css). Colours come from the design tokens only. Every animation sits
+ * behind prefers-reduced-motion: no-preference, so reduced motion shows the static first state.
+ */
+
+/* Amber highlighter band behind the lower part of the hero's key phrase. */
+.landing-mark {
+  background: linear-gradient(
+    transparent 60%,
+    color-mix(in oklab, var(--mcq-color-accent) 55%, transparent) 60%,
+    color-mix(in oklab, var(--mcq-color-accent) 55%, transparent) 92%,
+    transparent 92%
+  );
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding: 0 0.06em;
+}
+
+/* Edge fade for the reviews tickers. */
+.landing-fade-x {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+/* App panel dot field fades in from the left. */
+.landing-fade-left {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 45%);
+  mask-image: linear-gradient(90deg, transparent, #000 45%);
+}
+
+@keyframes landing-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 color-mix(in oklab, var(--mcq-color-primary) 0%, transparent),
+      0 0 10px 0 color-mix(in oklab, var(--mcq-color-primary) 18%, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 0 5px color-mix(in oklab, var(--mcq-color-primary) 10%, transparent),
+      0 0 26px 4px color-mix(in oklab, var(--mcq-color-primary) 35%, transparent);
+  }
+}
+@keyframes landing-ping {
+  75%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+@keyframes landing-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+@keyframes landing-row-in {
+  from {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+}
+@keyframes landing-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--mcq-color-primary) 0%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--mcq-color-primary) 22%, transparent);
+  }
+}
+@keyframes landing-nudge {
+  50% {
+    transform: translateY(-3px);
+  }
+}
+@keyframes landing-marquee {
+  to {
+    transform: translateX(calc(-50% - 8px));
+  }
+}
+@keyframes landing-tip-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@keyframes landing-bubble {
+  0%,
+  72%,
+  100% {
+    background: transparent;
+    border-color: color-mix(in oklab, currentColor 16%, transparent);
+  }
+  80%,
+  92% {
+    background: var(--mcq-color-primary);
+    border-color: var(--mcq-color-primary);
+  }
+}
+@keyframes landing-ripple {
+  from {
+    transform: scale(0.55);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+@keyframes landing-float {
+  50% {
+    translate: 0 -8px;
+  }
+}
+@keyframes landing-grow {
+  from {
+    width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .landing-glow {
+    animation: landing-glow 2.8s ease-in-out infinite;
+  }
+  .landing-ping {
+    animation: landing-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  .landing-in {
+    animation: landing-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .landing-row-in {
+    animation: landing-row-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .landing-row-you {
+    animation:
+      landing-row-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) 0.9s both,
+      landing-pulse 2.6s ease-in-out 1.6s infinite;
+  }
+  .landing-nudge {
+    display: inline-block;
+    animation: landing-nudge 1.6s ease-in-out 1.6s infinite;
+  }
+  .landing-marquee {
+    animation: landing-marquee 60s linear infinite;
+  }
+  .landing-marquee-reverse {
+    animation: landing-marquee 70s linear infinite reverse;
+  }
+  .landing-marquee:hover,
+  .landing-marquee-reverse:hover,
+  .landing-marquee:focus-within,
+  .landing-marquee-reverse:focus-within {
+    animation-play-state: paused;
+  }
+  .landing-tip {
+    animation: landing-tip-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .landing-bubble {
+    animation: landing-bubble ease-in-out infinite;
+  }
+  .landing-ripple {
+    animation: landing-ripple 4.5s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  }
+  .landing-float {
+    animation: landing-float 5s ease-in-out 1s infinite;
+  }
+  .landing-grow {
+    animation: landing-grow 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both;
+  }
+}

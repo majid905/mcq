@@ -10,8 +10,8 @@ export async function AuthShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="flex h-16 items-center justify-between gap-4 px-4">
-        <Link href="/" aria-label={t('appName')}>
-          <Brand name={t('appName')} />
+        <Link href="/" aria-label={t('brandName')}>
+          <Brand name={t('brandName')} />
         </Link>
         <HeaderControls compact />
       </header>

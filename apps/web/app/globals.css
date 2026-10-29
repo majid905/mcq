@@ -10,6 +10,7 @@
 :root {
   --mcq-font-sans: var(--font-inter), var(--font-hind), 'Noto Sans Bengali', system-ui, sans-serif;
   --mcq-font-bangla: var(--font-hind);
+  --mcq-font-display: var(--font-inter), var(--font-anek), var(--font-hind), sans-serif;
 }
 
 @layer base {

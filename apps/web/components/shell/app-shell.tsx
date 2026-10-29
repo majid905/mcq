@@ -16,8 +16,8 @@ export async function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-dvh lg:grid lg:grid-cols-[248px_1fr]">
       <OnboardingGuard />
       <aside className="sticky top-0 hidden h-dvh flex-col gap-6 border-r border-border bg-surface px-4 py-5 lg:flex">
-        <Link href="/home" aria-label={t('common.appName')}>
-          <Brand name={t('common.appName')} />
+        <Link href="/home" aria-label={t('common.brandName')}>
+          <Brand name={t('common.brandName')} />
         </Link>
         <SidebarNav />
       </aside>
@@ -25,8 +25,8 @@ export async function AppShell({ children }: { children: ReactNode }) {
         <header className="sticky top-0 z-(--mcq-z-sticky) border-b border-border bg-surface">
           <div className="mx-auto flex h-14 max-w-content items-center justify-between gap-3 px-4">
             <div className="flex items-center gap-4">
-              <Link href="/home" aria-label={t('common.appName')} className="lg:hidden">
-                <Brand name={t('common.appName')} className="max-sm:[&>span:last-child]:sr-only" />
+              <Link href="/home" aria-label={t('common.brandName')} className="lg:hidden">
+                <Brand name={t('common.brandName')} />
               </Link>
               <TopNav />
             </div>

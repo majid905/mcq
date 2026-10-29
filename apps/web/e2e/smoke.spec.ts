@@ -8,7 +8,7 @@ test('landing renders in Bangla, switches theme and language', async ({ page }) 
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('lang', 'bn');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-    'বিসিএস প্রস্তুতি, লাইভ পরীক্ষায়',
+    'সবার সঙ্গে লাইভ পরীক্ষা, সঙ্গে সঙ্গে আসল র‍্যাংক',
   );
 
   const toggle = page.getByTestId('theme-toggle').first();
@@ -23,6 +23,6 @@ test('landing renders in Bangla, switches theme and language', async ({ page }) 
   await expect(page).toHaveURL(/\/en$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-    'Prepare for BCS with live exams',
+    'Sit live exams with everyone, and get your real rank instantly',
   );
 });

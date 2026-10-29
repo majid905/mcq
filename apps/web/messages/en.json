@@ -4,7 +4,8 @@
     "tagline": "Prepare for BCS, bank, primary and admission exams",
     "retry": "Try again",
     "loading": "Loading…",
-    "close": "Close"
+    "close": "Close",
+    "brandName": "টিকযাত্রা"
   },
   "theme": {
     "system": "Theme: system",
@@ -225,74 +226,534 @@
     "check": "Check again"
   },
   "landing": {
-    "metaTitle": "BCS, bank and admission preparation — live MCQ exams",
-    "metaDescription": "Live model tests, topic practice, previous-year questions and rankings for BCS, bank, primary, NTRCA and admission exams, all in one place.",
-    "heroBadge": "Live exams every day",
-    "heroTitle": "Prepare for BCS with live exams",
-    "heroBody": "Sit the same exam at the same time as thousands of others, see your rank right away, and practice your weak topics.",
-    "ctaStart": "Start free",
-    "ctaLogin": "Log in",
-    "freeLine": "Free: {live} live exams a month, {practice} practice questions a day",
-    "preview": {
-      "live": "Live now",
-      "left": "38 min left",
-      "title": "47th BCS Preliminary Model Test",
-      "meta": "200 questions · 200 marks · 2 hours",
-      "option": {
-        "a": "Article 2",
-        "b": "Article 2A"
-      }
+    "metaTitle": "TikJatra — Live model tests for BCS, Bank, Primary and NTRCA",
+    "metaDescription": "Weekly live model tests with instant results and a real rank, an explanation for every question and practice for your weak topics. Government job exam prep in one place.",
+    "nav": {
+      "label": "Main menu",
+      "mobileLabel": "Mobile menu",
+      "exams": "Exams",
+      "bank": "Question bank",
+      "plans": "Plans",
+      "app": "App",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu"
     },
-    "featuresTitle": "Everything you need to prepare",
-    "features": {
-      "live": {
-        "title": "Live exams",
-        "body": "Same start time for everyone, submitted automatically when time is up."
+    "ctaFree": "Take a free model test",
+    "hero": {
+      "eyebrow": "BCS · Bank · Primary · NTRCA",
+      "titleLead": "Sit live exams with everyone, and get your",
+      "titleMark": "real rank instantly",
+      "body": "Live model tests every week. Submit and see your result, an explanation for every question and practice for your weak topics.",
+      "webLink": "Or start a free test in your browser",
+      "freeLine": "Free: {live} live exams a month, {practice} practice questions a day",
+      "noCard": "No card or payment details needed"
+    },
+    "store": {
+      "play": "Get it on Google Play",
+      "appStore": "Download on the App Store",
+      "soon": "Android and iOS apps coming soon"
+    },
+    "live": {
+      "badge": "Live",
+      "enrolling": "Enrolment open",
+      "weekly": "Every week",
+      "title": "BCS live model test",
+      "meta": "100 questions · 60 minutes · −0.50 per wrong answer",
+      "timerLabel": "Time until the exam starts",
+      "hours": "hours",
+      "minutes": "minutes",
+      "seconds": "seconds",
+      "enrolled": "{count} people enrolled",
+      "scheduleHint": "Create a free account to see when the next live exam starts.",
+      "remind": "Remind me",
+      "boardTitle": "Live test merit list",
+      "participants": "{count} took part",
+      "sample": "Sample data",
+      "you": "You",
+      "rise": "{count} places up from last time",
+      "rows": [
+        {
+          "name": "Sadia Akter",
+          "district": "Dhaka"
+        },
+        {
+          "name": "Tanvir Hasan",
+          "district": "Rajshahi"
+        },
+        {
+          "name": "Nusrat Jahan",
+          "district": "Sylhet"
+        }
+      ]
+    },
+    "try": {
+      "eyebrow": "No sign-up needed",
+      "title": "Answer one question and see",
+      "body": "Pick an option and you'll know whether it's right, and why. Every question in a full model test comes with an explanation like this.",
+      "switcher": "Sample questions",
+      "pill": "Question {n}",
+      "pillLabel": "Sample question {n}",
+      "fullCta": "Take a full free model test",
+      "answerLabel": "Choose an answer",
+      "right": "Correct — well done!",
+      "wrong": "Not this time. The correct answer: {answer}",
+      "correctTag": "Correct answer",
+      "yourTag": "Your answer",
+      "yourCorrectTag": "Your answer · correct",
+      "moreCta": "99 more questions like this — take a free test",
+      "next": "Another question",
+      "questions": [
+        {
+          "subject": "Bangladesh affairs",
+          "topic": "Liberation War",
+          "text": "Into how many sectors was Bangladesh divided during the Liberation War?",
+          "options": [
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "explanation": "At the sector commanders' conference in July 1971 the war front was divided into 11 sectors. Sector 10 had no fixed area: it was made up of the naval commandos."
+        },
+        {
+          "subject": "Bangla literature",
+          "topic": "Modern period",
+          "text": "Who wrote the poetry collection 'Agnibina'?",
+          "options": [
+            "Rabindranath Tagore",
+            "Kazi Nazrul Islam",
+            "Jibanananda Das",
+            "Jasimuddin"
+          ],
+          "explanation": "'Agnibina' (1922) is Kazi Nazrul Islam's first poetry collection. His famous poem 'Bidrohi' is part of it."
+        },
+        {
+          "subject": "Mental ability",
+          "topic": "Number series",
+          "text": "2, 6, 12, 20, 30, ? — what is the next number in the series?",
+          "options": [
+            "38",
+            "40",
+            "42",
+            "44"
+          ],
+          "explanation": "The differences are 4, 6, 8, 10, growing by 2 each time. So the next difference is 12 and the answer is 30 + 12 = 42. Or: 1×2, 2×3, 3×4 … 6×7 = 42."
+        }
+      ]
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "title": "Steady preparation in three steps",
+      "body": "From sign-up to your first result takes one sitting.",
+      "goal": {
+        "title": "Pick your goal",
+        "body": "Choose your exam and your tests and syllabus are arranged for it."
       },
-      "practice": {
-        "title": "Topic practice",
-        "body": "See the right answer and explanation right after each question."
+      "exam": {
+        "title": "Take the test",
+        "body": "A full 100-mark test whenever it suits you. Answer and you know at once if you're right."
+      },
+      "fix": {
+        "title": "Fix weak topics",
+        "body": "See in your result where you lose marks, then practise that topic in one tap."
+      },
+      "cats": [
+        "BCS",
+        "Bank",
+        "Primary",
+        "NTRCA",
+        "Grade 9–20"
+      ],
+      "captions": [
+        "46th BCS preliminary — tests follow the syllabus",
+        "Bank senior officer — tests in the style of past papers",
+        "Primary assistant teacher — tests follow the syllabus",
+        "NTRCA teacher registration — subject-wise tests",
+        "Grade 9–20 — government job tests"
+      ],
+      "question": "Question {n}",
+      "of": "/ {total}",
+      "questions": [
+        {
+          "text": "How many sectors were there in the Liberation War?",
+          "options": [
+            "9",
+            "10",
+            "11",
+            "12"
+          ]
+        },
+        {
+          "text": "Who wrote 'Agnibina'?",
+          "options": [
+            "Rabindranath",
+            "Nazrul",
+            "Jibanananda",
+            "Jasimuddin"
+          ]
+        },
+        {
+          "text": "2, 6, 12, 20, ? — what comes next?",
+          "options": [
+            "28",
+            "30",
+            "32",
+            "36"
+          ]
+        }
+      ],
+      "subjects": [
+        "Bangla",
+        "English",
+        "Maths"
+      ],
+      "weak": "Weak",
+      "improved": "↑ Improved",
+      "practice": "Start maths practice →",
+      "done": "✓ Practice done"
+    },
+    "features": {
+      "eyebrow": "What you get",
+      "title": "Everything you need to prepare, in one place",
+      "full": {
+        "title": "A full 100-mark test, any time",
+        "body": "No waiting for a live exam date. Same mark distribution, timing and negative marking as the real exam.",
+        "sheetLabel": "Answer sheet: 70 answered, 5 marked for review, 25 left",
+        "answered": "Answered",
+        "review": "Marked for review",
+        "left": "Left",
+        "meta": [
+          "100 questions",
+          "60 minutes",
+          "−0.50 per wrong answer"
+        ]
+      },
+      "instant": {
+        "title": "Instant results, an explanation for every question",
+        "wrongOption": "B) 10 sectors",
+        "rightOption": "C) 11 sectors",
+        "yours": "Your answer",
+        "correct": "Correct answer",
+        "explanation": "Explanation: sector 10 had no fixed area, so many people count 10 and get it wrong.",
+        "correctLabel": "Correct",
+        "wrongLabel": "Wrong",
+        "skippedLabel": "Skipped"
       },
       "rank": {
-        "title": "Rankings",
-        "body": "See where you stand nationally and in your district."
+        "title": "Your rank among everyone in the same test",
+        "suffix": "th",
+        "detail": "out of {total} · top {pct}%"
       },
-      "analytics": {
-        "title": "Analytics",
-        "body": "Weak topics and progress at a glance."
+      "previous": {
+        "title": "Past exam questions",
+        "value": "10th–46th",
+        "detail": "BCS preliminary, every answer explained"
+      },
+      "search": {
+        "title": "Search in Bangla or English, however you like",
+        "query": "sector commander",
+        "first": "Liberation War <mark>sectors</mark> and <mark>commanders</mark>",
+        "firstTag": "Topic",
+        "second": "Where was <mark>sector</mark> 1?",
+        "secondTag": "Past BCS"
+      },
+      "practice": {
+        "title": "Practise a weak topic in one tap",
+        "topics": [
+          "Percentage and profit-loss",
+          "Preposition"
+        ],
+        "cta": "Practise this topic"
+      },
+      "devices": {
+        "title": "Web, Android, iOS — one account",
+        "body": "Start a test on your phone and finish it on your laptop. Results, bookmarks and streaks are the same everywhere.",
+        "list": [
+          "Web",
+          "Android",
+          "iOS"
+        ]
       }
     },
-    "plansTitle": "Packages",
-    "popular": "Popular",
-    "days": "{count} days",
-    "allPlans": "See all packages",
-    "appTitle": "Mobile app",
-    "appBody": "Use the same account on the mobile app; answers stay on your phone even if the internet drops.",
-    "appSoon": "Android and iPhone apps are coming soon",
-    "faqTitle": "Questions",
-    "faq": {
+    "result": {
+      "eyebrow": "Results",
+      "title": "A result is more than a score — it's your next step",
+      "body": "As soon as you submit you see your marks in each subject, what negative marking cost you and which topic needs your time first.",
+      "points": [
+        "Marks and time per subject",
+        "Rank and percentile, and how far you moved since last time",
+        "Strong and weak topics shown separately, with practice sets for the weak ones",
+        "How many you got right in each topic and how long it took",
+        "Every wrong answer with its explanation in one place, for revision"
+      ],
+      "outOf": "/ {total}",
+      "scoreLabel": "Score {score} out of {total}",
+      "correct": "Correct",
+      "wrong": "Wrong",
+      "skipped": "Skipped",
+      "rank": "Rank",
+      "rankOf": " / {total}",
+      "subjects": "By subject",
+      "topics": "Strong and weak topics",
+      "hint": "Hover or focus a topic for details",
+      "samples": [
+        {
+          "name": "Rafi Ahmed",
+          "test": "BCS model test — 11",
+          "subjects": [
+            "Bangla language and literature",
+            "English",
+            "Bangladesh affairs",
+            "Mathematical reasoning",
+            "Geography and environment"
+          ],
+          "strong": [
+            {
+              "topic": "Liberation War",
+              "note": "19 of 20 right, 24 seconds per answer on average. Revision is enough here for now."
+            },
+            {
+              "topic": "Bangla grammar",
+              "note": "9 of 10 right across sandhi and samas. 15% better than the last test."
+            }
+          ],
+          "weak": [
+            {
+              "topic": "Percentage and profit-loss",
+              "note": "Only 3 of 8 right, 90 seconds each on average. Go over the formulas and take a 20-question set."
+            },
+            {
+              "topic": "Number series",
+              "note": "5 of 11 right. Most mistakes were in two-level difference series."
+            },
+            {
+              "topic": "Preposition",
+              "note": "13 of 25 right. Most mistakes in at/in/on and fixed prepositions."
+            }
+          ]
+        },
+        {
+          "name": "Sumaiya Akter",
+          "test": "Bank model test — 4",
+          "subjects": [
+            "Bangla",
+            "English",
+            "Maths",
+            "General knowledge",
+            "Computer"
+          ],
+          "strong": [
+            {
+              "topic": "Ratio and proportion",
+              "note": "24 of 25 right, faster than the average. Save time here and spend it elsewhere."
+            },
+            {
+              "topic": "Computer basics",
+              "note": "11 of 12 right. Only one shortcut-key question wrong."
+            },
+            {
+              "topic": "Interest",
+              "note": "7 of 8 right. Compound interest took a little longer."
+            }
+          ],
+          "weak": [
+            {
+              "topic": "Vocabulary",
+              "note": "9 of 20 right. More mistakes in antonyms than synonyms — revise 20 words a day."
+            },
+            {
+              "topic": "International affairs",
+              "note": "12 of 25 right. Most mistakes on recent organisations and summits."
+            }
+          ]
+        },
+        {
+          "name": "Tanvir Hasan",
+          "test": "Primary model test — 7",
+          "subjects": [
+            "Bangla",
+            "English",
+            "Maths",
+            "General knowledge",
+            "Bangladesh affairs"
+          ],
+          "strong": [
+            {
+              "topic": "Bangla literature",
+              "note": "9 of 11 right. Remembers authors and their works well."
+            }
+          ],
+          "weak": [
+            {
+              "topic": "Fractions",
+              "note": "2 of 7 right, 3 skipped. Start with a short practice set on the basic rules."
+            },
+            {
+              "topic": "Tense",
+              "note": "7 of 20 right. Most mistakes in the perfect continuous tense."
+            },
+            {
+              "topic": "General science",
+              "note": "7 of 17 right. Weaker in physics than in biology."
+            }
+          ]
+        }
+      ]
+    },
+    "reviews": {
+      "eyebrow": "What candidates say",
+      "title": "People who take tests every week",
+      "items": [
+        {
+          "quote": "A model test every week shows me where I stand for the real exam. Seeing my rank keeps my study pace right.",
+          "name": "Tasnim Rahman",
+          "district": "Dhaka",
+          "exam": "46th BCS"
+        },
+        {
+          "quote": "The explanation for every question is the most useful part. Once I know why an answer was wrong, I don't repeat the mistake.",
+          "name": "Mehedi Hasan",
+          "district": "Rajshahi",
+          "exam": "Bank job"
+        },
+        {
+          "quote": "I was weak in maths and the app builds practice sets for me. In three weeks I went from 5 to 8 marks.",
+          "name": "Sumaiya Akter",
+          "district": "Chattogram",
+          "exam": "Primary"
+        },
+        {
+          "quote": "I can take a test on the bus. Even when the internet drops my answers aren't lost, which I really like.",
+          "name": "Ariful Islam",
+          "district": "Khulna",
+          "exam": "NTRCA"
+        },
+        {
+          "quote": "After full tests with negative marking my time management is much better.",
+          "name": "Nadia Sultana",
+          "district": "Sylhet",
+          "exam": "46th BCS"
+        },
+        {
+          "quote": "The questions are really good and match the style of past papers. No ads either.",
+          "name": "Rakibul Haque",
+          "district": "Barishal",
+          "exam": "Bank job"
+        },
+        {
+          "quote": "Subject-wise results showed me I need more time on English. My study routine is much better organised now.",
+          "name": "Farhana Yasmin",
+          "district": "Rangpur",
+          "exam": "Grade 9–20"
+        },
+        {
+          "quote": "Sitting a live test together with thousands of people feels just like the real exam hall.",
+          "name": "Sakib Ahmed",
+          "district": "Mymensingh",
+          "exam": "46th BCS"
+        }
+      ]
+    },
+    "pricing": {
+      "eyebrow": "Plans",
+      "title": "Choose by how long you need to prepare",
+      "intro": "Start for free. Any plan unlocks every test, every explanation and analytics.",
       "free": {
-        "q": "What do I get for free?",
-        "a": "A few live exams every month and some practice questions every day. Premium unlocks everything."
+        "name": "Free",
+        "tag": "To get started",
+        "live": "{count} live exams a month",
+        "practice": "{count} practice questions a day",
+        "result": "Instant results and rank",
+        "cta": "Start for free"
       },
-      "device": {
-        "q": "How many devices can I use?",
-        "a": "One at a time. Logging in on a new device signs out the old one."
-      },
-      "payment": {
-        "q": "How do I pay?",
-        "a": "With bKash or a card (SSLCommerz). Your package starts as soon as the payment goes through."
-      },
-      "offline": {
-        "q": "What if the internet drops during an exam?",
-        "a": "Your answers are saved on the device and sync on their own when you are back online."
+      "price": "৳{amount}",
+      "perMonthUnit": "/ month",
+      "perMonth": "৳{amount} a month",
+      "perMonthBest": "Just ৳{amount} a month",
+      "best": "Best value",
+      "buy": "Get {name}",
+      "payWith": "Pay with:",
+      "methods": [
+        "bKash",
+        "Nagad",
+        "Debit / credit card"
+      ]
+    },
+    "app": {
+      "title": "On the bus, on a break, at night — the same account in the app",
+      "body": "Pick up in the app exactly where you stopped on the web. Tests, results and bookmarks all in one place.",
+      "phoneLabel": "The app's dashboard screen",
+      "liveRank": "Live rank updates",
+      "autoSync": "Syncs on its own",
+      "phone": {
+        "time": "9:41",
+        "greeting": "Good evening, Rafi",
+        "countdown": "46th BCS prelim · 42 days to go",
+        "streak": "7 days",
+        "running": "Test in progress",
+        "runningTitle": "BCS model test — 12",
+        "runningMeta": "31/100 · 42 minutes left",
+        "goal": "Weekly goal · 3/5",
+        "trend": "Rank trend",
+        "trendValue": "87th",
+        "trendUp": "↑ 12",
+        "recent": "Recent results",
+        "recent1": "Model test — 11",
+        "recent1Score": "72.5",
+        "recent2": "English set — 4",
+        "recent2Score": "38/50"
       }
     },
-    "footerNav": "Footer links",
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": [
+        {
+          "q": "What do I get for free?",
+          "a": "{live} live exams a month, {practice} practice questions a day, and an instant result and rank after every test. No card or payment details needed."
+        },
+        {
+          "q": "How is negative marking calculated?",
+          "a": "Under the BCS preliminary rules each right answer gets 1 mark and each wrong answer loses 0.50. Unanswered questions lose nothing. Other exams follow their own rules."
+        },
+        {
+          "q": "Who is my rank compared with?",
+          "a": "Everyone who took the same model test, using each person's first attempt. Your rank updates as more people take the test."
+        },
+        {
+          "q": "What if the internet drops during an exam?",
+          "a": "Your answers are saved on your device and the timer keeps running. Everything syncs on its own when you're back online."
+        },
+        {
+          "q": "How do I pay?",
+          "a": "With bKash, Nagad or a debit/credit card. Your plan starts as soon as the payment goes through."
+        },
+        {
+          "q": "Does the same account work on the web and in the app?",
+          "a": "Yes. Log in with the same number or email and your tests, results and bookmarks are the same on the web, Android and iOS."
+        }
+      ]
+    },
     "footer": {
-      "about": "About us",
+      "tagline": "Full model tests on your own time for government job exams, with explanations and a real rank.",
+      "navLabel": "Footer links",
+      "exams": "Exams",
+      "examLinks": [
+        "BCS",
+        "Bank",
+        "Primary",
+        "NTRCA",
+        "Grade 9–20"
+      ],
+      "help": "Help",
+      "faq": "FAQ",
+      "plans": "Plans and payment",
+      "app": "Download the app",
       "contact": "Contact",
-      "privacy": "Privacy",
+      "hours": "10 am – 10 pm",
+      "social": "Social media",
+      "copyright": "© {year} {brand}",
+      "about": "About us",
+      "privacy": "Privacy policy",
       "terms": "Terms",
       "refund": "Refund policy"
     }
