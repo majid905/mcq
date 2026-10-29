@@ -4,6 +4,7 @@ import { OPTION_LABELS, cn, formatClock, formatInteger } from '@mcq/ui';
 import { Check } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { type ReactNode, useRef } from 'react';
+import { Eyebrow, PAD_Y, SectionTitle, WRAP } from './layout';
 import { useInView, useReducedMotion, useTicker } from './motion';
 
 /** Right option and the simulated tap for each mini question in `landing.how.questions`. */
@@ -19,6 +20,7 @@ const BARS = [
   { value: 42, after: 76, tone: 'bg-danger' },
 ];
 const STEP_MS = 1400;
+const EASE = 'ease-[cubic-bezier(.22,1,.36,1)]';
 
 /**
  * Three step cards, each with a looping mini animation (no hover effects). Loops run only while
@@ -30,9 +32,8 @@ export function HowItWorks() {
   const labels = locale === 'bn' ? OPTION_LABELS.bn : OPTION_LABELS.en;
   const ref = useRef<HTMLOListElement>(null);
   const seen = useInView(ref, { threshold: 0.3, once: true });
-  const onScreen = useInView(ref, { threshold: 0 });
   const reduced = useReducedMotion();
-  const tick = useTicker(seen && onScreen && !reduced, STEP_MS);
+  const tick = useTicker(seen && !reduced, STEP_MS);
 
   const cats = t.raw('cats') as string[];
   const captions = t.raw('captions') as string[];
@@ -50,15 +51,13 @@ export function HowItWorks() {
   const drawn = seen || reduced;
 
   return (
-    <section className="mx-auto max-w-(--breakpoint-xl) px-4 py-14 md:px-8 md:py-20 lg:py-28 xl:px-14">
-      <div className="mb-8 flex flex-col items-center gap-3 text-center md:mb-14">
-        <span className="text-body font-semibold text-primary">{t('eyebrow')}</span>
-        <h2 className="font-display text-section-title-sm font-semibold text-balance text-text md:text-section-title">
-          {t('title')}
-        </h2>
-        <p className="max-w-[46ch] text-body text-text-muted">{t('body')}</p>
+    <section className={cn(WRAP, PAD_Y)}>
+      <div className="mb-[clamp(32px,4vw,56px)] flex flex-col items-center gap-3 text-center">
+        <Eyebrow>{t('eyebrow')}</Eyebrow>
+        <SectionTitle>{t('title')}</SectionTitle>
+        <p className="max-w-[46ch] text-pretty text-text-muted">{t('body')}</p>
       </div>
-      <ol ref={ref} className="grid gap-4 lg:grid-cols-3 lg:gap-7">
+      <ol ref={ref} className="grid gap-[clamp(16px,2vw,28px)] lg:grid-cols-3">
         <Step n={1} title={t('goal.title')} body={t('goal.body')} line={drawn} lineDelay="0.4s">
           <div className="flex flex-wrap gap-2">
             {cats.map((label, i) => {
@@ -67,16 +66,18 @@ export function HowItWorks() {
                 <span
                   key={label}
                   className={cn(
-                    'inline-flex h-8.5 items-center rounded-pill border-[1.5px] px-3.5 text-body-sm transition-[background-color,color,border-color,transform] duration-(--mcq-duration-slow) ease-standard',
+                    'inline-flex h-[34px] items-center gap-1.5 rounded-pill border-[1.5px] px-3.5 text-[14px] transition-[background-color,color,border-color,transform] duration-[450ms]',
+                    EASE,
                     on
-                      ? 'scale-104 border-text bg-text font-semibold text-bg'
-                      : 'border-border-strong bg-surface text-text',
+                      ? 'scale-[1.04] border-text bg-text font-semibold text-bg'
+                      : 'border-border-strong bg-surface font-normal text-text',
                   )}
                 >
                   <span
                     className={cn(
-                      'inline-flex overflow-hidden transition-[width] duration-(--mcq-duration-slow)',
-                      on ? 'mr-1.5 w-3.5' : 'w-0',
+                      'inline-flex overflow-hidden transition-[width] duration-[450ms]',
+                      EASE,
+                      on ? 'w-3.5' : 'w-0',
                     )}
                   >
                     <Check size={14} strokeWidth={3} className="flex-none" />
@@ -86,31 +87,34 @@ export function HowItWorks() {
               );
             })}
           </div>
-          <span key={cat} className="landing-in text-caption text-text-subtle">
-            {captions[cat]}
-          </span>
+          <span className="text-[13px] text-text-subtle">{captions[cat]}</span>
         </Step>
 
         <Step n={2} title={t('exam.title')} body={t('exam.body')} line={drawn} lineDelay="1.1s">
-          <div className="flex items-center justify-between gap-2 text-caption">
-            <strong className="font-semibold text-text">
+          <div className="flex items-center justify-between gap-2 text-[13px]">
+            <strong className="font-semibold">
               {t('question', { n: formatInteger(31 + qi, locale) })}
               <span className="font-medium text-text-subtle">
                 {' '}
                 {t('of', { total: formatInteger(100, locale) })}
               </span>
             </strong>
-            <span className="rounded-pill border-[1.5px] border-border-strong px-2.5 font-semibold tabular-nums">
+            <span className="rounded-pill border-[1.5px] border-border-strong px-2.5 py-px font-semibold">
               {formatClock(clock, locale)}
             </span>
           </div>
-          <div className="h-1 rounded-pill bg-surface-muted">
+          <div className="h-1 rounded-[2px] bg-surface-muted">
             <div
-              className="h-full rounded-pill bg-primary transition-[width] duration-(--mcq-duration-slow)"
+              className={cn(
+                'h-full rounded-[2px] bg-primary transition-[width] duration-600',
+                EASE,
+              )}
               style={{ width: `${31 + qi}%` }}
             />
           </div>
-          <strong className="truncate text-body-sm font-semibold text-text">{q.text}</strong>
+          <strong className="flex-none truncate text-[14px] leading-[1.45] font-semibold">
+            {q.text}
+          </strong>
           <div className="grid grid-cols-2 gap-2">
             {q.options.map((text, k) => {
               const sel = phase >= 1 && k === mini.tap;
@@ -120,7 +124,7 @@ export function HowItWorks() {
                 <span
                   key={`${qi}-${k}`}
                   className={cn(
-                    'flex h-8.5 items-center justify-between gap-1.5 overflow-hidden rounded-md border-[1.5px] px-2.5 text-body-sm whitespace-nowrap transition-colors duration-(--mcq-duration-slow)',
+                    'flex h-[34px] items-center justify-between gap-1.5 overflow-hidden rounded-[10px] border-[1.5px] px-2.5 text-[14px] whitespace-nowrap transition-[background-color,border-color] duration-[400ms]',
                     ok
                       ? 'border-success bg-success-soft font-semibold'
                       : bad
@@ -134,7 +138,10 @@ export function HowItWorks() {
                     {labels[k]}) {text}
                   </span>
                   <span
-                    className={cn('text-caption font-bold', ok ? 'text-success' : 'text-danger')}
+                    className={cn(
+                      'text-[13px] font-bold',
+                      ok ? 'text-(--brand-oki)' : 'text-(--brand-eri)',
+                    )}
                   >
                     {ok ? '✓' : bad ? '✕' : ''}
                   </span>
@@ -151,13 +158,14 @@ export function HowItWorks() {
             return (
               <div
                 key={subjects[i]}
-                className="grid grid-cols-[4.75rem_minmax(0,1fr)_4rem] items-center gap-2.5 text-body-sm"
+                className="grid grid-cols-[76px_minmax(0,1fr)_64px] items-center gap-2.5 text-[14px]"
               >
                 <span>{subjects[i]}</span>
-                <div className="h-1.75 rounded-pill bg-surface-muted">
+                <div className="h-[7px] rounded-[4px] bg-surface-muted">
                   <div
                     className={cn(
-                      'h-full rounded-pill transition-[width,background-color] duration-1000 ease-standard',
+                      'h-full rounded-[4px] transition-[width,background-color] duration-[1100ms]',
+                      EASE,
                       after ? 'bg-primary' : bar.tone,
                     )}
                     style={{
@@ -169,8 +177,10 @@ export function HowItWorks() {
                 {weak ? (
                   <span
                     className={cn(
-                      'justify-self-end rounded-pill px-2 text-caption font-semibold whitespace-nowrap transition-colors duration-(--mcq-duration-slow)',
-                      after ? 'bg-success-soft text-success' : 'bg-danger-soft text-danger',
+                      'justify-self-end rounded-pill px-2 text-[12px] font-semibold whitespace-nowrap transition-colors duration-[400ms]',
+                      after
+                        ? 'bg-success-soft text-(--brand-oki)'
+                        : 'bg-danger-soft text-(--brand-eri)',
                     )}
                   >
                     {after ? t('improved') : t('weak')}
@@ -183,8 +193,9 @@ export function HowItWorks() {
           })}
           <span
             className={cn(
-              'mt-1 inline-flex h-8.5 items-center self-start rounded-md px-3.5 text-caption font-semibold transition-[background-color,color,transform] duration-(--mcq-duration-slow) ease-standard',
-              fixed ? 'bg-success text-on-primary' : 'bg-text text-bg',
+              'mt-1 inline-flex h-[34px] items-center gap-1.5 self-start rounded-[10px] px-3.5 text-[13px] font-semibold transition-[background-color,color,transform] duration-300',
+              EASE,
+              fixed ? 'bg-success text-(--brand-on-solid)' : 'bg-text text-bg',
               !fixed && phase === 2 && 'scale-95',
             )}
           >
@@ -219,27 +230,32 @@ function Step({
         {lineDelay !== undefined && (
           <span
             aria-hidden
-            className="absolute top-5 left-[calc(50%+2.125rem)] hidden h-0.5 w-[calc(100%-4.25rem+1.75rem)] bg-[repeating-linear-gradient(90deg,var(--color-border-strong)_0_6px,transparent_6px_12px)] lg:block"
+            className="absolute top-[21px] left-[calc(50%+34px)] hidden h-0.5 w-[calc(100%-68px+clamp(16px,2vw,28px))] bg-[repeating-linear-gradient(90deg,var(--color-border-strong)_0_6px,transparent_6px_12px)] lg:block"
           >
             <span
-              className="absolute inset-y-0 left-0 bg-primary transition-[width] duration-1000 ease-standard"
+              className={cn(
+                'absolute top-0 left-0 h-0.5 bg-primary transition-[width] duration-1000',
+                EASE,
+              )}
               style={{ width: line ? '100%' : '0%', transitionDelay: lineDelay }}
             />
           </span>
         )}
-        <span className="relative grid size-11 flex-none place-items-center rounded-pill bg-primary font-display text-h3 font-bold text-on-primary ring-6 ring-primary/15">
+        <span className="relative grid size-11 flex-none place-items-center rounded-pill bg-primary font-display text-[19px] font-bold text-on-primary shadow-[0_0_0_6px_color-mix(in_oklab,var(--color-primary)_14%,transparent)]">
           {formatInteger(n, locale)}
         </span>
-        <h3 className="font-display text-h2 font-semibold text-text">{title}</h3>
+        <h3 className="font-display text-[length:clamp(20px,1.7vw,23px)] leading-[1.35] font-semibold">
+          {title}
+        </h3>
       </div>
-      <div className="flex flex-1 flex-col gap-4.5 rounded-xl border border-border bg-surface p-4 shadow-md md:max-lg:flex-row md:max-lg:items-center lg:p-5">
+      <div className="flex flex-1 flex-col gap-[18px] rounded-[22px] border border-border bg-surface p-[clamp(16px,1.6vw,20px)] shadow-[0_18px_36px_-28px_var(--brand-shc)] md:max-lg:flex-row md:max-lg:items-center">
         <div
           aria-hidden
-          className="flex h-50 flex-col justify-center gap-2.5 overflow-hidden rounded-lg border border-border bg-bg p-4.5 md:max-lg:flex-[0_0_48%]"
+          className="flex h-[200px] flex-col justify-center gap-2.5 overflow-hidden rounded-[16px] border border-border bg-bg p-[18px] md:max-lg:flex-[0_0_48%]"
         >
           {children}
         </div>
-        <p className="min-w-0 flex-1 px-1 pb-1 text-center text-body text-pretty text-text-muted">
+        <p className="min-w-0 flex-1 px-1 pb-1 text-center text-[16px] leading-[1.65] text-pretty text-text-muted">
           {body}
         </p>
       </div>

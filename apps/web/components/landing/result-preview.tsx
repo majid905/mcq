@@ -1,9 +1,10 @@
 'use client';
 
-import { Avatar, ProgressBar, ScoreRing, cn, formatDecimal, formatInteger } from '@mcq/ui';
-import { Check, Minus, Pointer, X } from 'lucide-react';
+import { cn, formatDecimal, formatInteger } from '@mcq/ui';
+import { Check, Minus, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { type ReactNode, useRef, useState } from 'react';
+import { Eyebrow, PAD_Y, SectionTitle, WRAP } from './layout';
 import { useInView, useReducedMotion, useTicker } from './motion';
 
 interface Insight {
@@ -18,7 +19,7 @@ interface Sample {
   weak: Insight[];
 }
 
-/** Numbers for the sample results in `landing.result.samples` (illustration only). */
+/** Numbers for the sample results in `landing.result.samples` (from the design). */
 const NUMBERS = [
   {
     correct: 78,
@@ -50,8 +51,11 @@ const NUMBERS = [
 ];
 const SUBJECT_MAX = 20;
 const ROTATE_MS = 6500;
+const RING = 326.7; // 2π × 52
 
-const barTone = (r: number) => (r < 0.55 ? 'danger' : r < 0.7 ? 'accent' : 'primary');
+const tone = (r: number) => (r < 0.55 ? 'danger' : r < 0.7 ? 'accent' : 'primary');
+const BAR = { danger: 'bg-danger', accent: 'bg-accent', primary: 'bg-primary' };
+const STROKE = { danger: 'stroke-danger', accent: 'stroke-accent', primary: 'stroke-primary' };
 
 /**
  * Sample result card that cross-fades between a few results while on screen. Topic capsules show
@@ -62,30 +66,34 @@ export function ResultPreview() {
   const locale = useLocale();
   const samples = t.raw('samples') as Sample[];
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { threshold: 0.35 });
   const seen = useInView(ref, { threshold: 0.35, once: true });
   const reduced = useReducedMotion();
   const [tip, setTip] = useState<string | null>(null);
   const [tipRight, setTipRight] = useState(false);
+  const tick = useTicker(seen && !reduced && tip === null, ROTATE_MS);
+  const current = tick % samples.length;
+  const drawn = seen || reduced;
+  const d = (v: number) => formatDecimal(v, locale);
   const openTip = (id: string, el: HTMLElement) => {
     const r = el.getBoundingClientRect();
     const width = Math.min(250, window.innerWidth - 48);
     setTipRight(r.left + width > window.innerWidth - 16 && r.right - width >= 16);
     setTip(id);
   };
-  const tick = useTicker(inView && !reduced && tip === null, ROTATE_MS);
-  const current = tick % samples.length;
-  const d = (v: number) => formatDecimal(v, locale);
 
   return (
     <section className="border-y border-border bg-surface">
-      <div className="mx-auto grid max-w-(--breakpoint-xl) items-center gap-8 px-4 py-14 md:px-8 md:py-20 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20 lg:py-28 xl:px-14">
+      <div
+        className={cn(
+          WRAP,
+          PAD_Y,
+          'grid items-center gap-[clamp(32px,5vw,80px)] lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]',
+        )}
+      >
         <div className="flex min-w-0 flex-col gap-4">
-          <span className="text-body font-semibold text-primary">{t('eyebrow')}</span>
-          <h2 className="font-display text-section-title-sm font-semibold text-balance text-text md:text-section-title">
-            {t('title')}
-          </h2>
-          <p className="max-w-[40ch] text-body text-text-muted">{t('body')}</p>
+          <Eyebrow>{t('eyebrow')}</Eyebrow>
+          <SectionTitle>{t('title')}</SectionTitle>
+          <p className="max-w-[40ch] text-pretty text-text-muted">{t('body')}</p>
           <ul className="mt-2 flex flex-col gap-2.5">
             {(t.raw('points') as string[]).map((p) => (
               <li key={p} className="flex gap-2.5">
@@ -103,16 +111,17 @@ export function ResultPreview() {
 
         <div
           ref={ref}
-          className="min-w-0 rounded-xl border border-border bg-bg p-4.5 shadow-lg md:p-8"
+          className="min-w-0 rounded-[24px] border border-border bg-bg p-[clamp(18px,2.6vw,32px)] shadow-[0_40px_80px_-48px_rgb(21_23_28/0.35)]"
         >
           <div className="grid">
             {samples.map((s, si) => {
               const num = NUMBERS[si]!;
               const on = si === current;
               const score = num.correct - num.wrong * 0.5;
+              const ring = tone(score >= 70 ? 1 : score >= 55 ? 0.6 : 0);
               const capsule = (kind: 'strong' | 'weak', item: Insight, k: number) => {
                 const id = `${si}-${kind}-${k}`;
-                const pct = num[kind][k]!;
+                const pct = formatInteger(num[kind][k]!, locale);
                 const open = on && tip === id;
                 const strong = kind === 'strong';
                 return (
@@ -125,33 +134,38 @@ export function ResultPreview() {
                     onFocus={(e) => openTip(id, e.currentTarget)}
                     onBlur={() => setTip((v) => (v === id ? null : v))}
                     className={cn(
-                      'relative inline-flex min-h-10 cursor-help items-center gap-2 rounded-pill border-[1.5px] px-3.5 text-body font-medium transition-colors duration-(--mcq-duration-fast)',
+                      'relative inline-flex min-h-10 cursor-help items-center gap-2 rounded-pill border-[1.5px] px-3.5 text-[15px] font-medium transition-[transform,box-shadow] duration-[350ms] ease-[cubic-bezier(.22,1,.36,1)] hover:-translate-y-0.5 hover:shadow-[0_4px_10px_-6px_rgb(0_0_0/0.12)]',
                       strong
-                        ? 'border-success/50 bg-success-soft hover:border-success'
-                        : 'border-danger/50 bg-danger-soft hover:border-danger',
+                        ? 'border-[color-mix(in_oklab,var(--color-success)_50%,transparent)] bg-success-soft'
+                        : 'border-[color-mix(in_oklab,var(--color-danger)_50%,transparent)] bg-danger-soft',
                     )}
                   >
                     {item.topic}
-                    <strong className={cn('font-bold', strong ? 'text-success' : 'text-danger')}>
-                      {strong ? '↑' : '↓'} {formatInteger(pct, locale)}%
+                    <strong
+                      className={cn(
+                        'font-bold',
+                        strong ? 'text-(--brand-oki)' : 'text-(--brand-eri)',
+                      )}
+                    >
+                      {strong ? '↑' : '↓'} {pct}%
                     </strong>
                     {open && (
                       <span
                         id={`tip-${id}`}
                         role="tooltip"
                         className={cn(
-                          'landing-tip pointer-events-none absolute bottom-[calc(100%+0.75rem)] z-10 w-[min(15.625rem,calc(100vw-3rem))] rounded-lg bg-text px-3.5 py-3 text-left text-caption leading-relaxed font-normal text-bg shadow-lg',
+                          'landing-tip pointer-events-none absolute bottom-[calc(100%+12px)] z-10 w-[min(250px,calc(100vw-48px))] rounded-[14px] bg-text px-3.5 py-3 text-left text-[13px] leading-[1.55] font-normal text-bg shadow-[0_18px_36px_-14px_rgb(0_0_0/0.45)]',
                           tipRight ? 'right-0' : 'left-0',
                         )}
                       >
-                        <strong className="mb-0.5 block text-body-sm font-semibold">
-                          {item.topic} · {formatInteger(pct, locale)}%
+                        <strong className="mb-0.5 block text-[14px] font-semibold">
+                          {item.topic} · {pct}%
                         </strong>
                         {item.note}
                         <span
                           className={cn(
-                            'absolute -bottom-1.25 size-2.5 rotate-45 bg-text',
-                            tipRight ? 'right-5.5' : 'left-5.5',
+                            'absolute -bottom-[5px] size-2.5 rotate-45 bg-text',
+                            tipRight ? 'right-[22px]' : 'left-[22px]',
                           )}
                         />
                       </span>
@@ -165,34 +179,70 @@ export function ResultPreview() {
                   key={s.name}
                   aria-hidden={on ? undefined : true}
                   className={cn(
-                    'flex min-w-0 flex-col gap-5 transition-opacity duration-900 ease-standard [grid-area:1/1]',
-                    on ? 'z-1 opacity-100' : 'pointer-events-none opacity-0',
+                    'flex min-w-0 flex-col gap-5 transition-opacity duration-900 ease-[cubic-bezier(.4,0,.2,1)] [grid-area:1/1]',
+                    on ? 'z-1 opacity-100' : 'pointer-events-none z-0 opacity-0',
                   )}
                 >
                   <div className="flex items-center gap-3">
-                    <Avatar name={s.name} size="sm" className="size-10 text-body" />
-                    <span className="flex min-w-0 flex-1 flex-col">
-                      <strong className="font-semibold text-text">{s.name}</strong>
-                      <span className="truncate text-body-sm text-text-subtle">{s.test}</span>
+                    <span className="grid size-10 flex-none place-items-center rounded-pill bg-primary-soft text-[16px] font-semibold text-(--brand-pri)">
+                      {Array.from(s.name)[0]}
+                    </span>
+                    <span className="flex min-w-0 flex-1 flex-col leading-[1.35]">
+                      <strong className="text-[16px] font-semibold">{s.name}</strong>
+                      <span className="truncate text-[14px] text-text-subtle">{s.test}</span>
                     </span>
                   </div>
-                  <div className="flex flex-wrap items-center gap-4 md:gap-7">
-                    <ScoreRing
-                      score={seen || reduced ? score : 0}
-                      total={100}
-                      size={132}
-                      format={d}
-                      caption={t('outOf', { total: formatInteger(100, locale) })}
-                      label={t('scoreLabel', {
+                  <div className="flex flex-wrap items-center gap-[clamp(16px,2.4vw,28px)]">
+                    <div
+                      role="img"
+                      aria-label={t('scoreLabel', {
                         score: d(score),
                         total: formatInteger(100, locale),
                       })}
-                      className="flex-none"
-                    />
-                    <div className="grid min-w-50 flex-1 grid-cols-2 gap-2.5">
+                      className="relative size-[132px] flex-none"
+                    >
+                      <svg viewBox="0 0 120 120" className="size-[132px] -rotate-90">
+                        <circle
+                          cx="60"
+                          cy="60"
+                          r="52"
+                          fill="none"
+                          strokeWidth={12}
+                          className="stroke-surface-muted"
+                        />
+                        <circle
+                          cx="60"
+                          cy="60"
+                          r="52"
+                          fill="none"
+                          strokeWidth={12}
+                          strokeLinecap="round"
+                          strokeDasharray={RING}
+                          strokeDashoffset={drawn ? RING * (1 - score / 100) : RING}
+                          className={cn(
+                            'transition-[stroke-dashoffset] duration-[1200ms] ease-[cubic-bezier(.2,.7,.2,1)]',
+                            STROKE[ring],
+                          )}
+                        />
+                      </svg>
+                      <div
+                        aria-hidden
+                        className="absolute inset-0 grid place-items-center text-center"
+                      >
+                        <div>
+                          <div className="font-display text-[30px] leading-[1.1] font-semibold">
+                            {d(score)}
+                          </div>
+                          <div className="text-[13px] text-text-subtle">
+                            {t('outOf', { total: formatInteger(100, locale) })}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid min-w-[200px] flex-1 grid-cols-2 gap-2.5">
                       <Tile
                         className="bg-success-soft"
-                        labelClass="text-success"
+                        labelClass="text-(--brand-oki)"
                         icon={<Check size={15} strokeWidth={2.6} />}
                         label={t('correct')}
                       >
@@ -200,12 +250,12 @@ export function ResultPreview() {
                       </Tile>
                       <Tile
                         className="bg-danger-soft"
-                        labelClass="text-danger"
+                        labelClass="text-(--brand-eri)"
                         icon={<X size={15} strokeWidth={2.6} />}
                         label={t('wrong')}
                       >
                         {formatInteger(num.wrong, locale)}{' '}
-                        <span className="text-body-sm font-medium text-danger">
+                        <span className="text-[14px] font-medium text-(--brand-eri)">
                           (−{d(num.wrong * 0.5)})
                         </span>
                       </Tile>
@@ -223,41 +273,56 @@ export function ResultPreview() {
                         label={t('rank')}
                       >
                         {formatInteger(num.rank, locale)}
-                        <span className="text-body-sm font-medium">
+                        <span className="text-[14px] font-medium">
                           {t('rankOf', { total: d(num.of) })}
                         </span>
                       </Tile>
                     </div>
                   </div>
                   <div className="flex flex-col gap-3">
-                    <h3 className="text-body font-semibold">{t('subjects')}</h3>
+                    <h3 className="text-[16px] font-semibold">{t('subjects')}</h3>
                     {s.subjects.map((name, k) => {
                       const v = num.subjects[k]!;
                       return (
                         <div
                           key={name}
-                          className="grid grid-cols-[minmax(0,9.5em)_minmax(0,1fr)_4.2em] items-center gap-3 text-body"
+                          className="grid grid-cols-[minmax(0,9.5em)_minmax(0,1fr)_4.2em] items-center gap-3 text-[15px]"
                         >
                           <span className="truncate">{name}</span>
-                          <ProgressBar
-                            value={seen || reduced ? v : 0}
-                            max={SUBJECT_MAX}
-                            label={name}
-                            tone={barTone(v / SUBJECT_MAX)}
-                            className="h-2"
-                          />
-                          <span className="text-right font-semibold tabular-nums">
+                          <div className="h-2 rounded-[4px] bg-surface-muted">
+                            <div
+                              className={cn(
+                                'h-full rounded-[4px] transition-[width] duration-1000 ease-[cubic-bezier(.2,.7,.2,1)]',
+                                BAR[tone(v / SUBJECT_MAX)],
+                              )}
+                              style={{
+                                width: drawn ? `${Math.round((v / SUBJECT_MAX) * 100)}%` : '0%',
+                              }}
+                            />
+                          </div>
+                          <span className="text-right font-semibold">
                             {d(v)}/{formatInteger(SUBJECT_MAX, locale)}
                           </span>
                         </div>
                       );
                     })}
                   </div>
-                  <div className="flex flex-col gap-2.5 border-t border-border pt-4.5">
-                    <h3 className="flex flex-wrap items-center gap-x-2.5 gap-y-2 text-body font-semibold">
+                  <div className="flex flex-col gap-2.5 border-t border-border pt-[18px]">
+                    <h3 className="flex flex-wrap items-center gap-x-2.5 gap-y-2 text-[16px] font-semibold">
                       {t('topics')}
-                      <span className="inline-flex items-center gap-1.5 rounded-pill bg-accent-soft py-0.75 pr-2.5 pl-2 text-caption font-semibold text-accent-text">
-                        <Pointer aria-hidden size={14} strokeWidth={2.2} />
+                      <span className="inline-flex items-center gap-1.5 rounded-pill bg-accent-soft py-[3px] pr-2.5 pl-2 text-[13px] font-semibold text-accent-text">
+                        <svg
+                          viewBox="0 0 24 24"
+                          aria-hidden
+                          className="size-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={2.2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-.5a6 6 0 0 1-4.9-2.6L4.2 15a1.5 1.5 0 0 1 2.4-1.8L9 15.5" />
+                        </svg>
                         {t('hint')}
                       </span>
                     </h3>
@@ -290,12 +355,12 @@ function Tile({
   children: ReactNode;
 }) {
   return (
-    <div className={cn('rounded-md px-3 py-2.5', className)}>
-      <div className={cn('flex items-center gap-1.5 text-body-sm', labelClass)}>
+    <div className={cn('rounded-[12px] px-3 py-2.5', className)}>
+      <div className={cn('flex items-center gap-1.5 text-[14px]', labelClass)}>
         {icon && <span aria-hidden>{icon}</span>}
         {label}
       </div>
-      <div className="font-display text-h2 font-semibold text-text">{children}</div>
+      <div className="font-display text-[22px] leading-[1.3] font-semibold">{children}</div>
     </div>
   );
 }

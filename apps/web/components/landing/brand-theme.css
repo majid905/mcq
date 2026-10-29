@@ -1,0 +1,95 @@
+/*
+ * Marketing palette from design/landing/tokens.css, applied only inside `.brand-theme` (the
+ * public pages: landing, plans, question pages). The student app and admin keep design/tokens.json.
+ * Overriding the --mcq-color-* variables means every token utility (bg-surface, text-primary, ...)
+ * picks up the design's colours with no per-component changes.
+ */
+.brand-theme {
+  --mcq-color-bg: #f7f5f0;
+  --mcq-color-surface: #ffffff;
+  --mcq-color-surface-muted: #efece5;
+  --mcq-color-text: #15171c;
+  --mcq-color-text-muted: #464a52;
+  --mcq-color-text-subtle: #5b6170;
+  --mcq-color-border: #e6e2da;
+  --mcq-color-border-strong: #d5d2cb;
+  --mcq-color-primary: #0e5e4e;
+  --mcq-color-primary-hover: #0a473b;
+  --mcq-color-on-primary: #ffffff;
+  --mcq-color-primary-soft: #e3f0ec;
+  --mcq-color-accent: #f2a93b;
+  --mcq-color-accent-soft: #fcefd6;
+  --mcq-color-accent-text: #8a5508;
+  --mcq-color-on-accent: #15171c;
+  --mcq-color-success: #1e9e5a;
+  --mcq-color-success-soft: #e4f4ea;
+  --mcq-color-danger: #e0533d;
+  --mcq-color-danger-soft: #fbe7e3;
+  --mcq-color-live: #e0533d;
+  --mcq-color-live-soft: #fbe7e3;
+  --mcq-color-focus-ring: #0e5e4e;
+  /* Design "ink" shades: text on the soft tints. */
+  --brand-pri: #0a473b;
+  --brand-oki: #14532d;
+  --brand-eri: #7a2414;
+  --brand-shc: rgb(21 23 28 / 0.1);
+  --brand-hdr: rgb(247 245 240 / 0.88);
+  --brand-phone: #0b0d10;
+  /* White text/icons on solid success or danger, as in the prototype. */
+  --brand-on-solid: #ffffff;
+  background: var(--mcq-color-bg);
+  color: var(--mcq-color-text);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .brand-theme {
+    --mcq-color-bg: #0f1513;
+    --mcq-color-surface: #17201d;
+    --mcq-color-surface-muted: #1e2925;
+    --mcq-color-text: #eceeea;
+    --mcq-color-text-muted: #c3cbc7;
+    --mcq-color-text-subtle: #9aa8a2;
+    --mcq-color-border: #26332f;
+    --mcq-color-border-strong: #3a4a45;
+    --mcq-color-primary: #3cc4a2;
+    --mcq-color-primary-hover: #5ad3b4;
+    --mcq-color-on-primary: #0f1513;
+    --mcq-color-primary-soft: #16302a;
+    --mcq-color-accent-soft: #3a2b12;
+    --mcq-color-accent-text: #f5c57a;
+    --mcq-color-success-soft: #143323;
+    --mcq-color-danger-soft: #3b1e19;
+    --mcq-color-live-soft: #3b1e19;
+    --mcq-color-focus-ring: #3cc4a2;
+    --brand-pri: #3cc4a2;
+    --brand-oki: #7fd9a5;
+    --brand-eri: #f59a8a;
+    --brand-shc: rgb(0 0 0 / 0.5);
+    --brand-hdr: rgb(15 21 19 / 0.86);
+  }
+}
+:root[data-theme='dark'] .brand-theme {
+  --mcq-color-bg: #0f1513;
+  --mcq-color-surface: #17201d;
+  --mcq-color-surface-muted: #1e2925;
+  --mcq-color-text: #eceeea;
+  --mcq-color-text-muted: #c3cbc7;
+  --mcq-color-text-subtle: #9aa8a2;
+  --mcq-color-border: #26332f;
+  --mcq-color-border-strong: #3a4a45;
+  --mcq-color-primary: #3cc4a2;
+  --mcq-color-primary-hover: #5ad3b4;
+  --mcq-color-on-primary: #0f1513;
+  --mcq-color-primary-soft: #16302a;
+  --mcq-color-accent-soft: #3a2b12;
+  --mcq-color-accent-text: #f5c57a;
+  --mcq-color-success-soft: #143323;
+  --mcq-color-danger-soft: #3b1e19;
+  --mcq-color-live-soft: #3b1e19;
+  --mcq-color-focus-ring: #3cc4a2;
+  --brand-pri: #3cc4a2;
+  --brand-oki: #7fd9a5;
+  --brand-eri: #f59a8a;
+  --brand-shc: rgb(0 0 0 / 0.5);
+  --brand-hdr: rgb(15 21 19 / 0.86);
+}

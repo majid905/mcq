@@ -301,7 +301,7 @@
       "correctTag": "Correct answer",
       "yourTag": "Your answer",
       "yourCorrectTag": "Your answer · correct",
-      "moreCta": "99 more questions like this — take a free test",
+      "moreCta": "99 more questions like this — take a free BCS test",
       "next": "Another question",
       "questions": [
         {
@@ -340,7 +340,8 @@
           ],
           "explanation": "The differences are 4, 6, 8, 10, growing by 2 each time. So the next difference is 12 and the answer is 30 + 12 = 42. Or: 1×2, 2×3, 3×4 … 6×7 = 42."
         }
-      ]
+      ],
+      "rate": "[number]% of candidates answered this correctly"
     },
     "how": {
       "eyebrow": "How it works",
@@ -454,7 +455,7 @@
         "title": "Search in Bangla or English, however you like",
         "query": "sector commander",
         "first": "Liberation War <mark>sectors</mark> and <mark>commanders</mark>",
-        "firstTag": "Topic",
+        "firstTag": "[number] questions",
         "second": "Where was <mark>sector</mark> 1?",
         "secondTag": "Past BCS"
       },
@@ -662,10 +663,12 @@
       "free": {
         "name": "Free",
         "tag": "To get started",
-        "live": "{count} live exams a month",
-        "practice": "{count} practice questions a day",
-        "result": "Instant results and rank",
-        "cta": "Start for free"
+        "cta": "Start for free",
+        "features": [
+          "1 full model test a week",
+          "Instant results and rank",
+          "Explanations for 10 questions per test"
+        ]
       },
       "price": "৳{amount}",
       "perMonthUnit": "/ month",
@@ -710,7 +713,7 @@
       "items": [
         {
           "q": "What do I get for free?",
-          "a": "{live} live exams a month, {practice} practice questions a day, and an instant result and rank after every test. No card or payment details needed."
+          "a": "One full 100-mark model test every week, instant results and rank, and explanations for 10 questions in each test. No card or payment details needed."
         },
         {
           "q": "How is negative marking calculated?",
@@ -750,13 +753,12 @@
       "plans": "Plans and payment",
       "app": "Download the app",
       "contact": "Contact",
-      "hours": "10 am – 10 pm",
-      "social": "Social media",
       "copyright": "© {year} {brand}",
       "about": "About us",
       "privacy": "Privacy policy",
       "terms": "Terms",
-      "refund": "Refund policy"
+      "email": "support@tikjatra.com",
+      "phoneHours": "017 *** **** · 10 am – 10 pm"
     }
   },
   "exams": {

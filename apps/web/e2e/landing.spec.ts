@@ -11,18 +11,18 @@ test('landing: try a question, plans from the API, FAQ', async ({ page }) => {
   const tryCard = page.locator('#try');
   await tryCard.getByRole('radio', { name: /১০টি/ }).click();
   await expect(tryCard.getByText('এবার হয়নি। সঠিক উত্তর: গ) ১১টি')).toBeVisible();
-  await expect(tryCard.getByRole('radio')).toHaveCount(0);
+  await expect(tryCard.getByRole('radio').first()).toBeDisabled();
   await tryCard.getByRole('button', { name: 'আরেকটি প্রশ্ন' }).click();
   await expect(tryCard.getByText("'অগ্নিবীণা' কাব্যগ্রন্থের রচয়িতা কে?")).toBeVisible();
   await tryCard.getByRole('radio', { name: /কাজী নজরুল ইসলাম/ }).click();
   await expect(tryCard.getByText('সঠিক উত্তর — চমৎকার!')).toBeVisible();
 
-  // Pricing: the free card from settings plus the three packages from GET /packages.
+  // Pricing: the free card plus the three packages from GET /packages.
   const pricing = page.locator('#pricing');
   await expect(
     pricing.getByRole('listitem').filter({ has: page.getByRole('heading') }),
   ).toHaveCount(4);
-  await expect(pricing.getByText('মাসে ২টি লাইভ পরীক্ষা')).toBeVisible();
+  await expect(pricing.getByText('সপ্তাহে ১টি পূর্ণ মডেল টেস্ট')).toBeVisible();
   await expect(pricing.getByText('সবচেয়ে সাশ্রয়ী')).toBeVisible();
   await expect(pricing.getByRole('link', { name: '৬ মাসের প্রিমিয়াম নিন' })).toHaveAttribute(
     'href',
@@ -34,11 +34,11 @@ test('landing: try a question, plans from the API, FAQ', async ({ page }) => {
   await expect(page.getByText('নমুনা তথ্য')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Google Play থেকে নামান' }).first()).toBeVisible();
 
-  // FAQ: one item open at a time, the free answer quotes the real quota.
+  // FAQ: one item open at a time, the first starts open.
   const faq = page.locator('#faq');
   const first = faq.getByRole('button', { name: 'ফ্রি টেস্টে কী কী পাব?' });
   await expect(first).toHaveAttribute('aria-expanded', 'true');
-  await expect(faq.getByText(/মাসে ২টি লাইভ পরীক্ষা, দিনে ১০টি/)).toBeVisible();
+  await expect(faq.getByText(/প্রতি সপ্তাহে একটি পূর্ণ ১০০ নম্বরের মডেল টেস্ট/)).toBeVisible();
   await faq.getByRole('button', { name: 'কীভাবে পেমেন্ট করব?' }).click();
   await expect(first).toHaveAttribute('aria-expanded', 'false');
 });

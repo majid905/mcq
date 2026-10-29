@@ -29,7 +29,7 @@ export async function Hero() {
   return (
     <section className="mx-auto grid max-w-(--breakpoint-xl) items-center gap-[clamp(--spacing(8),4vw,--spacing(16))] px-[clamp(--spacing(4),4vw,--spacing(14))] pt-[clamp(--spacing(6),3vw,--spacing(12))] pb-[clamp(--spacing(10),4vw,--spacing(16))] text-question leading-[1.65] text-text lg:grid-cols-[minmax(0,46fr)_minmax(0,54fr)]">
       <div className="flex min-w-0 flex-col gap-[clamp(--spacing(4.5),2vw,--spacing(6))]">
-        <span className="landing-glow inline-flex items-center gap-2.5 self-start rounded-pill border border-primary/45 bg-surface py-1.5 pr-4 pl-3 text-body-sm leading-[1.65] font-semibold text-primary">
+        <span className="landing-glow inline-flex items-center gap-2.5 self-start rounded-pill border border-primary/45 bg-surface py-1.5 pr-4 pl-3 text-body-sm leading-[1.65] font-semibold text-(--brand-pri)">
           <span aria-hidden className="relative size-2 flex-none">
             <span className="landing-ping absolute inset-0 rounded-pill bg-primary" />
             <span className="absolute inset-0 rounded-pill bg-primary" />
@@ -107,7 +107,7 @@ export async function Hero() {
             ⋮
           </span>
           <div className={`landing-row-you ${ROW} border-[1.5px] border-primary bg-primary-soft`}>
-            <strong className="font-display text-meta leading-[1.65] font-semibold text-primary">
+            <strong className="font-display text-meta leading-[1.65] font-semibold text-(--brand-pri)">
               {n(YOU.rank)}
             </strong>
             <span className="flex min-w-0 flex-col leading-[1.3]">

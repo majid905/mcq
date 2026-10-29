@@ -1,59 +1,47 @@
 import type { components } from '@mcq/api-client-ts';
-import { AppButton, cn, formatDecimal, formatInteger } from '@mcq/ui';
+import { cn, formatDecimal } from '@mcq/ui';
 import { Check } from 'lucide-react';
 import { getLocale, getTranslations } from 'next-intl/server';
 import type { ReactNode } from 'react';
 import { Link } from '@/i18n/navigation';
 import { perMonth } from '@/lib/billing/price';
+import { PAD_Y, SectionHead, WRAP } from './layout';
 
 type Package = components['schemas']['Package'];
-type PublicSettings = components['schemas']['PublicSettings'];
+
+const CTA =
+  'flex min-h-12 items-center justify-center rounded-[12px] font-semibold transition-colors duration-(--mcq-duration-fast)';
 
 /**
- * Pricing (#pricing): a free card from GET /settings/public plus the paid plans from GET /packages
- * (`is_featured` gets the "best value" badge). Nothing about plans is hardcoded.
+ * Pricing (#pricing): the free card from the design copy plus the paid plans from GET /packages
+ * (`is_featured` gets the "best value" badge and the filled button).
  */
-export async function Pricing({
-  packages,
-  settings,
-}: {
-  packages: Package[];
-  settings: PublicSettings | null;
-}) {
+export async function Pricing({ packages }: { packages: Package[] }) {
   const t = await getTranslations('landing.pricing');
   const locale = await getLocale();
   const money = (v: number) => t('price', { amount: formatDecimal(v, locale) });
 
-  const freeFeatures = [
-    settings?.free_live_exams_per_month !== undefined &&
-      t('free.live', { count: formatInteger(settings.free_live_exams_per_month, locale) }),
-    settings?.free_practice_per_day !== undefined &&
-      t('free.practice', { count: formatInteger(settings.free_practice_per_day, locale) }),
-    t('free.result'),
-  ].filter((f): f is string => Boolean(f));
-
   return (
-    <section
-      id="pricing"
-      className="mx-auto max-w-(--breakpoint-xl) scroll-mt-20 px-4 py-14 md:px-8 md:py-20 lg:py-28 xl:px-14"
-    >
-      <div className="mb-7 flex flex-col items-center gap-3 text-center md:mb-12">
-        <span className="text-body font-semibold text-primary">{t('eyebrow')}</span>
-        <h2 className="font-display text-section-title-sm font-semibold text-balance text-text md:text-section-title">
-          {t('title')}
-        </h2>
-        <p className="text-body text-text-muted">{t('intro')}</p>
-      </div>
-      <ul className="grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <section id="pricing" className={cn(WRAP, PAD_Y, 'scroll-mt-20')}>
+      <SectionHead
+        eyebrow={t('eyebrow')}
+        title={t('title')}
+        sub={t('intro')}
+        className="mb-[clamp(28px,4vw,48px)]"
+      />
+      <ul className="grid items-stretch gap-4 md:grid-cols-2 lg:grid-cols-4">
         <PlanCard
           name={t('free.name')}
           subtitle={t('free.tag')}
           price={money(0)}
-          features={freeFeatures}
+          features={t.raw('free.features') as string[]}
           cta={
-            <AppButton asChild variant="secondary" fullWidth className="h-12 border-text">
-              <Link href="/register">{t('free.cta')}</Link>
-            </AppButton>
+            <Link
+              href="/register"
+              className={cn(CTA, 'border-[1.5px] border-text text-text hover:bg-surface-muted')}
+            >
+              {t('free.cta')}
+            </Link>
           }
         />
         {packages.slice(0, 3).map((p) => {
@@ -75,25 +63,31 @@ export async function Pricing({
               unit={months === 1 ? t('perMonthUnit') : undefined}
               features={p.features ?? []}
               cta={
-                <AppButton
-                  asChild
-                  variant={featured ? 'primary' : 'secondary'}
-                  fullWidth
-                  className={cn('h-12', !featured && 'border-text')}
+                <Link
+                  href={`/checkout/${p.id}`}
+                  className={cn(
+                    CTA,
+                    featured
+                      ? 'bg-primary text-on-primary hover:bg-primary-hover'
+                      : 'border-[1.5px] border-text text-text hover:bg-surface-muted',
+                  )}
                 >
-                  <Link href={`/checkout/${p.id}`}>{t('buy', { name: p.name ?? '' })}</Link>
-                </AppButton>
+                  {t('buy', { name: p.name ?? '' })}
+                </Link>
               }
             />
           );
         })}
       </ul>
-      <p className="mt-6 flex flex-wrap items-center gap-2.5 text-body text-text-muted">
+      <p className="mt-6 flex flex-wrap items-center gap-2.5 text-[15px] text-text-muted">
         <span>{t('payWith')}</span>
-        {(t.raw('methods') as string[]).map((m) => (
+        {(t.raw('methods') as string[]).map((m, i) => (
           <span
             key={m}
-            className="rounded-sm border border-border-strong px-3 py-1 font-semibold text-text"
+            className={cn(
+              'rounded-[8px] border border-border-strong px-3 py-1 font-semibold text-text',
+              i < 2 && 'font-sans',
+            )}
           >
             {m}
           </span>
@@ -125,33 +119,35 @@ function PlanCard({
   return (
     <li
       className={cn(
-        'relative flex flex-col gap-4.5 rounded-xl bg-surface px-6 py-6.5',
-        featured ? 'border-2 border-primary shadow-lg' : 'border border-border',
+        'relative flex flex-col gap-[18px] rounded-[22px] bg-surface px-6 py-[26px]',
+        featured
+          ? 'border-2 border-primary shadow-[0_24px_48px_-32px_color-mix(in_oklab,var(--color-primary)_60%,transparent)]'
+          : 'border border-border',
       )}
     >
       {badge && (
-        <span className="absolute -top-3.5 left-5.5 rounded-pill bg-accent px-3 py-0.75 text-body-sm font-semibold text-on-accent">
+        <span className="absolute -top-3.5 left-[22px] rounded-pill bg-accent px-3 py-[3px] text-[14px] font-semibold text-on-accent">
           {badge}
         </span>
       )}
       <div>
-        <h3 className="font-display text-h2 font-semibold text-text">{name}</h3>
+        <h3 className="font-display text-[22px] leading-[1.35] font-semibold">{name}</h3>
         {subtitle && (
           <p
             className={cn(
-              'mt-0.5 text-body',
-              featured ? 'font-semibold text-primary' : 'text-text-subtle',
+              'mt-0.5 text-[15px]',
+              featured ? 'font-semibold text-(--brand-pri)' : 'text-text-subtle',
             )}
           >
             {subtitle}
           </p>
         )}
       </div>
-      <p className="font-display text-hero-display-sm leading-tight font-semibold text-text tabular-nums">
+      <div className="font-display text-[44px] leading-[1.15] font-semibold">
         {price}
-        {unit && <span className="text-question font-medium text-text-subtle"> {unit}</span>}
-      </p>
-      <ul className="flex flex-1 flex-col gap-2.5 text-body">
+        {unit && <span className="text-[17px] font-medium text-text-subtle"> {unit}</span>}
+      </div>
+      <ul className="flex flex-1 flex-col gap-2.5 text-[16px]">
         {features.map((f) => (
           <li key={f} className="flex gap-2.5">
             <Check

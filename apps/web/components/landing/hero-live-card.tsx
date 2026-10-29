@@ -58,7 +58,7 @@ export function HeroLiveCard({ exam = SAMPLE }: { exam?: NextLiveExam }) {
   return (
     <div className="landing-in landing-shadow flex flex-col gap-4 rounded-[20px] border border-border bg-surface p-[clamp(--spacing(4.5),2vw,--spacing(6))] [animation-delay:0.05s]">
       <div className="flex flex-wrap items-center justify-between gap-2.5">
-        <span className="inline-flex items-center gap-2 rounded-pill bg-live-soft px-3 py-0.75 text-body-sm leading-[1.65] font-semibold text-live">
+        <span className="inline-flex items-center gap-2 rounded-pill bg-live-soft px-3 py-0.75 text-body-sm leading-[1.65] font-semibold text-(--brand-eri)">
           <span aria-hidden className="relative size-2 flex-none">
             <span className="landing-ping landing-ping-fast absolute inset-0 rounded-pill bg-live" />
             <span className="absolute inset-0 rounded-pill bg-live" />

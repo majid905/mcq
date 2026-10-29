@@ -120,60 +120,63 @@
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .landing-glow {
-    animation: landing-glow 2.8s ease-in-out infinite;
-  }
-  .landing-ping {
-    animation: landing-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
-  }
-  .landing-in {
-    animation: landing-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-  }
-  .landing-row-in {
-    animation: landing-row-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-  }
-  .landing-row-you {
-    animation:
-      landing-row-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) 0.9s both,
-      landing-pulse 2.6s ease-in-out 1.6s infinite;
-  }
-  .landing-nudge {
-    display: inline-block;
-    animation: landing-nudge 1.6s ease-in-out 1.6s infinite;
-  }
-  .landing-marquee {
-    animation: landing-marquee 60s linear infinite;
-  }
-  .landing-marquee-reverse {
-    animation: landing-marquee 70s linear infinite reverse;
-  }
-  .landing-marquee:hover,
-  .landing-marquee-reverse:hover,
-  .landing-marquee:focus-within,
-  .landing-marquee-reverse:focus-within {
-    animation-play-state: paused;
-  }
-  .landing-tip {
-    animation: landing-tip-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  .landing-bubble {
-    animation: landing-bubble ease-in-out infinite;
-  }
-  .landing-ripple {
-    animation: landing-ripple 4.5s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
-  }
-  .landing-float {
-    animation: landing-float 5s ease-in-out 1s infinite;
-  }
-  .landing-grow {
-    animation: landing-grow 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both;
+/* In the components layer so Tailwind utilities ([animation-delay:…]) can override them. */
+@layer components {
+  @media (prefers-reduced-motion: no-preference) {
+    .landing-glow {
+      animation: landing-glow 2.8s ease-in-out infinite;
+    }
+    .landing-ping {
+      animation: landing-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+    .landing-in {
+      animation: landing-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+    .landing-row-in {
+      animation: landing-row-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+    .landing-row-you {
+      animation:
+        landing-row-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) 0.9s both,
+        landing-pulse 2.6s ease-in-out 1.6s infinite;
+    }
+    .landing-nudge {
+      display: inline-block;
+      animation: landing-nudge 1.6s ease-in-out 1.6s infinite;
+    }
+    .landing-marquee {
+      animation: landing-marquee 60s linear infinite;
+    }
+    .landing-marquee-reverse {
+      animation: landing-marquee 70s linear infinite reverse;
+    }
+    .landing-marquee:hover,
+    .landing-marquee-reverse:hover,
+    .landing-marquee:focus-within,
+    .landing-marquee-reverse:focus-within {
+      animation-play-state: paused;
+    }
+    .landing-tip {
+      animation: landing-tip-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .landing-bubble {
+      animation: landing-bubble ease-in-out infinite;
+    }
+    .landing-ripple {
+      animation: landing-ripple 4.5s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+    }
+    .landing-float {
+      animation: landing-float 5s ease-in-out 1s infinite;
+    }
+    .landing-grow {
+      animation: landing-grow 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both;
+    }
   }
 }
 
 /* Soft card shadow (prototype: 0 24px 48px -28px var(--shc), 0 1px 3px var(--shc)). */
 .landing-shadow {
-  --landing-shc: color-mix(in oklab, var(--mcq-color-overlay) 22%, transparent);
+  --landing-shc: var(--brand-shc);
   box-shadow:
     0 24px 48px -28px var(--landing-shc),
     0 1px 3px var(--landing-shc);

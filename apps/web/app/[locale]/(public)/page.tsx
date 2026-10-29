@@ -1,4 +1,3 @@
-import { fillTemplate, formatInteger } from '@mcq/ui';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AppDownload } from '@/components/landing/app-download';
@@ -12,7 +11,6 @@ import { ReviewsMarquee } from '@/components/landing/reviews-marquee';
 import { TryQuestion } from '@/components/landing/try-question';
 import type { Locale } from '@/i18n/routing';
 import { publicApi, publicData } from '@/lib/server/public-api';
-import '@/components/landing/landing.css';
 
 export async function generateMetadata({
   params,
@@ -29,24 +27,15 @@ export async function generateMetadata({
 }
 
 /**
- * K Landing (design/landing). Server-rendered for SEO; packages and the free quota come from the
- * public API. The hero's live-exam and social-proof figures are the design's samples until
- * GET /public/landing exists (design/landing/contract-change-landing.md).
+ * K Landing (design/landing). Server-rendered for SEO; paid plans come from GET /packages. The
+ * hero's live-exam and social-proof figures are the design's samples until GET /public/landing
+ * exists (design/landing/contract-change-landing.md).
  */
 export default async function LandingPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale as Locale);
   const t = await getTranslations('landing');
-  const api = publicApi(locale);
-  const [packages, settings] = await Promise.all([
-    publicData(api.GET('/packages')),
-    publicData(api.GET('/settings/public')),
-  ]);
-  const n = (v: number) => formatInteger(v, locale);
-  const quota = settings?.free_live_exams_per_month !== undefined && {
-    live: n(settings.free_live_exams_per_month),
-    practice: n(settings.free_practice_per_day ?? 0),
-  };
+  const packages = await publicData(publicApi(locale).GET('/packages'));
 
   return (
     <>
@@ -56,15 +45,9 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
       <FeaturesBento />
       <ResultPreview />
       <ReviewsMarquee />
-      <Pricing packages={packages ?? []} settings={settings} />
+      <Pricing packages={packages ?? []} />
       <AppDownload />
-      <Faq
-        title={t('faq.title')}
-        // The first answer quotes the free quota; it is left out while settings are unavailable.
-        items={(t.raw('faq.items') as { q: string; a: string }[])
-          .filter((_, i) => i !== 0 || quota)
-          .map((item) => ({ q: item.q, a: quota ? fillTemplate(item.a, quota) : item.a }))}
-      />
+      <Faq title={t('faq.title')} items={t.raw('faq.items') as { q: string; a: string }[]} />
     </>
   );
 }
