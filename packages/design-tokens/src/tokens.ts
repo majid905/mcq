@@ -24,6 +24,8 @@ export interface Tokens {
       bangla: string;
       latin: string;
       mono: string;
+      /** Display face for marketing headings, stats and the logo. */
+      display: string;
       stackWeb: string;
       flutterFallback: string[];
     };

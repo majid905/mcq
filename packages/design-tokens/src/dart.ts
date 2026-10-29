@@ -88,6 +88,7 @@ export function buildDart(tokens: Tokens): string {
     `  static const String fontBangla = ${str(f.family.bangla)};`,
     `  static const String fontLatin = ${str(f.family.latin)};`,
     `  static const String fontMono = ${str(f.family.mono)};`,
+    `  static const String fontDisplay = ${str(f.family.display)};`,
     `  static const List<String> fontFallback = [${f.family.flutterFallback.map(str).join(', ')}];`,
     '',
     ...entries(f.size).map(([k, v]) => `  static const double ${k} = ${num(v)};`),

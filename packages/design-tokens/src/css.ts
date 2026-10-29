@@ -21,6 +21,7 @@ function staticVars(tokens: Tokens): string[] {
     `  --mcq-font-bangla: '${f.family.bangla}';`,
     `  --mcq-font-latin: '${f.family.latin}';`,
     `  --mcq-font-mono: '${f.family.mono}', ui-monospace, monospace;`,
+    `  --mcq-font-display: '${f.family.latin}', '${f.family.display}', sans-serif;`,
     `  --mcq-font-sans: ${f.family.stackWeb};`,
     ...entries(f.weight).map(([k, v]) => `  --mcq-font-weight-${kebab(k)}: ${v};`),
     ...entries(f.size).map(([k, v]) => `  --mcq-font-size-${kebab(k)}: ${px(v)};`),
@@ -98,6 +99,7 @@ export function buildTailwindTheme(tokens: Tokens): string {
   add('--font-sans: var(--mcq-font-sans);');
   add('--font-bangla: var(--mcq-font-bangla), var(--mcq-font-sans);');
   add('--font-mono: var(--mcq-font-mono);');
+  add('--font-display: var(--mcq-font-display);');
   for (const [k] of entries(tokens.font.weight)) {
     add(`--font-weight-${kebab(k)}: var(--mcq-font-weight-${kebab(k)});`);
   }
@@ -112,6 +114,10 @@ export function buildTailwindTheme(tokens: Tokens): string {
     option: 'relaxed',
     timer: 'tight',
     stat: 'tight',
+    heroDisplay: 'tight',
+    heroDisplaySm: 'tight',
+    sectionTitle: 'tight',
+    sectionTitleSm: 'tight',
   };
   add('--text-*: initial;');
   for (const [k] of entries(tokens.font.size)) {

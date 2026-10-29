@@ -241,6 +241,7 @@ abstract final class AppText {
   static const String fontBangla = 'Hind Siliguri';
   static const String fontLatin = 'Inter';
   static const String fontMono = 'JetBrains Mono';
+  static const String fontDisplay = 'Anek Bangla';
   static const List<String> fontFallback = ['Hind Siliguri', 'Noto Sans Bengali'];
 
   static const double display = 32.0;
@@ -255,6 +256,10 @@ abstract final class AppText {
   static const double option = 16.0;
   static const double timer = 20.0;
   static const double stat = 28.0;
+  static const double heroDisplay = 56.0;
+  static const double heroDisplaySm = 36.0;
+  static const double sectionTitle = 40.0;
+  static const double sectionTitleSm = 28.0;
 
   static const double lineHeightTight = 1.25;
   static const double lineHeightNormal = 1.5;
