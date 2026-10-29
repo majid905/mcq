@@ -1,0 +1,88 @@
+/* Landing page — design tokens (light default, dark via [data-theme="dark"]) */
+:root {
+  --bg: #F7F5F0;
+  --sf: #FFFFFF;
+  --sf2: #EFECE5;
+  --ink: #15171C;
+  --ink2: #464A52;
+  --ink3: #5B6170;
+  --ln: #E6E2DA;
+  --ln2: #D5D2CB;
+  --pr: #0E5E4E;
+  --prh: #0A473B;
+  --onpr: #FFFFFF;
+  --prs: #E3F0EC;
+  --pri: #0A473B;
+  --ac: #F2A93B;
+  --acs: #FCEFD6;
+  --wn: #D98E04;
+  --aci: #8A5508;
+  --ok: #1E9E5A;
+  --oks: #E4F4EA;
+  --oki: #14532D;
+  --er: #E0533D;
+  --ers: #FBE7E3;
+  --eri: #7A2414;
+  --rv: #5B5BD6;
+  --rvs: #ECECFB;
+  --rvi: #2E2E8A;
+  --fx: #0E5E4E;
+  --shc: rgba(21,23,28,.10);
+  --hdr: rgba(247,245,240,.88);
+  --fd: 'Inter','Anek Bangla',sans-serif;
+  --fb: 'Inter','Hind Siliguri',sans-serif;
+}
+[data-theme="dark"] {
+  --bg: #0F1513;
+  --sf: #17201D;
+  --sf2: #1E2925;
+  --ink: #ECEEEA;
+  --ink2: #C3CBC7;
+  --ink3: #9AA8A2;
+  --ln: #26332F;
+  --ln2: #3A4A45;
+  --pr: #3CC4A2;
+  --prh: #5AD3B4;
+  --onpr: #0F1513;
+  --prs: #16302A;
+  --pri: #3CC4A2;
+  --ac: #F2A93B;
+  --acs: #3A2B12;
+  --aci: #F5C57A;
+  --wn: #D98E04;
+  --ok: #1E9E5A;
+  --oks: #143323;
+  --oki: #7FD9A5;
+  --er: #E0533D;
+  --ers: #3B1E19;
+  --eri: #F59A8A;
+  --rv: #5B5BD6;
+  --rvs: #25264A;
+  --rvi: #B8BBFB;
+  --shc: rgba(0,0,0,.5);
+  --scrim: rgba(0,0,0,.62);
+  --hdr: rgba(15,21,19,.86);
+}
+
+/* Keyframes used by the landing page */
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 color-mix(in oklab, var(--pr) 0%, transparent),0 0 10px 0 color-mix(in oklab, var(--pr) 18%, transparent)}50%{box-shadow:0 0 0 5px color-mix(in oklab, var(--pr) 10%, transparent),0 0 26px 4px color-mix(in oklab, var(--pr) 35%, transparent)}}
+@keyframes ping{75%,100%{transform:scale(2.6);opacity:0}}
+@keyframes float{0%,100%{translate:0 0}50%{translate:0 -8px}}
+@keyframes grow{from{width:0}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 color-mix(in oklab, var(--pr) 0%, transparent)}50%{box-shadow:0 0 0 4px color-mix(in oklab, var(--pr) 22%, transparent)}}
+@keyframes ring2{from{stroke-dashoffset:314.2}}
+@keyframes blink{50%{opacity:.45}}
+@keyframes rowin{from{opacity:0;transform:translateX(-14px)}}
+@keyframes tick{from{opacity:0;transform:translateY(-40%)}}
+@keyframes nudge{0%,100%{transform:none}50%{transform:translateY(-3px)}}
+@keyframes marquee{to{transform:translateX(calc(-50% - 8px))}}
+@keyframes tipin{from{opacity:0;transform:translateY(6px)}}
+@keyframes bfill{0%,72%,100%{background:transparent;border-color:color-mix(in oklab, currentColor 16%, transparent)}80%,92%{background:var(--pr);border-color:var(--pr)}}
+@keyframes ripple{from{transform:scale(.55);opacity:.7}to{transform:scale(1.5);opacity:0}}
+@keyframes hin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes drift{from{translate:0 0}to{translate:0 -4px}}
+@keyframes ringfill{from{stroke-dashoffset:131.9}}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
