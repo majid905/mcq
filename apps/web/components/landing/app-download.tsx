@@ -38,7 +38,7 @@ export async function AppDownload() {
             {t('title')}
           </h2>
           <p className="max-w-[40ch] opacity-80">{t('body')}</p>
-          <StoreBadges size="lg" tone="inverse" className="mt-2" />
+          <StoreBadges size="lg" className="mt-2" />
         </div>
         <div className="relative grid place-items-center justify-self-center py-5">
           <span

@@ -1,11 +1,12 @@
-import { AppButton, cn, formatInteger } from '@mcq/ui';
+import { cn, formatInteger } from '@mcq/ui';
 import { getLocale, getTranslations } from 'next-intl/server';
-import type { ReactNode } from 'react';
+import { type ReactNode, Suspense } from 'react';
 import { Brand } from '@/components/brand';
-import { HeaderControls } from '@/components/header-controls';
+import { LocaleSwitcher } from '@/components/locale-switcher';
 import { MobileMenu } from '@/components/landing/mobile-menu';
 import { SOCIAL_NAMES, SocialIcon } from '@/components/landing/social-icons';
 import { StoreBadges } from '@/components/landing/store-badges';
+import { ThemeSwitch } from '@/components/landing/theme-switch';
 import { Link } from '@/i18n/navigation';
 import { publicApi, publicData } from '@/lib/server/public-api';
 import { type SocialNetwork, site } from '@/lib/site';
@@ -18,15 +19,27 @@ const NAV = [
   { key: 'app', hash: 'app' },
 ] as const;
 
-const WRAP = 'mx-auto w-full max-w-(--breakpoint-xl) px-4 md:px-8 xl:px-14';
+// Design: max-width 1280, side padding clamp(16px, 4vw, 56px).
+const WRAP = 'mx-auto w-full max-w-(--breakpoint-xl) px-[clamp(--spacing(4),4vw,--spacing(14))]';
 
 /** Public pages (landing, plans, question pages): sticky blurred header and the full footer. */
 export async function PublicShell({ children }: { children: ReactNode }) {
   const t = await getTranslations();
+  const themeLabels = {
+    toDark: t('landing.nav.toDark'),
+    toLight: t('landing.nav.toLight'),
+    darkShort: t('landing.nav.darkShort'),
+    lightShort: t('landing.nav.lightShort'),
+  };
   return (
     <div className="flex min-h-dvh flex-col">
-      <header className="sticky top-0 z-(--mcq-z-sticky) border-b border-border bg-bg/90 backdrop-blur-md">
-        <div className={cn(WRAP, 'flex items-center gap-3 py-2.5 lg:gap-8')}>
+      <header className="sticky top-0 z-(--mcq-z-sticky) border-b border-border bg-bg/88 backdrop-blur-[14px]">
+        <div
+          className={cn(
+            WRAP,
+            'flex items-center gap-[clamp(--spacing(3),2.4vw,--spacing(8))] py-2.5',
+          )}
+        >
           <Link
             href="/"
             aria-label={t('common.brandName')}
@@ -39,7 +52,7 @@ export async function PublicShell({ children }: { children: ReactNode }) {
               <Link
                 key={key}
                 href={{ pathname: '/', hash }}
-                className="inline-flex min-h-11 items-center rounded-md px-3.5 font-medium text-text-muted transition-colors duration-(--mcq-duration-fast) hover:bg-surface-muted hover:text-text"
+                className="inline-flex min-h-11 items-center rounded-[10px] px-3.5 text-question leading-relaxed font-medium text-text-muted hover:bg-surface-muted hover:text-text"
               >
                 {t(`landing.nav.${key}`)}
               </Link>
@@ -47,22 +60,20 @@ export async function PublicShell({ children }: { children: ReactNode }) {
           </nav>
           <div className="ml-auto flex items-center gap-2">
             <div className="hidden items-center gap-2 lg:flex">
-              <HeaderControls compact />
+              <ThemeSwitch labels={themeLabels} />
               <Link
                 href="/login"
-                className="inline-flex min-h-11 items-center rounded-md px-4 font-semibold text-text hover:bg-surface-muted"
+                className="inline-flex min-h-11 items-center rounded-md px-4 text-question font-semibold text-text hover:bg-surface-muted"
               >
                 {t('auth.login')}
               </Link>
             </div>
-            <AppButton
-              asChild
-              variant="secondary"
-              size="sm"
-              className="h-11 border-text px-4 text-body motion-safe:active:scale-97"
+            <Link
+              href="/register"
+              className="inline-flex min-h-11 items-center rounded-md px-[clamp(--spacing(3.5),1.6vw,--spacing(5))] text-[clamp(var(--mcq-font-size-meta),1.2vw,var(--mcq-font-size-question))] font-semibold whitespace-nowrap text-text shadow-[inset_0_0_0_1.5px_var(--color-text)] transition-transform duration-(--mcq-duration-fast) hover:bg-surface-muted active:scale-97"
             >
-              <Link href="/register">{t('landing.ctaFree')}</Link>
-            </AppButton>
+              {t('landing.ctaFree')}
+            </Link>
             <MobileMenu
               openLabel={t('landing.nav.openMenu')}
               closeLabel={t('landing.nav.closeMenu')}
@@ -77,11 +88,17 @@ export async function PublicShell({ children }: { children: ReactNode }) {
                   {t(`landing.nav.${key}`)}
                 </Link>
               ))}
-              <div className="flex flex-wrap items-center gap-2.5 pt-3.5">
-                <AppButton asChild variant="secondary" className="h-12 flex-1">
-                  <Link href="/login">{t('auth.login')}</Link>
-                </AppButton>
-                <HeaderControls />
+              <div className="flex gap-2.5 pt-3.5">
+                <Link
+                  href="/login"
+                  className="flex min-h-12 flex-1 items-center justify-center rounded-md border-[1.5px] border-border-strong font-semibold text-text"
+                >
+                  {t('auth.login')}
+                </Link>
+                <ThemeSwitch labels={themeLabels} variant="menu" />
+              </div>
+              <div className="flex justify-center pt-3">
+                <Language />
               </div>
             </MobileMenu>
           </div>
@@ -90,6 +107,22 @@ export async function PublicShell({ children }: { children: ReactNode }) {
       <main className="flex-1">{children}</main>
       <SiteFooter />
     </div>
+  );
+}
+
+/** The design's header has no language switch; it sits in the mobile menu and the footer. */
+async function Language() {
+  const t = await getTranslations('locale');
+  const locale = await getLocale();
+  return (
+    // useSearchParams inside needs a boundary on statically rendered pages.
+    <Suspense>
+      <LocaleSwitcher
+        target={locale === 'bn' ? 'en' : 'bn'}
+        label={t('switchLabel')}
+        text={t('switchTo')}
+      />
+    </Suspense>
   );
 }
 
@@ -189,6 +222,9 @@ async function SiteFooter() {
               {t(key)}
             </Link>
           ))}
+          <span className="ml-auto">
+            <Language />
+          </span>
         </nav>
       </div>
     </footer>

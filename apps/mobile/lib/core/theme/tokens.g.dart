@@ -256,10 +256,15 @@ abstract final class AppText {
   static const double option = 16.0;
   static const double timer = 20.0;
   static const double stat = 28.0;
-  static const double heroDisplay = 56.0;
-  static const double heroDisplaySm = 36.0;
+  static const double heroDisplay = 50.0;
+  static const double heroDisplaySm = 32.0;
   static const double sectionTitle = 40.0;
   static const double sectionTitleSm = 28.0;
+  static const double lead = 19.0;
+  static const double cardTitle = 25.0;
+  static const double countdown = 36.0;
+  static const double meta = 15.0;
+  static const double micro = 13.0;
 
   static const double lineHeightTight = 1.25;
   static const double lineHeightNormal = 1.5;

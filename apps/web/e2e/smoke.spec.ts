@@ -11,13 +11,15 @@ test('landing renders in Bangla, switches theme and language', async ({ page }) 
     'সবার সঙ্গে লাইভ পরীক্ষা, সঙ্গে সঙ্গে আসল র‍্যাংক',
   );
 
+  // The landing header switch flips light ↔ dark from what is showing (light here).
   const toggle = page.getByTestId('theme-toggle').first();
-  await toggle.click();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await toggle.click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(toggle).toHaveAttribute('aria-label', 'লাইট মোডে যান'); // hydrated
+  await toggle.click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
 
   await page.getByTestId('locale-switcher').first().click();
   await expect(page).toHaveURL(/\/en$/);

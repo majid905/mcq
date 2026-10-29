@@ -236,7 +236,11 @@
       "plans": "Plans",
       "app": "App",
       "openMenu": "Open menu",
-      "closeMenu": "Close menu"
+      "closeMenu": "Close menu",
+      "toDark": "Switch to dark mode",
+      "toLight": "Switch to light mode",
+      "darkShort": "Dark mode",
+      "lightShort": "Light mode"
     },
     "ctaFree": "Take a free model test",
     "hero": {
@@ -245,28 +249,25 @@
       "titleMark": "real rank instantly",
       "body": "Live model tests every week. Submit and see your result, an explanation for every question and practice for your weak topics.",
       "webLink": "Or start a free test in your browser",
-      "freeLine": "Free: {live} live exams a month, {practice} practice questions a day",
-      "noCard": "No card or payment details needed"
+      "learners": "{count}+ learners",
+      "ratingLabel": "Rated {rating} out of 5"
     },
     "store": {
       "play": "Get it on Google Play",
-      "appStore": "Download on the App Store",
-      "soon": "Android and iOS apps coming soon"
+      "appStore": "Download on the App Store"
     },
     "live": {
       "badge": "Live",
       "enrolling": "Enrolment open",
-      "weekly": "Every week",
-      "title": "BCS live model test",
+      "title": "BCS live model test — {n}",
       "meta": "100 questions · 60 minutes · −0.50 per wrong answer",
       "timerLabel": "Time until the exam starts",
       "hours": "hours",
       "minutes": "minutes",
       "seconds": "seconds",
       "enrolled": "{count} people enrolled",
-      "scheduleHint": "Create a free account to see when the next live exam starts.",
       "remind": "Remind me",
-      "boardTitle": "Live test merit list",
+      "boardTitle": "Last live test merit list",
       "participants": "{count} took part",
       "sample": "Sample data",
       "you": "You",

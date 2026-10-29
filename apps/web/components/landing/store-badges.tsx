@@ -1,47 +1,45 @@
 import { cn } from '@mcq/ui';
-import { Smartphone } from 'lucide-react';
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import { site } from '@/lib/site';
 
-// Official badge artwork, 489×144 / 487×144 px, shown at a fixed height (README "Assets").
-const HEIGHT = { sm: 44, md: 48, lg: 52 } as const;
-
 /**
- * Google Play and App Store badges. Hidden until the store URLs are configured; until then a
- * "coming soon" note keeps the slot (INTEGRATION-mcq.md "Data").
+ * Display size per placement, from the prototype: hero 163×48 / 162×48, app panel 177×52 /
+ * 176×52, footer 150×44 / 149×44 (official artwork 489×144 / 487×144).
  */
+const SIZES = {
+  sm: { h: 44, play: 150, apple: 149, radius: 'rounded-sm' },
+  md: { h: 48, play: 163, apple: 162, radius: 'rounded-[9px]' },
+  lg: { h: 52, play: 177, apple: 176, radius: 'rounded-[10px]' },
+} as const;
+
+/** Until the apps are listed, the badges open the store home pages (as the prototype does). */
+const PLAY_FALLBACK = 'https://play.google.com/store';
+const APPLE_FALLBACK = 'https://apps.apple.com/';
+
 export async function StoreBadges({
   size = 'md',
-  tone = 'default',
   className,
 }: {
-  size?: keyof typeof HEIGHT;
-  /** `inverse` on the dark app panel. */
-  tone?: 'default' | 'inverse';
+  size?: keyof typeof SIZES;
   className?: string;
 }) {
   const t = await getTranslations('landing.store');
-  const h = HEIGHT[size];
+  const s = SIZES[size];
   const badges = [
-    { href: site.playStoreUrl, src: '/badges/google-play.png', alt: t('play'), w: 489 },
-    { href: site.appStoreUrl, src: '/badges/app-store.png', alt: t('appStore'), w: 487 },
-  ].filter((b): b is typeof b & { href: string } => b.href !== null);
-
-  if (badges.length === 0) {
-    return (
-      <p
-        className={cn(
-          'inline-flex items-center gap-2 self-start rounded-md border px-4 py-3 text-body-sm',
-          tone === 'inverse' ? 'border-bg/25 text-bg' : 'border-border bg-surface text-text-muted',
-          className,
-        )}
-      >
-        <Smartphone aria-hidden size={18} strokeWidth={1.75} />
-        {t('soon')}
-      </p>
-    );
-  }
+    {
+      href: site.playStoreUrl ?? PLAY_FALLBACK,
+      src: '/badges/google-play.png',
+      alt: t('play'),
+      w: s.play,
+    },
+    {
+      href: site.appStoreUrl ?? APPLE_FALLBACK,
+      src: '/badges/app-store.png',
+      alt: t('appStore'),
+      w: s.apple,
+    },
+  ];
 
   return (
     <div className={cn('flex flex-wrap gap-3', className)}>
@@ -51,16 +49,11 @@ export async function StoreBadges({
           href={b.href}
           target="_blank"
           rel="noopener noreferrer"
-          className="block flex-none rounded-sm transition-[transform,filter,box-shadow] duration-(--mcq-duration-slow) ease-standard motion-safe:hover:-translate-y-0.5 hover:shadow-lg hover:brightness-110"
+          aria-label={b.alt}
+          className={cn('landing-badge block flex-none', s.radius)}
+          style={{ width: b.w, height: s.h }}
         >
-          <Image
-            src={b.src}
-            alt={b.alt}
-            width={Math.round((b.w / 144) * h)}
-            height={h}
-            className="block"
-            style={{ height: h, width: 'auto' }}
-          />
+          <Image src={b.src} alt={b.alt} width={b.w} height={s.h} className="block" />
         </a>
       ))}
     </div>

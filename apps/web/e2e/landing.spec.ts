@@ -29,9 +29,10 @@ test('landing: try a question, plans from the API, FAQ', async ({ page }) => {
     '/checkout/2',
   );
 
-  // No live-exam numbers without an endpoint: no countdown, and the board is marked as sample.
-  await expect(page.getByTestId('live-countdown')).toHaveCount(0);
+  // Hero: the countdown ticks and the merit list is marked as sample data.
+  await expect(page.getByTestId('live-countdown')).not.toContainText('––');
   await expect(page.getByText('নমুনা তথ্য')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Google Play থেকে নামান' }).first()).toBeVisible();
 
   // FAQ: one item open at a time, the free answer quotes the real quota.
   const faq = page.locator('#faq');

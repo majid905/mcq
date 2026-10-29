@@ -118,6 +118,8 @@ export function buildTailwindTheme(tokens: Tokens): string {
     heroDisplaySm: 'tight',
     sectionTitle: 'tight',
     sectionTitleSm: 'tight',
+    cardTitle: 'tight',
+    countdown: 'tight',
   };
   add('--text-*: initial;');
   for (const [k] of entries(tokens.font.size)) {
