@@ -6,11 +6,19 @@
 /* Shared components live in packages/ui; Tailwind must scan them. */
 @source '../../../packages/ui/src';
 
-/* next/font self-hosts the families and exposes them as --font-inter / --font-hind. */
+/*
+ * next/font self-hosts the families. Bangla site: Inter for Latin bits, as in the design, so the
+ * spaces between Bangla words keep their width. English site: DM Sans (body) and Plus Jakarta
+ * Sans (headings). Bangla glyphs always fall through to Hind Siliguri / Anek Bangla.
+ */
 :root {
   --mcq-font-sans: var(--font-inter), var(--font-hind), 'Noto Sans Bengali', system-ui, sans-serif;
   --mcq-font-bangla: var(--font-hind);
   --mcq-font-display: var(--font-inter), var(--font-anek), var(--font-hind), sans-serif;
+}
+:root:lang(en) {
+  --mcq-font-sans: var(--font-dm), var(--font-hind), 'Noto Sans Bengali', system-ui, sans-serif;
+  --mcq-font-display: var(--font-jakarta), var(--font-anek), var(--font-hind), sans-serif;
 }
 
 @layer base {

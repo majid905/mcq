@@ -1,6 +1,17 @@
-import { Anek_Bangla, Hind_Siliguri, Inter } from 'next/font/google';
+import { Anek_Bangla, DM_Sans, Hind_Siliguri, Inter, Plus_Jakarta_Sans } from 'next/font/google';
 
+/** Latin text on the Bangla site (as in the design). */
 export const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
+
+/** English site body text. Bangla falls through to Hind Siliguri. */
+export const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dm', display: 'swap' });
+
+/** English site headings and big numbers. Bangla falls through to Anek Bangla. */
+export const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-jakarta',
+  display: 'swap',
+});
 
 export const hindSiliguri = Hind_Siliguri({
   subsets: ['bengali', 'latin'],

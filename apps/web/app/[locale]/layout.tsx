@@ -6,7 +6,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { ReactNode } from 'react';
 import { Providers } from '@/components/providers';
 import { routing } from '@/i18n/routing';
-import { anekBangla, hindSiliguri, inter } from '../fonts';
+import { anekBangla, dmSans, hindSiliguri, inter, jakarta } from '../fonts';
 import 'katex/dist/katex.min.css';
 import '../globals.css';
 
@@ -44,7 +44,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      className={`${inter.variable} ${hindSiliguri.variable} ${anekBangla.variable}`}
+      className={`${inter.variable} ${dmSans.variable} ${jakarta.variable} ${hindSiliguri.variable} ${anekBangla.variable}`}
       suppressHydrationWarning
     >
       <head>
