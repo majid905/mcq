@@ -1252,5 +1252,117 @@
       "cell": "Question {number}, {status}",
       "current": "current question"
     }
+  },
+  "staticPages": {
+    "about": {
+      "title": "About us",
+      "description": "What Tikjatra is and why we built it.",
+      "sections": [
+        {
+          "h": "Who we are",
+          "p": "Tikjatra is a preparation platform for government job and admission exams in Bangladesh. BCS, bank, primary, NTRCA and admission students get model tests, a question bank and practice in one place."
+        },
+        {
+          "h": "What we offer",
+          "p": "Live exams taken at the same time as everyone else, with a real rank. Topic-wise practice, an explanation for every question, a list of your wrong answers and an analysis of your progress."
+        },
+        {
+          "h": "Our aim",
+          "p": "Accurate questions, clear explanations and an easy experience, so a candidate in any district can prepare well."
+        }
+      ]
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Reach us with questions, problems or suggestions.",
+      "sections": [
+        {
+          "h": "Need help?",
+          "p": "Email us about payments, login, a mistake in a question or anything else. We usually reply within one working day."
+        },
+        {
+          "h": "Email",
+          "p": "support@tikjatra.com"
+        },
+        {
+          "h": "Hours",
+          "p": "10 am to 10 pm, seven days a week."
+        },
+        {
+          "h": "Found a mistake in a question?",
+          "p": "Use the report button next to any question. Our content team will check and correct it."
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Privacy policy",
+      "description": "What we collect and how we use it.",
+      "sections": [
+        {
+          "h": "What we collect",
+          "p": "Your name, mobile number, district and study goals. Your exam and practice answers, results and usage. Device type and login details for security."
+        },
+        {
+          "h": "Why we use it",
+          "p": "To run your account, show results and ranks, manage subscriptions and payments, keep the service secure and improve it."
+        },
+        {
+          "h": "Who we share it with",
+          "p": "Only what is needed goes to our payment gateway and SMS provider. We do not sell your data. Your name can appear on rank lists that other students see."
+        },
+        {
+          "h": "Your rights",
+          "p": "You can edit your details from your profile. To delete your account and data, write to support@tikjatra.com."
+        },
+        {
+          "h": "Security",
+          "p": "Passwords are stored encrypted and all traffic uses an encrypted connection."
+        }
+      ]
+    },
+    "terms": {
+      "title": "Terms of use",
+      "description": "The rules for using Tikjatra.",
+      "sections": [
+        {
+          "h": "Your account",
+          "p": "Sign up with accurate details. You are responsible for your account and password. One account is for one person and the number of devices is limited."
+        },
+        {
+          "h": "Using our content",
+          "p": "Questions, explanations and other content are for your own preparation. Do not copy, sell or republish them without permission. Copying and screenshots are not allowed during an exam."
+        },
+        {
+          "h": "Fair exams",
+          "p": "Cheating, or trying to influence ranks with multiple accounts, can lead to suspension."
+        },
+        {
+          "h": "Subscriptions",
+          "p": "The price and duration of a premium package are shown at purchase. Premium access ends when the period ends."
+        },
+        {
+          "h": "Changes",
+          "p": "We may change these terms. We will announce major changes on the app or website."
+        }
+      ]
+    },
+    "refund": {
+      "title": "Refund policy",
+      "description": "When you can get your payment back.",
+      "sections": [
+        {
+          "h": "General rule",
+          "p": "Digital content is usually not refundable once it is active. Try the free trial or a free exam first."
+        },
+        {
+          "h": "When you get a refund",
+          "p": "Money was deducted but premium did not start, you were charged twice for the same package, or you could not use the service because of our fault."
+        },
+        {
+          "h": "How to ask",
+          "p": "Email support@tikjatra.com with the payment transaction ID. After checking, we refund within 7 working days to the same payment method."
+        }
+      ]
+    }
   }
 }
